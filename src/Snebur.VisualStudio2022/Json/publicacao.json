@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "publicacao-schema.json#",
+  "caminhoPulicacao": "c:\\publicacao\\Template\\",
+  "nomePastaBuild": null,
+  "isCriarPastaVersao": true,
+  "builds": [
+    "Snebur.js",
+    "Snebur.UI.js",
+    "Snebur.Template.js",
+    "Snebur.js.map",
+    "Snebur.UI.js.map",
+    "Snebur.´Template.js.map",
+    "Snebur.Template.min.css",
+    "Snebur.Template.css"
+  ],
+  "buildJsOptions": {
+    "nomeArquivo": "Snebur.Template.zip",
+    "isUnir": true,
+    "isEncapsular": true,
+    "isZipar": true
+  },
+  "arquivosWeb": [],
+  "arquivosBin": [ "" ]
+}
+
+
+

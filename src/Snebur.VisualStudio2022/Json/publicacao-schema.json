@@ -1,0 +1,64 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "Publicação Extensão Snebur",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "caminhoPulicacao": {
+      "type": "string",
+      "description": "Caminho local ou rede onde os arquivos ser�o publicados."
+    },
+    "nomeLib": {
+      "type": "string",
+      "description": "Nome da lib."
+    },
+    "nomePastaBuild": {
+      "type": "string",
+      "description": "Nome da pasta"
+    },
+    "isCriarPastaVersao": {
+      "type": "boolean"
+    },
+    "builds": {
+      "type": "array",
+      "description": "Caminho dos arquivos (compilados js ou css)",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "arquivosWeb": {
+      "type": "array",
+      "description": "Caminho dos arquivos (web)",
+      "items": {
+        "type": "string"
+      }
+    },
+    "arquivosBin": {
+      "type": "array",
+      "description": "Caminho dos arquivos /bin",
+      "items": {
+        "type": "string"
+      }
+    },
+    "executarProcessoDepois": { "type": "string" },
+    "buildJsOptions": {
+      "type": "object",
+      "properties": {
+        "nomeArquivo": { "type": "string" },
+        "nomeArquivoZip": { "type": "string" },
+        "isUnir": { "type": "boolean" },
+        "isEncapsular": { "type": "boolean" },
+        "isZipar": { "type": "boolean" },
+        "isTeste": { "type": "boolean" }
+      },
+      "required": [ "nomeArquivo" ]
+    }
+  },
+  "required": [ "caminhoPulicacao" ],
+  "additionalProperties": false,
+  "additionalItems": false
+
+}

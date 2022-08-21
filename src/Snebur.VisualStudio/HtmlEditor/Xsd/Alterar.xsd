@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+	xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+	xmlns:vs='http://schemas.microsoft.com/Visual-Studio-Intellisense'>
+
+  <xsd:complexType mixed="true" name="simpleFlowContentElement">
+    <xsd:choice>
+      <xsd:group ref="flowContent" />
+      <xsd:group ref="GrupoSneburAtributos" />
+    </xsd:choice>
+    <xsd:attributeGroup ref="commonAttributeGroup" />
+    <xsd:attributeGroup ref="GrupoSneburControles" />
+  </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <LangVersion>latest</LangVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{91D3E096-D5FD-48DD-8FAA-4F6022D4E7F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Zyoncore.VisualStudio</RootNamespace>
+    <AssemblyName>Zyoncore.VisualStudio</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NET48; EXTENSAO_VISUALSTUDIO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET48; EXTENSAO_VISUALSTUDIO</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Application\VisualStudioApplication.cs" />
+    <Compile Include="Commands\AtualizarProjetosSnebur.cs" />
+    <Compile Include="Commands\MigrationWindowCommand.cs" />
+    <Compile Include="Commands\NormalizarAllProjectsCommand.cs" />
+    <Compile Include="Commands\PublishCtxMenuCommand.cs" />
+    <Compile Include="Commands\Context\ContextoMenuEstilo.cs" />
+    <Compile Include="Commands\Context\ContextoMenuOutro.cs" />
+    <Compile Include="Commands\DeclaracaoComponentes.cs" />
+    <Compile Include="Commands\NewFolder1\FormatarDocumento.cs" />
+    <Compile Include="Commands\ContextMenuFormatarDocumentoCommand.cs" />
+    <Compile Include="Commands\GoToCodeCommand.cs" />
+    <Compile Include="Commands\GoToDefinitionCommand.cs" />
+    <Compile Include="Commands\GoToLayoutCommand.cs" />
+    <Compile Include="Commands\NewFolder1\IrParaCodigo.cs" />
+    <Compile Include="Commands\NewFolder1\IrParaDefinicao.cs" />
+    <Compile Include="Commands\GoToScssStyleCommand.cs" />
+    <Compile Include="Commands\RemoveDominFormatingCommand.cs" />
+    <Compile Include="Commands\RemoveFormatingCommand.cs" />
+    <Compile Include="Configuracoes\BaseOptionModel.cs" />
+    <Compile Include="Configuracoes\BaseOptionPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Configuracoes\ConfiguracaoGeral.cs" />
+    <Compile Include="Configuracoes\DialogPageProvider.cs" />
+    <Compile Include="Depuracao\MensagemEventArgs.cs" />
+    <Compile Include="Depuracao\ServicoDepuracao.cs" />
+    <Compile Include="Extensao\Dispatcher.cs" />
+    <Compile Include="Extensao\DTEExtensao.cs" />
+    <Compile Include="Extensao\ProjectItemExtensao.cs" />
+    <Compile Include="Extensions\VSEx.cs" />
+    <Compile Include="Gerenciadores\CompilarTypescriptRuntime.cs" />
+    <Compile Include="Gerenciadores\Expressao.cs" />
+    <Compile Include="Gerenciadores\Gerenciador.Observacao.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.NovoArquivo.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.Static.cs" />
+    <Compile Include="Gerenciadores\NormalizadorExpreessaoWhere.cs" />
+    <Compile Include="Gerenciadores\NormalizadorExpreessaWhereES6.cs" />
+    <Compile Include="Gerenciadores\NormalizarCompilacaoJavascript.cs" />
+    <Compile Include="Gerenciadores\RenomearDocumento.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="HtmlEditor\HtmlIntellisense.cs" />
+    <Compile Include="HtmlEditor\HtmlIntellisense.Static.cs" />
+    <Compile Include="ItemTemplate\InstalarItensTemplate.cs" />
+    <Compile Include="Json\JsonSchemaSelector.cs" />
+    <Compile Include="Projeto\BaseProjeto.cs" />
+    <Compile Include="Projeto\ConfiguracaoProjeto.cs" />
+    <Compile Include="Projeto\ContextoDados\ConfiguracaoProjetoContextoDados.cs" />
+    <Compile Include="Projeto\ContextoDados\ProjetoContextoDados.cs" />
+    <Compile Include="Projeto\Dominio\Ajudante\AjudantePropriedades.cs" />
+    <Compile Include="Projeto\Dominio\AtribuirValorProprieadades\Gerador.cs" />
+    <Compile Include="Projeto\Dominio\Atributo\GeradorDominioAtributo.cs" />
+    <Compile Include="Projeto\Dominio\BaseGeradorDominio.cs" />
+    <Compile Include="Projeto\Dominio\Classes\GeradorDominioClasse.cs" />
+    <Compile Include="Projeto\Dominio\ConfiguracaoProjetoDominio.cs" />
+    <Compile Include="Projeto\Dominio\Constante\GeradorDominioConstante.cs" />
+    <Compile Include="Projeto\Dominio\Enum\GeradorDominioEnum.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\BaseEstrutura.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\BaseEstruturaClasse.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaClasseAtributo.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaClasseDominio.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaConstantes.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaConstrutor.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaInterface.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedade.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeEspecializada.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeEstatica.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeMensagemValidacao.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadePublica.cs" />
+    <Compile Include="Projeto\Dominio\Estrutura\ParametroConstrutor.cs" />
+    <Compile Include="Projeto\Dominio\Interface\GeradorDominioInterface.cs" />
+    <Compile Include="Projeto\Dominio\OrdenarTipos.cs" />
+    <Compile Include="Projeto\Dominio\ProjetoDominio.AtribuirValorPropriedade.cs" />
+    <Compile Include="Projeto\Dominio\ProjetoDominio.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteAssembly.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.Atributos.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.Propriedades.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoBaseDominio.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEntidade.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEnum.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoPrimario.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\AtributoPropriedade.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\EstruturaPropriedadeReflexao.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.AdicionarTipos.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Atributos.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.Atributos.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Tipo.Atributos.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoBaseDominio.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoComplexo.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEntidade.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEnum.cs" />
+    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TiposPrimario.cs" />
+    <Compile Include="Projeto\Estilo\ConfiguracaoProjetoEstilo.cs" />
+    <Compile Include="Projeto\Estilo\ProjetoEstilo.cs" />
+    <Compile Include="Projeto\RegrasNegocio\ConfiguracaoProjetoRegrasNegocio.cs" />
+    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioCSharp.cs" />
+    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioTypeScript.cs" />
+    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioUtil.cs" />
+    <Compile Include="Projeto\Servicos\ConfiguracaoProjetoServico.cs" />
+    <Compile Include="Projeto\Servicos\ProjetoServicosDotNet.cs" />
+    <Compile Include="Projeto\Servicos\ProjetoServicosTypescript.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTSDominio.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTSSistema.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTypeScript.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\BaseArquivoTypeScript.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\EnumTipoArquivoTypeScript.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\ProjetoTSDepdencia.cs" />
+    <Compile Include="Projeto\TypeScript\Arquivo\TipoArquivoTypeScriptUtil.cs" />
+    <Compile Include="Projeto\TypeScript\CompilerOptions.cs" />
+    <Compile Include="Projeto\TypeScript\ConfiguracaoProjetoTypeScript.cs" />
+    <Compile Include="Projeto\TypeScript\DeclaracaoTipos.cs" />
+    <Compile Include="Projeto\TypeScript\ProjetoTypeScript.cs" />
+    <Compile Include="Projeto\Web\Apresentacao\ConfiguracaoProjetoWebApresentacao.cs" />
+    <Compile Include="Projeto\Web\Apresentacao\ProjetoWebApresentacao.cs" />
+    <Compile Include="Projeto\Web\BaseConfiguracaoProjetoWeb.cs" />
+    <Compile Include="Projeto\Web\ProjetoWeb.cs" />
+    <Compile Include="Projeto\Web\ProjetoWeb.Static.cs" />
+    <Compile Include="Projeto\Web\WebService\ConfiguracaoWebService.cs" />
+    <Compile Include="Projeto\Web\WebService\ProjetoWebService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Commands\OutputWindowCommand.cs" />
+    <Compile Include="Publicacao\BuildjsOptions.cs" />
+    <Compile Include="Publicacao\EnumTipoPasta.cs" />
+    <Compile Include="Publicacao\InfoVersao.cs" />
+    <Compile Include="Publicacao\PublicacaoConfig.cs" />
+    <Compile Include="ToolWindows\Migracao\AmbienteViewModel.cs" />
+    <Compile Include="ToolWindows\Migracao\MigrationWindowControl.xaml.cs">
+      <DependentUpon>MigrationWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Migracao\MigracaoGrupoArquivos.cs" />
+    <Compile Include="ToolWindows\Migracao\MigrationWindow.cs" />
+    <Compile Include="ToolWindows\Migracao\ScriptNovoBancoDados.cs" />
+    <Compile Include="ToolWindows\Migracao\ScriptUtil.cs" />
+    <Compile Include="ToolWindows\Output\OutputWindowControl.xaml.cs">
+      <DependentUpon>OutputWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilidade\Repositorio.cs" />
+    <Compile Include="Utilidade\AssemblyInfoUtil.cs" />
+    <Compile Include="Utilidade\CaminhosUtil.cs" />
+    <Compile Include="Utilidade\CorUtil.cs" />
+    <Compile Include="Utilidade\ExtensaoContantes.cs" />
+    <Compile Include="Utilidade\FormatacaoVSUtil.cs" />
+    <Compile Include="Utilidade\FormatarDocumentoUtil.cs" />
+    <Compile Include="Utilidade\HtmlReferenciaUtil.cs" />
+    <Compile Include="Utilidade\JsonUtil.cs" />
+    <Compile Include="Utilidade\LogVSUtil.cs" />
+    <Compile Include="Utilidade\ProjectHelprs.cs" />
+    <Compile Include="Utilidade\ProjetoTypeScriptUtil.cs" />
+    <Compile Include="Utilidade\ProjetoTypeScriptUtil.Partial.cs" />
+    <Compile Include="Utilidade\ProjetoUtil.cs" />
+    <Compile Include="Utilidade\PropriedadeUtil.cs" />
+    <Compile Include="Publicacao\PublicacaoUtil.cs" />
+    <Compile Include="Utilidade\RecursoUtil.cs" />
+    <Compile Include="Utilidade\SubstituicaoNovoStringFormatTS.cs" />
+    <Compile Include="Utilidade\TagElementoUtil.cs" />
+    <Compile Include="Utilidade\TipoCSUtil.cs" />
+    <Compile Include="Utilidade\TipoUtils.cs" />
+    <Compile Include="Utilidade\VSUtil.cs" />
+    <Compile Include="ViewModels\LogMensagemViewModel.cs" />
+    <Compile Include="VisualStudio2022Package.cs" />
+    <Compile Include="source.extension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
+    <Compile Include="VSCommandTable.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VSCommandTable.vsct</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\Icones\Icon.png" />
+    <Content Include="Resources\Icones\Images.png" />
+    <Content Include="Resources\Images.png" />
+    <None Include="ItemTemplate\Configuracoes StickyChristmas-master.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\ControleUsuarioItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\DocumentoPrincipalItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\JanelaItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\PaginaItemTemplate.zip" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Json.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Json.Editor.dll" />
+    <Content Include="Monikers.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Json\publicacao-schema.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Json\publicacao.json" />
+    <Content Include="Json\versions-schema.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Json\versions.json" />
+    <Content Include="Json\version-schema.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Json\version.json" />
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+      <Generator>VsixManifestGenerator</Generator>
+      <LastGenOutput>source.extension.cs</LastGenOutput>
+    </None>
+    <Content Include="ItemTemplate\item template categoria.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="VSCommandTable.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>VSCommandTable.cs</LastGenOutput>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ToolWindows\Output\OutputWindow.cs" />
+    <Page Include="ToolWindows\Migracao\MigrationWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\Output\OutputWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WebTools.Languages.Json, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.VSCT" Version="16.0.29.6" PrivateAssets="all" />
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.339" ExcludeAssets="Runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Entityframework">
+      <Version>6.4.4</Version>
+    </PackageReference>
+    <PackageReference Include="HtmlAgilityPack">
+      <Version>1.11.39</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5232" />
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj">
+      <Project>{ae39cd55-5282-48a5-8131-6704c825f26a}</Project>
+      <Name>Snebur.AcessoDados</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Comunicacao\src\Comunicacao.WebSocket.Experimental\Snebur.Comunicacao.WebSocket.Experimental.csproj">
+      <Project>{887586d8-d630-411d-96a9-3ce87707bd26}</Project>
+      <Name>Snebur.Comunicacao.WebSocket.Experimental</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj">
+      <Project>{ec174c4f-8122-41a3-8360-f04c4c8fc3ba}</Project>
+      <Name>Snebur</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj">
+      <Project>{538e7ecc-f8fc-49fe-9a6a-b5e704af096c}</Project>
+      <Name>Snebur.Depuracao</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties json_4publicacao-schema_1json__JsonSchema="https://appsemble.app/api.json" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

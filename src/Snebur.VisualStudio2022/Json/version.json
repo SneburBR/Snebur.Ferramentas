@@ -1,0 +1,9 @@
+﻿{
+  "$schema": "version-schema.json#",
+  "data": "2021-12-10T17:55:25.0239736+01:00",
+  "versao": "3.0.2112.888",
+  "checksum": "18751a2f-45f8-4f69-abee-f714ef29556f",
+  "isCompactado": true,
+  "isEncapsulado": true,
+  "isTeste": false
+}

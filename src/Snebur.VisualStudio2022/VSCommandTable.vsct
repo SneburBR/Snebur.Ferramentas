@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<Extern href="stdidcmd.h"/>
+	<Extern href="vsshlids.h"/>
+	<Include href="KnownImageIds.vsct"/>
+	<Include href="VSGlobals.vsct"/>
+
+	<Commands package="guidSneburVisualStudio2022">
+
+		<Menus>
+
+			<Menu guid="guidMenuSneburCmdSet" id="SneburMenu" priority="0x700" type="Menu">
+				<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+
+				<Strings>
+					<ButtonText>Snebur</ButtonText>
+					<CommandName>Snebur</CommandName>
+				</Strings>
+			</Menu>
+
+			<!--CONTEXT MENU - SOLUTION EXPLORER-->
+			<Menu guid="guidCtxMenuSneburCmdSet" id="ContextMenu" priority="0x0100" type="Menu">
+				<Parent guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" />
+				<Strings>
+					<ButtonText>Snebur </ButtonText>
+				</Strings>
+			</Menu>
+			 
+
+		</Menus>
+
+
+		<Buttons>
+
+			<Button guid="guidMenuSneburCmdSet"
+					id="SneburOutputCommand"
+				    priority="0x0100"
+					type="Button">
+
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+
+				<Strings>
+					<ButtonText>Snebur Output</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet"
+					id="SneburMigrationCommand"
+				    priority="0x0100"
+					type="Button">
+
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+
+				<Strings>
+					<ButtonText>Snebur Migrations</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet" id="GoToDefinitionCommand" priority="0x0100" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Go to definition</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet" id="GoToCodeCommand" priority="0x0100" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Go to code</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet" id="GoToLayoutCommand" priority="0x0100" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Go to layout</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet" id="GoToScssStyleCommand" priority="0x0100" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Go to scss styles</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidMenuSneburCmdSet" id="RemoveDominFormatingCommand" priority="0x0100" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Remove domain formating</ButtonText>
+				</Strings>
+			</Button>
+			<Button guid="guidMenuSneburCmdSet" id="NormalizarAllProjectsCommand" priority="0x0101" type="Button">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
+				<Strings>
+					<ButtonText>Normalize all projects</ButtonText>
+				</Strings>
+			</Button>
+
+			<!--CTX MENU SOLUTION EXPLORER-->
+			<Button guid="guidCtxMenuSneburCmdSet" id="PublishCtxMenuCommand" type="Button" priority="0x0100" >
+
+				<Parent guid="guidCtxMenuSneburCmdSet" id="ContextMenuGroup" />
+				<Strings>
+					<ButtonText>Publicar Incrementando Versão</ButtonText>
+				</Strings>
+			</Button>
+		 
+		</Buttons>
+
+		<Groups>
+
+			<Group guid="guidMenuSneburCmdSet" id="SneburMenuGroup" priority="0x0600">
+				<Parent guid="guidMenuSneburCmdSet" id="SneburMenu" />
+			</Group>
+
+			<!--CONTEXT MENU-->
+			<Group guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x0210">
+				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+			</Group>
+
+			<Group guid="guidCtxMenuSneburCmdSet" id="ContextMenuGroup" priority="0x0230">
+				<Parent guid="guidCtxMenuSneburCmdSet" id="ContextMenu"/>
+			</Group>
+ 
+		</Groups>
+
+	</Commands>
+
+	<CommandPlacements>
+
+		<!--CONTEXT MENU-->
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBPROJECT"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBITEMNODE"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBFOLDER"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE"/>
+		</CommandPlacement>
+		<CommandPlacement guid="guidCtxMenuSneburCmdSet" id="MyContextoMenuGroup" priority="0x100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CV_FOLDER"/>
+		</CommandPlacement>
+		 
+	</CommandPlacements>
+
+	<Symbols>
+
+		<GuidSymbol name="guidSneburVisualStudio2022" value="{947d5109-25b9-4a23-a601-dde52a099a53}">
+		</GuidSymbol>
+
+		<GuidSymbol name="guidMenuSneburCmdSet" value="{947d5109-25b9-4a23-a601-dde52a099a53}">
+			<IDSymbol name="SneburMenuGroup" value="4128"  />
+			<IDSymbol name="SneburMenu" value="0x1021" />
+			<IDSymbol name="SneburOutputCommand" value="0x0050" />
+			<IDSymbol name="SneburMigrationCommand" value="0x0100" />
+			<IDSymbol name="GoToDefinitionCommand" value="0x0101" />
+			<IDSymbol name="GoToCodeCommand" value="0x0102" />
+			<IDSymbol name="GoToLayoutCommand" value="0x0103" />
+			<IDSymbol name="GoToScssStyleCommand" value="0x0104" />
+			<IDSymbol name="RemoveDominFormatingCommand" value="0x0105" />
+			<IDSymbol name="NormalizarAllProjectsCommand" value="0x0106" />
+		</GuidSymbol>
+
+		<GuidSymbol name="guidVSPackageCommandProjectContextMenuCmdSet" value="{9a55a2b4-3e29-4359-882b-fa5f51c09300}">
+ 
+			<IDSymbol name="CommandidMenuContextPublicacao" value="0x0100" />
+			<IDSymbol name="MyGroupForCommandsMenuContextProject" value="0x1020" />
+
+		</GuidSymbol>
+
+		<GuidSymbol name="guidCtxMenuSneburCmdSet" value="{679f6e12-e125-4333-96cf-44f7d69f4160}">
+			<IDSymbol name="MyContextoMenuGroup" value="0x0200"  />
+			<IDSymbol name="ContextMenu" value="0x0201"  />
+			<IDSymbol name="ContextMenuGroup" value="0x0202"  />
+			<IDSymbol name="PublishCtxMenuCommand" value="0x0204" />
+		</GuidSymbol>
+ 
+	</Symbols>
+
+</CommandTable>

@@ -1,0 +1,119 @@
+﻿<UserControl x:Class="Snebur.VisualStudio.MigrationWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="800"
+             Name="MyToolWindow">
+
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style  TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Segoe UI Font"></Setter>
+                <Setter Property="FontSize" Value="13"></Setter>
+            </Style>
+
+            <Style  TargetType="TextBox">
+                <Setter Property="FontFamily" Value="Segoe UI Font"></Setter>
+                <Setter Property="FontSize" Value="13"></Setter>
+                <Setter Property="Margin" Value="0 3"></Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="113"/>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="Selecione o projeto de migração"></TextBlock>
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                
+                <ComboBox Name="CmbProjetoMigracao" ItemsSource="{Binding Projetos }"  SelectionChanged="ComboBox_SelectionChanged"  DisplayMemberPath="Name">
+                </ComboBox>
+                <Button  Click="BtnAtualizarProjeots_Click" Grid.Column="1"  Margin="5 0 0 0">
+                    ...</Button>
+            </Grid>
+
+            <TextBlock Text="Selecione o projeto das entidades"></TextBlock>
+            <ComboBox Name="CmbProjetosEntidades" ItemsSource="{Binding Projetos }"   DisplayMemberPath="Name">
+            </ComboBox>
+
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="600"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <!--<CheckBox Margin="10 5" Name="ChkProducao" VerticalAlignment="Center">-->
+                    
+                    <!--<TextBlock Foreground="Green">Produção</TextBlock>-->
+                <!--</CheckBox>-->
+                <ComboBox DisplayMemberPath="Nome"   VerticalAlignment="Center" ItemsSource="{Binding Ambientes}" SelectedItem="{Binding AmbienteSelecionado}"></ComboBox>
+                <!--<ComboBox DisplayMemberPath="Nome" ItemsSource="{Binding Ambientes}" SelectedItem="{Binding AmbienteSelecionado}"></ComboBox>-->
+
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                    <Button Name="BtnValidar"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" Height="22" Click="BtnValidacaoAssembly_Click">Validar</Button>
+                    <Button   Name="BtnAdicionarMigracao"  Margin="10 0 0 0"  VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" Height="22" Click="BtnAdidioncarMigracao_Click">Adicionar migracao</Button>
+                    <Button  Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" Height="22" Click="BtnAtualizar_Click">Atualizar</Button>
+                    <Button  Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" Height="22" Click="BtnGerarScript_Click">Gerar scripts</Button>
+                </StackPanel>
+
+                <!--<Button  Click="BtnAtualizarProjeots_Click" Grid.Column="1"  Margin="5 0 0 0">
+                    ...</Button>-->
+            </Grid>
+
+
+
+
+
+
+        </StackPanel>
+
+
+        <ScrollViewer Grid.Row="1" x:Name="ScrollLog" HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2">
+
+            <ItemsControl 
+                          Margin="5" ItemsSource="{Binding Logs}"  
+                          Background="{DynamicResource VsBrush.Window}"
+                          Foreground="{DynamicResource VsBrush.WindowText}">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="13" FontFamily="Lucida Console"
+                                   TextWrapping="NoWrap" Text="{Binding Mensagem}" Foreground="{Binding BrushColor}"></TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </ScrollViewer>
+
+
+        <Button Grid.Row="2" x:Name="BtnExecutar" IsEnabled="False" Click="BtnExecutar_Click" >Executar</Button>
+
+
+
+
+    </Grid>
+</UserControl>

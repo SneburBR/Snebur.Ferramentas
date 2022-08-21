@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" 
+            xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" 
+            xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <DefaultName>Pagina.shtml</DefaultName>
+    <Name>Pagina</Name>
+    <Description>Pagina Zyoncore Plataforma</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References />
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml" ReplaceParameters="true">Pagina.shtml</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml.scss" ReplaceParameters="false">Pagina.shtml.scss</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml.ts" ReplaceParameters="true">Pagina.shtml.ts</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

@@ -1,0 +1,5 @@
+﻿caminho class padrao
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\ItemTemplates\CSharp\Code\1033\Class
+
+Criar um macro para Gerador de Guid => muito bom
+https://abhijitjana.net/2011/01/18/use-shortcut-key-to-generate-guid-very-quickly-in-visual-studio/

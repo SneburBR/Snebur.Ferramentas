@@ -1,0 +1,14 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "Publicação Extensão Snebur",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "properties": {
+      "$ref": "version-schema.json#/properties"
+    }
+  },
+  "additionalProperties": false,
+  "additionalItems": false
+}

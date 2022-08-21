@@ -1,0 +1,9 @@
+﻿
+
+https://www.codeproject.com/Articles/365680/Extending-Visual-Studio-Part-Item-Templates
+
+
+https://msdn.microsoft.com/en-us/library/ms185308.aspx
+
+
+https://www.syncfusion.com/blogs/post/creating-visual-studio-extensions-using-visual-studio-2019-a-complete-guide.aspx
