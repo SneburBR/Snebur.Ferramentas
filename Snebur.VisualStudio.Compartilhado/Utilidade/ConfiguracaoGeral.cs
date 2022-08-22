@@ -2,16 +2,10 @@
 
 namespace Snebur.VisualStudio
 {
-    public class ConfiguracaoGeralUtil
+    public static class ConfiguracaoGeralUtil
     {
-        public static IConfiguracaoGeral Instance => AplicacaoSnebur.AtualTipada<BaseAplicacaoVisualStudio>().
-                                                     ConfiguracaoGeral;
-
+        public static IConfiguracaoGeral Instance = BaseAplicacaoVisualStudio.Instancia.ConfiguracaoGeral;
    }
 
-    public interface IConfiguracaoGeral
-    {
-        string CaminhoProjetos { get; }
-        string CaminhoInstalacaoVisualStudio { get; }
-    }
+  
 }

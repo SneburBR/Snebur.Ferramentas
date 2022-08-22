@@ -1,4 +1,5 @@
-﻿using Snebur.AcessoDados;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.AcessoDados;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.Utilidade;
@@ -14,14 +15,11 @@ namespace Snebur.VisualStudio
 {
     public class ProjetoRegrasNegocioCSharp : BaseProjeto<ConfiguracaoProjetoRegrasNegocio>
     {
-        public string CaminhoDllAssembly { get; }
-
-        public ProjetoRegrasNegocioCSharp(ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
-                                          string caminhoProjeto,
-                                          string caminhoConfiguracao) :
-                                           base(configuracaoProjeto, caminhoProjeto, caminhoConfiguracao)
+        public ProjetoRegrasNegocioCSharp(Project projectVS, 
+                                          ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
+                                          FileInfo arquivoProjeto,
+                                          string caminhoConfiguracao) : base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
-            this.CaminhoDllAssembly = AjudanteAssembly.RetornarCaminhoAssembly(configuracaoProjeto);
         }
 
         protected override void AtualizarInterno()
@@ -332,11 +330,11 @@ namespace Snebur.VisualStudio
 
         private List<Type> RetornarTodosTipo()
         {
-            if (!File.Exists(this.CaminhoDllAssembly))
+            if (!File.Exists(this.CaminhoAssembly))
             {
-                throw new FileNotFoundException(this.CaminhoDllAssembly);
+                throw new FileNotFoundException(this.CaminhoAssembly);
             }
-            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoDllAssembly);
+            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
             try
             {
                 return assembly.GetAccessibleTypes().Where(x => !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();

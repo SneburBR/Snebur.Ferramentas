@@ -1,4 +1,5 @@
-﻿using Snebur.Utilidade;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,14 +14,15 @@ namespace Snebur.VisualStudio
         private const string REGION_AUTOMATICO = "#region Automático";
         private const string END_REGION = "#endregion";
 
-        public string CaminhoDllAssembly { get; }
         public List<Type> TodosTipo { get; }
 
 
-        public ProjetoServicosDotNet(ConfiguracaoProjetoServico configuracaoProjeto,  string caminhoProjeto, string caminhoConfiguracao) :
-                                     base(configuracaoProjeto,  caminhoProjeto, caminhoConfiguracao)
+        public ProjetoServicosDotNet(Project projectVS, 
+                                     ConfiguracaoProjetoServico configuracaoProjeto,
+                                     FileInfo arquivoProjeto,
+                                     string caminhoConfiguracao) :
+                                     base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
-            this.CaminhoDllAssembly = AjudanteAssembly.RetornarCaminhoAssembly(configuracaoProjeto);
             this.TodosTipo = this.RetornarTodosTipo();
          }
 
@@ -33,7 +35,7 @@ namespace Snebur.VisualStudio
                 var tipoInterface = this.TodosTipo.Where(x => x.IsInterface && x.Name == configServico.NomeInterface).SingleOrDefault();
                 if (tipoInterface == null)
                 {
-                    throw new Exception($"O interface {tipoInterface} não foi encontrada em {this.CaminhoDllAssembly} ");
+                    throw new Exception($"O interface {tipoInterface} não foi encontrada em {this.CaminhoAssembly} ");
                 }
 
                 if (!String.IsNullOrWhiteSpace(configServico.CaminhoDotNet))
@@ -135,8 +137,8 @@ namespace Snebur.VisualStudio
 
         private List<Type> RetornarTodosTipo()
         {
-            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoDllAssembly);
-            var diretorio = Path.GetDirectoryName(this.CaminhoDllAssembly);
+            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
+            var diretorio = Path.GetDirectoryName(this.CaminhoAssembly);
             AppDomain.CurrentDomain.AssemblyResolve += (object sender, ResolveEventArgs args) =>
             {
                 var nome = args.Name.Split(',').First();

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Snebur.Utilidade;
-using static Snebur.VisualStudio.ExtensaoContantes;
+using static Snebur.VisualStudio.ConstantesProjeto;
 
 namespace Snebur.VisualStudio
 {
@@ -67,8 +67,8 @@ namespace Snebur.VisualStudio
 
                         if (isExisteAlteracao && projetoTS != null)
                         {
-                            projetoTS.ProjetoVS.Save();
-                            projetoTS.NormalizarReferencias(false);
+                            (projetoTS.ProjetoVS as Project)?.Save();
+                            await projetoTS.NormalizarReferenciasAsync(false);
 
                         }
                     }
@@ -266,8 +266,8 @@ namespace Snebur.VisualStudio
                                 }
                                 if (isAtualizarProjetoTS)
                                 {
-                                    projetoTS.ProjetoVS.Save();
-                                    projetoTS.NormalizarReferencias(false);
+                                    (projetoTS.ProjetoVS as Project)?.Save();
+                                   await projetoTS.NormalizarReferenciasAsync(false);
                                 }
                             }
                         }
@@ -365,7 +365,7 @@ namespace Snebur.VisualStudio
 
         private void InicializarGerenciadorSeNecessario()
         {
-            if (!this._isInicializado)
+            if (!this._isProjetosAtualizados)
             {
                 _ = this.ExecutarAsync(this.AtualizarProjetosAsync);
             }

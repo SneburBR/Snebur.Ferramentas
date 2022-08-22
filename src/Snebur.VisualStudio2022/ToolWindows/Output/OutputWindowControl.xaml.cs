@@ -26,8 +26,8 @@ namespace Snebur.VisualStudio
     /// </summary>
     public partial class OutputWindowControl : UserControl
     {
-        public ObservableCollection<LogMensagemViewModel> Logs => LogVSUtil.Logs;
-        public int PortaDepuracao => LogVSUtil.PortaDepuracao;
+        public ObservableCollection<ILogMensagemViewModel> Logs => LogVSUtil.Logs;
+        public int PortaDepuracao => ConfiguracaoVSUtil.PortaDepuracao;
 
         public static OutputWindowControl Instacia { get; private set; }
 
@@ -62,8 +62,7 @@ namespace Snebur.VisualStudio
 
         public async Task NormalizarProjetosReferenciasAsync()
         {
-            
-            if (LogVSUtil.IsNormalizandoTodosProjetos)
+            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
             {
                 return;
             }
@@ -72,7 +71,7 @@ namespace Snebur.VisualStudio
             {
                 this.Logs.Clear();
                 this.BtnNormalizar.IsEnabled = false;
-                LogVSUtil.IsNormalizandoTodosProjetos = true;
+                ConfiguracaoVSUtil.IsNormalizandoTodosProjetos = true;
                 await this.NormalizarInternoAsync(false);
             }
             catch (Exception ex)
@@ -82,7 +81,7 @@ namespace Snebur.VisualStudio
             finally
             {
                 this.BtnNormalizar.IsEnabled = true;
-                LogVSUtil.IsNormalizandoTodosProjetos = false;
+                ConfiguracaoVSUtil.IsNormalizandoTodosProjetos = false;
             }
         }
 
@@ -95,7 +94,7 @@ namespace Snebur.VisualStudio
             var tempo = System.Diagnostics.Stopwatch.StartNew();
             try
             {
-                LogVSUtil.ClearAsync();
+                LogVSUtil.Clear();
 
                 LogVSUtil.Log("Normalizando");
                 AjudanteAssembly.Inicializar(true);
@@ -118,48 +117,48 @@ namespace Snebur.VisualStudio
                     var projetosDominio = projetos.OfType<ProjetoDominio>().OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio).ToList();
                     foreach (var projeto in projetosDominio)
                     {
-                        projeto.NormalizarReferencias(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
                     foreach (var projeto in projetosContextoDados)
                     {
-                        projeto.NormalizarReferencias(true);
+                       await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
                     foreach (var projeto in projetosRegrasNegocioTS)
                     {
-                        projeto.NormalizarReferencias(true);
+                       await  projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
                     foreach (var projeto in projetosRegrasNegocioCSharp)
                     {
-                        projeto.NormalizarReferencias(true);
+                      await   projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosServicosTS = projetos.OfType<ProjetoServicosTypescript>().ToList();
                     foreach (var projeto in projetosServicosTS)
                     {
-                        projeto.NormalizarReferencias(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosServicosDotNet = projetos.OfType<ProjetoServicosDotNet>().ToList();
                     foreach (var projeto in projetosServicosDotNet)
                     {
-                        projeto.NormalizarReferencias(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     foreach (var projeto in projetosTypeScript)
                     {
-                        projeto.NormalizarReferencias(compilar);
+                        await projeto.NormalizarReferenciasAsync(compilar);
                     }
 
                     var projetosSass = projetos.OfType<ProjetoEstilo>().ToList();
                     foreach (var projeto in projetosSass)
                     {
-                        projeto.NormalizarReferencias(compilar);
+                        await projeto.NormalizarReferenciasAsync(compilar);
                     }
 
                     //GerenciadorProjetos.Reiniciar();
@@ -196,7 +195,7 @@ namespace Snebur.VisualStudio
 
         private void BtnReiniciarGerenciadorProjetosTS_Click(object sender, RoutedEventArgs e)
         {
-            GerenciadorProjetos.ReiniciarAsync();
+            GerenciadorProjetos.Reiniciar();
         }
 
         private void BtnLimpar_Click(object sender, RoutedEventArgs e)

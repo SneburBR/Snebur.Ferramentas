@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Snebur.VisualStudio.Utilidade
 {
-    public class FormatacaoVSUtil
+    public static class FormatacaoVSUtil
     {
         private static string RetornarNomeTipoSemGenerico(string nomeTipo)
         {

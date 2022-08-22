@@ -1,25 +1,23 @@
-﻿using System;
+﻿using Snebur.Dominio;
+using Snebur.VisualStudio.DteExtensao;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur;
 using System.IO;
-using Snebur.Utilidade;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
-    public abstract class BaseProjeto : Snebur.Dominio.BaseViewModel, IDisposable
+    public abstract class BaseProjeto : BaseViewModel, IDisposable
     {
         private List<string> SufixosProtegidos { get; } = new List<string> { ".Completo", ".Debug", ".Temp", ".Teste" };
 
-        //public Project ProjetoVS { get; private set; }
-
         public string NomeProjeto { get; private set; }
 
-        public System.IO.DirectoryInfo DiretorioProjeto { get; }
+        public FileInfo ArquivooProjeto { get; }
+        public DirectoryInfo DiretorioProjeto { get; }
 
-        public string CaminhoProjeto { get; }
+        public string CaminhoProjeto => this.DiretorioProjeto.FullName;
 
         public string CaminhoProjetoCaixaBaixa { get; }
 
@@ -34,21 +32,39 @@ namespace Snebur.VisualStudio
         public Version VersaoProjeto => AssemblyInfoUtil.RetornarVersaoAssemblyInfo(this.CaminhoAssemblyInfo);
 
         public string CaminhoAssemblyInfo { get; }
-        public BaseProjeto( string caminhoProjeto, string caminhoConfiguracao)
+        public string CaminhoAssembly { get; }
+
+        public string NomeAssembly
         {
-            //this.DTE = dte;
-            //this.ProjetoVS = projetoVS;
-
-            this.CaminhoProjeto = caminhoProjeto;
-            this.DiretorioProjeto = new DirectoryInfo(this.CaminhoProjeto);
+            get
+            {
+                if (this is ProjetoDominio)
+                {
+                    return this.NomeProjeto == "Snebur" ? "Zyoncore" : this.NomeProjeto;
+                }
+                if (this is ProjetoTypeScript)
+                {
+                    return Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name);
+                }
+                return this.NomeProjeto;
+            }
+        }
+        public string UniqueName { get; set; }
+        public Project ProjetoVS { get; }
+        public BaseProjeto(Project projectVS,
+                           FileInfo arquivoProjeto,
+                           string caminhoConfiguracao)
+        {
+            this.ProjetoVS = projectVS;
+            this.ArquivooProjeto = arquivoProjeto;
+            this.DiretorioProjeto = arquivoProjeto.Directory;
             this.CaminhoConfiguracao = caminhoConfiguracao;
-            
             this.CaminhoProjetoCaixaBaixa = this.CaminhoProjeto.ToLower();
-            //this.IsProjetoDebug = projetoVS.Name.EndsWith("Debug");
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
-
-            throw new ErroNaoImplementado();
-            //this.NomeProjeto = this.NormalizarNomeProjeto(this.ProjetoVS.Name);
+            this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
+            this.NomeProjeto = this.NormalizarNomeProjeto(Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name));
+            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(DiretorioProjeto.FullName,
+                                                                           this.NomeAssembly);
         }
 
         private string NormalizarNomeProjeto(string nomeProjeto)
@@ -73,7 +89,7 @@ namespace Snebur.VisualStudio
 
             if (nomeProjeto.EndsWith(".Typescript"))
             {
-                nomeProjeto = nomeProjeto.Substring(0, nomeProjeto.Length -  ".Typescript".Length);
+                nomeProjeto = nomeProjeto.Substring(0, nomeProjeto.Length - ".Typescript".Length);
 
             }
             if (nomeProjeto.EndsWith(".TS"))
@@ -83,14 +99,14 @@ namespace Snebur.VisualStudio
             return nomeProjeto;
         }
 
-        #region Abstratodos
-        public void NormalizarReferencias(bool compilar)
+        #region Abstratos
+        public async Task NormalizarReferenciasAsync(bool compilar)
         {
             try
             {
                 if (compilar)
                 {
-                    this.Compilar();
+                    await this.CompilarAsync();
                 }
 
                 this.AtualizarInterno();
@@ -117,10 +133,9 @@ namespace Snebur.VisualStudio
 
         #endregion
 
-        public void Compilar()
+        public Task CompilarAsync()
         {
-            throw new ErroNaoImplementado();
-            //ProjetoUtil.CompilarProjeto(this.DTE, this.ProjetoVS);
+            return BaseAplicacaoVisualStudio.Instancia.CompilarProjetoAsync(this);
         }
 
 
@@ -168,9 +183,12 @@ namespace Snebur.VisualStudio
 
         public List<string> NomesProjetoDepedencia => this.ConfiguracaoProjeto.ProjetoDepedencia;
 
-        public BaseProjeto(TConfiguracaoProjeto configuracaoProjeto, 
-                           string caminhoProjeto, string caminhoConfiguracao) :
-                           base(caminhoProjeto, caminhoConfiguracao)
+
+
+        public BaseProjeto(Project projectVS,
+                           TConfiguracaoProjeto configuracaoProjeto,
+                           FileInfo arquivoProjeto, string caminhoConfiguracao) :
+                           base(projectVS, arquivoProjeto, caminhoConfiguracao)
         {
             this.ConfiguracaoProjeto = configuracaoProjeto;
         }
@@ -180,9 +198,11 @@ namespace Snebur.VisualStudio
             return this.ConfiguracaoProjeto as TConfiguracao;
         }
 
-       
+
 
     }
 
 
 }
+
+

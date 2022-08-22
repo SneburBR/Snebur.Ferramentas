@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Snebur.VisualStudio
 {
     public static class ProjetoWeb
     {
-        internal static BaseConfiguracaoProjetoWeb RetornarConfiguracao(string caminhoConfiguracaoWebConfig,
-                                                    string caminhoConfiguracaoTypeScript)
+        public static BaseConfiguracaoProjetoWeb RetornarConfiguracao(string caminhoConfiguracaoWebConfig,
+                                                                        string caminhoConfiguracaoTypeScript)
         {
 
             if (File.Exists(caminhoConfiguracaoTypeScript))

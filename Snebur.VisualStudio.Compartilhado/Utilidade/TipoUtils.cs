@@ -10,7 +10,7 @@ using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio.Reflexao
 {
-    public partial class TipoUtil
+    public static partial class TipoUtil
     {
         #region "Comparadores"
 

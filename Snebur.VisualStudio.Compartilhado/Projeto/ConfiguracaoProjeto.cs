@@ -12,8 +12,6 @@ namespace Snebur.VisualStudio
 
         protected abstract List<string> RetornarNomesProjetoDepedencia();
 
-        public string CaminhoProjeto => throw new NotImplementedException();
-        public string NomeAssembly => throw new NotImplementedException();
 
     }
 }

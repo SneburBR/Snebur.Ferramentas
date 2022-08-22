@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -7,7 +8,7 @@ using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
-    internal class NormalizarCompilacaoJavascript : IDisposable
+    public class NormalizarCompilacaoJavascript : IDisposable
     {
         public const string ABRE_DATA_NORMALIZACAO = "/*DT";
         public const string FECHA_DATA_NORMALIZACAO = "DT*/";
@@ -30,12 +31,12 @@ namespace Snebur.VisualStudio
             this.IsNormalizarWhere = !this.ConfiguracaoTypescript.IsIgnorarNormnalizacaoCompilacao;
         }
 
-        internal void Normalizar()
+        public void Normalizar()
         {
             try
             {
                 var caminhoSaidaAtual = this.ProjetoTS.CaminhoSaidaAtual;
-                if (GerenciadorProjetos.DiretorioProjetoTypescriptInicializacao != null)
+                if (GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao != null)
                 {
                     if (!File.Exists(caminhoSaidaAtual) && File.Exists(this.ProjetoTS.CaminhoSaidaPadrao))
                     {

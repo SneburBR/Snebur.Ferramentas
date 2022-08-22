@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Snebur.VisualStudio.DteExtensao;
 using Snebur.Linq;
 using Snebur.Utilidade;
 
@@ -32,11 +33,13 @@ namespace Snebur.VisualStudio
 
         private HashSet<string> PrefixosReservado { get; } = new HashSet<string> { PREFIXO_SEM_IMPORTACAO, PREFIXO_SEM_IMPORTACAO };
          
-        public ProjetoEstilo(ConfiguracaoProjetoEstilo configuracaoProjeto, 
-                            string caminhoProjeto, string caminhoConfiguracao) :
-                            base(configuracaoProjeto, 
-                                 caminhoProjeto, 
-                                 caminhoConfiguracao)
+        public ProjetoEstilo(Project projectVS, 
+                             ConfiguracaoProjetoEstilo configuracaoProjeto,
+                             FileInfo arquivoProjeto, string caminhoConfiguracao) :
+                             base(projectVS, 
+                                  configuracaoProjeto,
+                                  arquivoProjeto, 
+                                  caminhoConfiguracao)
         {
              
             this.ArquivoEstiloReferenciaSass = new FileInfo(Path.GetFullPath(Path.Combine(this.CaminhoProjeto, this.ConfiguracaoProjeto.inputFile)));
@@ -294,9 +297,9 @@ namespace Snebur.VisualStudio
             var diretorioProjeto = new DirectoryInfo(this.CaminhoProjeto);
 
             //var arquivos =   diretorioProjeto.GetFiles("*.scss", SearchOption.AllDirectories);
-            var arquivos = ProjetoUtil.RetornarTodosArquivos(this.CaminhoProjeto, true).Select(x => new FileInfo(x)).
-                                                                                   Where(x => x.Extension == ExtensaoContantes.EXTENSAO_SASS);
-
+            var arquivos = LocalProjetoUtil.RetornarTodosArquivos( this.ProjetoVS, this.CaminhoProjeto, true).
+                                            Select(x => new FileInfo(x)).
+                                            Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
              
             if (arquivoDestino != null)
             {
@@ -318,7 +321,7 @@ namespace Snebur.VisualStudio
 
         private bool IsArquivoSassShtml(FileInfo arquivo)
         {
-            return arquivo.Name.EndsWith(ExtensaoContantes.EXTENSAO_CONTROLE_SHTML_ESTILO);
+            return arquivo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_ESTILO);
         }
 
         private bool IsArquivoSassPersonalizado(FileInfo arquivo)

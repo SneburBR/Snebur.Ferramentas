@@ -1,16 +1,12 @@
-﻿using System;
+﻿using Snebur.Dominio.Atributos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur;
-using Snebur.Utilidade;
 using System.Reflection;
-using Snebur.Dominio.Atributos;
 
 namespace Snebur.VisualStudio.Reflexao
 {
-    public class PropriedadeUtil
+    public static class PropriedadeUtil
     {
         internal static bool PossuiAtributo(PropertyInfo propriedade, Type tipoAtributo)
         {

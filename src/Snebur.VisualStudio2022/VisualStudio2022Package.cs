@@ -33,15 +33,14 @@ namespace Snebur.VisualStudio
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            AplicacaoSnebur.Atual = new VisualStudioApplication();
+            AplicacaoSnebur.Atual = new AplicacaoVisualStudio();
 
             await this.RegisterCommandsAsync();
-
             this.RegisterToolWindows();
 
             try
             {
-                GerenciadorProjetos.InicializarAsync(this);
+                await GerenciadorProjetos.Instancia.InicializarAsync(this);
                 //InstalarItensTemplate.Instalar();
                 //await HtmlIntellisense.InicializarAsync();
                 //JsonUtil.Serializar(true, true);

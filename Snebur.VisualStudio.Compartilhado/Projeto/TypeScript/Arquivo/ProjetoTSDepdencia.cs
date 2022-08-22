@@ -58,7 +58,7 @@ namespace Snebur.VisualStudio
 
         private string RetornarCaminhoConfiguracaoTypescript()
         {
-            var caminho = Path.Combine(this.CaminhoProjeto, ProjetoUtil.CONFIGURACAO_TYPESCRIPT);
+            var caminho = Path.Combine(this.CaminhoProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
             if (!File.Exists(caminho))
             {
                 throw new Exception($"Não foi encontrado o caminho to arquivo tsconfig.json para a dependência ${Path.GetFileName(this.CaminhoDepedencia)}");

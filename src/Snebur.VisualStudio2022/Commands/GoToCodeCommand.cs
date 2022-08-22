@@ -20,8 +20,8 @@ namespace Snebur.VisualStudio.Commands
                 if (dte.ActiveDocument != null)
                 {
                     var nomeArquivo = dte.ActiveDocument.Name;
-                    var isExtensaoShtml = nomeArquivo.EndsWith(ExtensaoContantes.EXTENSAO_CONTROLE_SHTML);
-                    var isExtensaoScss = nomeArquivo.EndsWith(ExtensaoContantes.EXTENSAO_CONTROLE_SHTML_ESTILO);
+                    var isExtensaoShtml = nomeArquivo.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML);
+                    var isExtensaoScss = nomeArquivo.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_ESTILO);
 
                     if (!(isExtensaoShtml || isExtensaoScss))
                     {
@@ -50,7 +50,7 @@ namespace Snebur.VisualStudio.Commands
 
                         var documentoCodigo = dte.ActiveDocument;
                         if (isExtensaoShtml &&
-                            documentoCodigo.Name.EndsWith(ExtensaoContantes.EXTENSAO_CONTROLE_SHTML_TYPESCRIPT))
+                            documentoCodigo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_TYPESCRIPT))
                         {
                             var declaracao = new DeclaracaoComponentes(dte,
                                                                        caminhoArquivoAtual,

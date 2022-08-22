@@ -7,7 +7,7 @@ using Snebur.VisualStudio.Utilidade;
 
 namespace Snebur.VisualStudio
 {
-    public class LogMensagemViewModel
+    public class LogMensagemViewModel: ILogMensagemViewModel
     {
         public string Mensagem { get; }
 

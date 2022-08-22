@@ -1,19 +1,15 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using System;
+using Snebur.Depuracao;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Snebur.Depuracao;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Utilidade;
-using static Snebur.VisualStudio.ExtensaoContantes;
+using static Snebur.VisualStudio.ConstantesProjeto;
 
 
 //futuramente vamos normalizar os Error, passando um parametro da mapeamento do arquivo e linha
@@ -21,10 +17,9 @@ using static Snebur.VisualStudio.ExtensaoContantes;
 
 namespace Snebur.VisualStudio
 {
-    public partial class GerenciadorProjetos
+    public partial class GerenciadorProjetos : IGerenciadorProjetos
     {
-
-        public SneburVisualStudio2022Package LocalPackage { get; }
+        public SneburVisualStudio2022Package LocalPackage { get; private set; }
         internal ConcurrentDictionary<string, ProjetoTypeScript> ProjetosTS { get; } = new ConcurrentDictionary<string, ProjetoTypeScript>();
         internal ConcurrentDictionary<string, ProjetoEstilo> ProjetosSass2 { get; } = new ConcurrentDictionary<string, ProjetoEstilo>();
         private HashSet<string> Extensoes { get; } = new HashSet<string> { EXTENSAO_TYPESCRIPT, EXTENSAO_SASS, EXTENSAO_CONTROLE_SHTML };
@@ -49,15 +44,27 @@ namespace Snebur.VisualStudio
 
         private ServicoDepuracao ServicoDepuracao;
 
-        private GerenciadorProjetos(SneburVisualStudio2022Package package)
+        public string DiretorioProjetoTypescriptInicializacao { get; set; }
+        public ConfiguracaoProjetoTypeScript ConfiguracaoProjetoTypesriptInicializacao { get; set; }
+
+        private bool _isInicializado;
+        private GerenciadorProjetos()
         {
-            this.LocalPackage = package;
+            this.SoluacaoAbertaInterno += this.GerenciadorProjetos_SoluacaoAberta;
         }
 
-
-        private void Inicializar()
+        public async Task InicializarAsync(SneburVisualStudio2022Package package)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (this._isInicializado)
+            {
+                throw new Exception("Gerenciador de projetos já inicializado");
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            this.LocalPackage = package;
+            //await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             GerenciadorProjetos.InicializarPropriedadesGlobal();
 
@@ -65,25 +72,19 @@ namespace Snebur.VisualStudio
             this.BuildEventsInterno.OnBuildBegin += this.BuildEvents_OnBuildBegin;
             this.BuildEventsInterno.OnBuildDone += this.BuildEvents_OnBuildDone;
 
-
-
             this.DocumentEventsInterno.DocumentOpened += this.DocumentEvents_DocumentOpened;
             this.DocumentEventsInterno.DocumentSaved += this.DocumentEvents_DocumentSaved;
             this.SolutionEventsInterno.BeforeClosing += this.SolutionEvents_BeforeClosing;
 
-
+            this._isInicializado = true;
+            await this.InializarServidoDepuracaoAsync();
         }
 
-
-        //private bool _isExecutandoSolucaoAberta = false;
-        //private bool _isExecutandoCompilacaoIniciando = false;
-        //private bool _isExecutandoCompilacaoConcluida = false;
 
         private void SolutionEvents_Opened()
         {
             _ = this.ExecutarAsync(this.SolucaoAbertaAsync);
         }
-
 
         private void BuildEvents_OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
         {
@@ -94,15 +95,14 @@ namespace Snebur.VisualStudio
 
         private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
         {
-            var t = Stopwatch.StartNew();
             LogVSUtil.Log("Executando tarefas depois da compilação");
-            BuildDoneAsync().Wait();
-            LogVSUtil.Sucesso("Tarefas depois da compilação", t);
+            _ = this.BuildDoneAsync();
         }
 
         private async Task BuildDoneAsync()
         {
-            if (GerenciadorProjetos.DiretorioProjetoTypescriptInicializacao == null)
+            var t = Stopwatch.StartNew();
+            if (this.DiretorioProjetoTypescriptInicializacao == null)
             {
                 ProjetoUtil.DefinirProjetosInicializacao();
             }
@@ -119,6 +119,8 @@ namespace Snebur.VisualStudio
             {
                 this.NormalizarScripts();
             }
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            LogVSUtil.Sucesso("Tarefas depois da compilação", t);
         }
 
         private async Task SolucaoAbertaAsync()
@@ -129,7 +131,7 @@ namespace Snebur.VisualStudio
 
         private async Task CompilacaoIniciandoAsync()
         {
-            if (LogVSUtil.IsNormalizandoTodosProjetos)
+            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
             {
                 return;
             }
@@ -138,9 +140,10 @@ namespace Snebur.VisualStudio
 
             if (this.TempoCompilacao != null) this.TempoCompilacao.Stop();
             this.TempoCompilacao = Stopwatch.StartNew();
+           
             if (this.IsLimparLogCompilandoInterno)
             {
-                //LogVSUtil.ClearAsync();
+                LogVSUtil.Clear();
             }
 
             try
@@ -209,21 +212,21 @@ namespace Snebur.VisualStudio
             }
         }
 
-        #region Depuracao
+        #region Depuração
 
         #region  Observadores -- FileSystemWatcher
 
-        private ObservadorArquivoProjeto RetornarObservadorArquivoProjeto(string identificadorProjeto)
-        {
-            lock ((GerenciadorProjetos.DicionarioObservadoresArquivo as ICollection).SyncRoot)
-            {
-                if (!GerenciadorProjetos.DicionarioObservadoresArquivo.ContainsKey(identificadorProjeto))
-                {
-                    GerenciadorProjetos.DicionarioObservadoresArquivo.Add(identificadorProjeto, new ObservadorArquivoProjeto(identificadorProjeto));
-                }
-                return GerenciadorProjetos.DicionarioObservadoresArquivo[identificadorProjeto];
-            }
-        }
+        //private ObservadorArquivoProjeto RetornarObservadorArquivoProjeto(string identificadorProjeto)
+        //{
+        //    lock ((GerenciadorProjetos.DicionarioObservadoresArquivo as ICollection).SyncRoot)
+        //    {
+        //        if (!GerenciadorProjetos.DicionarioObservadoresArquivo.ContainsKey(identificadorProjeto))
+        //        {
+        //            GerenciadorProjetos.DicionarioObservadoresArquivo.Add(identificadorProjeto, new ObservadorArquivoProjeto(identificadorProjeto));
+        //        }
+        //        return GerenciadorProjetos.DicionarioObservadoresArquivo[identificadorProjeto];
+        //    }
+        //}
 
         private void ObservadorArquivo_Error(object sender, ErrorEventArgs e)
         {
@@ -255,7 +258,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private async void NotificarArquivoAlterado(FileInfo arquivo)
+        private void NotificarArquivoAlterado(FileInfo arquivo)
         {
             var mensagns = this.RetornarMensagensArquivoAlterado(arquivo);
 
@@ -408,7 +411,7 @@ namespace Snebur.VisualStudio
         }
 
 
-        private bool _isInicializado;
+        private bool _isProjetosAtualizados;
         private async Task AtualizarProjetosAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -420,6 +423,7 @@ namespace Snebur.VisualStudio
                 {
                     try
                     {
+
                         if (!String.IsNullOrWhiteSpace(projetoVS.FileName))
                         {
                             projetoVS.Save();
@@ -433,9 +437,9 @@ namespace Snebur.VisualStudio
                     }
                 }
 
-                if (!LogVSUtil.IsNormalizandoTodosProjetos)
+                if (!ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
                 {
-                    var sb = DTE.Solution.SolutionBuild;
+                    var sb = this.DTE.Solution.SolutionBuild;
                     var projetosStartup = (Array)sb.StartupProjects;
                     if (projetosStartup?.Length > 0)
                     {
@@ -446,7 +450,7 @@ namespace Snebur.VisualStudio
                             if (this.ProjetosTS.ContainsKey(chave))
                             {
                                 var projetoTS = this.ProjetosTS[chave];
-                                projetoTS.NormalizarReferencias(false);
+                                await projetoTS.NormalizarReferenciasAsync(false);
                                 ProjetoTypeScriptUtil.AtualizarScriptsDebug(projetosTS, projetoTS);
                             }
                         }
@@ -454,7 +458,7 @@ namespace Snebur.VisualStudio
 
                 }
 
-                _isInicializado = (projetosVS.Count > 0);
+                this._isProjetosAtualizados = (projetosVS.Count > 0);
 
 
                 this.DipensarProjetosDescarregados(projetosVS);
@@ -468,16 +472,24 @@ namespace Snebur.VisualStudio
 
         private void AtualizarProjetoTypescript(Project projetoVS)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (!this.ProjetosTS.ContainsKey(ProjetoUtil.RetornarChave(projetoVS)))
             {
-                var caminhoProjeto = new FileInfo(projetoVS.FileName).Directory.FullName;
-                var caminhoConfiguracao = Path.Combine(caminhoProjeto, ProjetoUtil.CONFIGURACAO_TYPESCRIPT);
+                var arquivoProjeto = new FileInfo(projetoVS.FileName);
+                var caminhoProjeto = arquivoProjeto.Directory.FullName;
+                var caminhoConfiguracao = Path.Combine(caminhoProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
                 if (File.Exists(caminhoConfiguracao))
                 {
                     var configuracaoTS = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(caminhoConfiguracao);
                     if (!configuracaoTS?.IsIgnorar ?? false)
                     {
-                        var projetoTS = ProjetoTypeScriptUtil.RetornarProjetoTypeScript(configuracaoTS, this.DTE, projetoVS, caminhoProjeto, caminhoConfiguracao);
+                        var projetoVS2 = (DteExtensao.Project)projetoVS;
+                        var projetoTS = ProjetoTypeScriptUtil.RetornarProjetoTypeScript(configuracaoTS,
+                                                                                        projetoVS2,
+                                                                                        arquivoProjeto,
+                                                                                        caminhoConfiguracao);
+
                         LogVSUtil.Log($"Iniciando gerenciador de projeto typescript '{projetoTS.NomeProjeto}'");
                         var todosArquivo = ProjetoUtil.RetornarTodosArquivos(projetoVS, true);
                         projetoTS.TodosArquivos = todosArquivo;
@@ -485,22 +497,24 @@ namespace Snebur.VisualStudio
                     }
                 }
             }
-
-
         }
 
         private void AtualizarProjetoSass(Project projetoVS)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (!this.ProjetosSass2.ContainsKey(ProjetoUtil.RetornarChave(projetoVS)))
             {
-                var caminhoProjeto = new FileInfo(projetoVS.FileName).Directory.FullName;
-                var caminhoConfiguracao = Path.Combine(caminhoProjeto, ProjetoUtil.CONFIGURACAO_SASS);
+                var arquivioProjeto = new FileInfo(projetoVS.FileName);
+                var caminhoProjeto = arquivioProjeto.Directory.FullName;
+                var caminhoConfiguracao = Path.Combine(caminhoProjeto, ConstantesProjeto.CONFIGURACAO_SASS);
                 if (File.Exists(caminhoConfiguracao))
                 {
                     var configuracaoSass = ProjetoEstilo.RetornarConfiguracao(caminhoConfiguracao);
                     if (!configuracaoSass.IsIgnorar)
                     {
-                        var projetoSass = new ProjetoEstilo(configuracaoSass, this.DTE, projetoVS, caminhoProjeto, caminhoConfiguracao);
+                        var projetoVS2 = (DteExtensao.Project)projetoVS;
+                        var projetoSass = new ProjetoEstilo(projetoVS2, configuracaoSass, arquivioProjeto, caminhoConfiguracao);
                         this.ProjetosSass2.TryAdd(ProjetoUtil.RetornarChave(projetoVS), projetoSass);
                     }
                 }
@@ -513,7 +527,7 @@ namespace Snebur.VisualStudio
 
         #region Dispensar
 
-        private bool _isBloqueioDispensar = false;
+        //private bool _isBloqueioDispensar = false;
         private void SolutionEvents_BeforeClosing()
         {
             _ = this.ExecutarAsync(this.DispensarAsync);
@@ -620,7 +634,38 @@ namespace Snebur.VisualStudio
             return false;
         }
 
+        private Task InializarServidoDepuracaoAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                this.ServicoDepuracao = new ServicoDepuracao();
+                this.ServicoDepuracao.EventoLog += this.ServicoDepuracao_Log;
+            },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            TaskScheduler.Default);
+        }
 
+        private void GerenciadorProjetos_SoluacaoAberta(object sender, EventArgs e)
+        {
+            GerenciadorProjetos.SoluacaoAberta?.Invoke(sender, e);
+        }
+
+        private static void InicializarPropriedadesGlobal()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            GerenciadorProjetos.DTE_GLOBAL = dte;
+            GerenciadorProjetos.SolutionEvents = dte.Events.SolutionEvents;
+            GerenciadorProjetos.DocumentEvents = dte.Events.DocumentEvents;
+            GerenciadorProjetos.BuildEvents = dte.Events.BuildEvents;
+        }
+
+        public static void Reiniciar()
+        {
+            GerenciadorProjetos.Instancia.ReiniciarServidorReiniciarInterno();
+        }
 
     }
 

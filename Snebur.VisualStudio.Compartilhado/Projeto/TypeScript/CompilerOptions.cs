@@ -31,7 +31,7 @@ namespace Snebur.VisualStudio
 
         protected BaseCompilerOptions()
         {
-            var compilerOptionsInicializacao = GerenciadorProjetos.ConfiguracaoProjetoTypesriptInicializacao?.CompilerOptions;
+            var compilerOptionsInicializacao = GerenciadorProjetosUtil.ConfiguracaoProjetoTypesriptInicializacao?.CompilerOptions;
             if (compilerOptionsInicializacao != null)
             {
                 this.lib.AddRangeNew(compilerOptionsInicializacao.lib);

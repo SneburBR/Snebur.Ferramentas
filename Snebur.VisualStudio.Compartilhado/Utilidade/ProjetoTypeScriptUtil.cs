@@ -1,31 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.Utilidade;
+using System;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Snebur.VisualStudio 
+namespace Snebur.VisualStudio
 {
-    internal class ProjetoTypeScriptUtil
+    public static partial class ProjetoTypeScriptUtil
     {
-        internal static string NamespaceRaiz(string nomeProjeto)
+        public static ProjetoTypeScript RetornarProjetoTypeScript(ConfiguracaoProjetoTypeScript configuracaoTS,
+                                                                  Project projectVS,
+                                                                  FileInfo arquivoProjeto,
+                                                                  string caminhoConfiguracao)
         {
-            throw new NotImplementedException();
+            return new ProjetoTypeScript(projectVS, 
+                                         configuracaoTS, 
+                                         arquivoProjeto, 
+                                         caminhoConfiguracao);
         }
 
-        internal static string NamespaceReflexao(string nomeProjeto)
+        public static ConfiguracaoProjetoTypeScript RetornarConfiguracaoProjetoTypeScript(string caminhoConfiguracao)
         {
-            throw new NotImplementedException();
+            var json = File.ReadAllText(caminhoConfiguracao, Encoding.UTF8);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(json);
         }
 
-        internal static HashSet<string> RetornarArquivosTypeScript(string caminhoProjeto)
+        internal static DateTime? RetornarDataHoraScriptNormalizado(string caminhoScript)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                if (File.Exists(caminhoScript))
+                {
+                    using (var fs = StreamUtil.OpenRead(caminhoScript))
+                    using (var sr = new StreamReader(fs))
+                    {
+                        var primeiraLinha = sr.ReadToEnd();
+                        var indiceAbre = primeiraLinha.IndexOf(NormalizarCompilacaoJavascript.ABRE_DATA_NORMALIZACAO);
+                        if (indiceAbre > 0)
+                        {
+                            var temp = primeiraLinha.Substring(indiceAbre);
+                            var indiceTicks = temp.IndexOf(NormalizarCompilacaoJavascript.TICKS);
+                            if (indiceTicks > 0)
+                            {
+                                var tempTicks = temp.Substring(indiceTicks + NormalizarCompilacaoJavascript.TICKS.Length);
+                                var fimTicks = tempTicks.IndexOf(" ");
+                                if (fimTicks > 0)
+                                {
+                                    var ticksString = tempTicks.Substring(0, fimTicks);
+                                    if (Int64.TryParse(ticksString, out var ticks))
+                                    {
+                                        return new DateTime(ticks);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro(ex);
 
-        internal static ConfiguracaoProjetoTypeScript RetornarConfiguracaoProjetoTypeScript(string caminhoConfiguracao)
-        {
-            throw new NotImplementedException();
+            }
+            return null;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Snebur.VisualStudio
         {
 
             var caminhosParcial = new List<string>();
-            var isIncluirDepedencias = GerenciadorProjetos.DiretorioProjetoTypescriptInicializacao == null;
+            var isIncluirDepedencias = GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao == null;
             if (isIncluirDepedencias)
             {
                 caminhosParcial.AddRange(this.Depedencias.Select(x => x.Value));

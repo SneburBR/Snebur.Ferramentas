@@ -37,6 +37,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -48,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aplicacao\BaseAplicacaoVisualStudio.cs" />
+    <Compile Include="Aplicacao\Log\ConfiguracaoVSUtil.cs" />
     <Compile Include="Projeto\BaseProjeto.cs" />
     <Compile Include="Projeto\ConfiguracaoProjeto.cs" />
     <Compile Include="Projeto\ContextoDados\ConfiguracaoProjetoContextoDados.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TiposPrimario.cs" />
     <Compile Include="Projeto\Estilo\ConfiguracaoProjetoEstilo.cs" />
     <Compile Include="Projeto\Estilo\ProjetoEstilo.cs" />
+    <Compile Include="Projeto\ProjectVS.cs" />
     <Compile Include="Projeto\RegrasNegocio\ConfiguracaoProjetoRegrasNegocio.cs" />
     <Compile Include="Projeto\RegrasNegocio\ExtensaoEntidade.cs" />
     <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioCSharp.cs" />
@@ -118,7 +121,9 @@
     <Compile Include="Projeto\TypeScript\CompilerOptions.cs" />
     <Compile Include="Projeto\TypeScript\ConfiguracaoProjetoTypeScript.cs" />
     <Compile Include="Projeto\TypeScript\DeclaracaoTipos.cs" />
-    <Compile Include="Projeto\TypeScript\GerenciadorProjetos.cs" />
+    <Compile Include="Aplicacao\GerenciadorProjetos.cs" />
+    <Compile Include="Projeto\TypeScript\Normalizar\NormalizadorExpreessaoWhere.cs" />
+    <Compile Include="Projeto\TypeScript\Normalizar\NormalizadorExpreessaWhereES6.cs" />
     <Compile Include="Projeto\TypeScript\ProjetoTypeScript.cs" />
     <Compile Include="Projeto\Web\Apresentacao\ConfiguracaoProjetoWebApresentacao.cs" />
     <Compile Include="Projeto\Web\Apresentacao\ProjetoWebApresentacao.cs" />
@@ -131,12 +136,15 @@
     <Compile Include="Utilidade\AssemblyInfoUtil.cs" />
     <Compile Include="Utilidade\CaminhosUtil.cs" />
     <Compile Include="Utilidade\ConfiguracaoGeral.cs" />
-    <Compile Include="Utilidade\ExtensaoContantes.cs" />
+    <Compile Include="Utilidade\ConstantesProjeto.cs" />
     <Compile Include="Utilidade\FormatacaoVSUtil.cs" />
     <Compile Include="Utilidade\FormatarDocumentoUtil.cs" />
     <Compile Include="Utilidade\HtmlReferenciaUtil.cs" />
-    <Compile Include="Utilidade\LogVSUtil.cs" />
+    <Compile Include="Aplicacao\Log\LogMensagemViewModel.cs" />
+    <Compile Include="Aplicacao\Log\LogVS.cs" />
+    <Compile Include="Projeto\TypeScript\Normalizar\NormalizarCompilacaoJavascript.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtil.cs" />
+    <Compile Include="Utilidade\ProjetoTypeScriptUtil.Partial.cs" />
     <Compile Include="Utilidade\ProjetoUtil.cs" />
     <Compile Include="Utilidade\PropriedadeUtil.cs" />
     <Compile Include="Utilidade\RecursoUtil.cs" />
@@ -154,9 +162,29 @@
       <Project>{ec174c4f-8122-41a3-8360-f04c4c8fc3ba}</Project>
       <Name>Snebur</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj">
+      <Project>{538e7ecc-f8fc-49fe-9a6a-b5e704af096c}</Project>
+      <Name>Snebur.Depuracao</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\ItemTemplate\ControleUsuarioItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\DocumentoPrincipalItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\JanelaItemTemplate.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\PaginaItemTemplate.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icon.ico" />
+    <Content Include="Resources\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Icones\Icon.png" />
+    <Content Include="Resources\Icones\Images.png" />
+    <Content Include="Resources\Images.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

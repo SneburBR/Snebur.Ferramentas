@@ -1,4 +1,5 @@
-﻿using Snebur.AcessoDados;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.AcessoDados;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.RegrasNegocio;
@@ -15,14 +16,13 @@ namespace Snebur.VisualStudio
 {
     public class ProjetoRegrasNegocioTypeScript : BaseProjeto<ConfiguracaoProjetoRegrasNegocio>
     {
-        public string CaminhoDllAssembly { get; }
 
-        public ProjetoRegrasNegocioTypeScript(ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
-                                              string caminhoProjeto,
+        public ProjetoRegrasNegocioTypeScript(Project projectVS, 
+                                              ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
+                                              FileInfo arquivoProjeto,
                                               string caminhoConfiguracao) :
-                                              base(configuracaoProjeto,  caminhoProjeto, caminhoConfiguracao)
+                                              base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
-            this.CaminhoDllAssembly = AjudanteAssembly.RetornarCaminhoAssembly(this.ConfiguracaoProjeto);
         }
 
         protected override void AtualizarInterno()
@@ -76,7 +76,7 @@ namespace Snebur.VisualStudio
 
         private bool IsExtensaoEntidade(Type tipo)
         {
-            return tipo.IsAbstract && tipo.IsSealed && 
+            return tipo.IsAbstract && tipo.IsSealed &&
                 tipo.IsPublic &&
                 !TipoUtil.TipoPossuiAtributo(tipo, typeof(IgnoraClasseRegraNegocioAttribute), true) &&
                 tipo.GetMethods().Any(x => this.IsMetodoNegocioExtensaoEntidade(tipo, x));
@@ -224,7 +224,7 @@ namespace Snebur.VisualStudio
             {
                 return !this.IsExtensaoEntidade(tipo) && tipo.IsPublic && !tipo.IsAbstract &&
                     !TipoUtil.TipoPossuiAtributo(tipo, typeof(IgnoraClasseRegraNegocioAttribute), true) &&
-                    TipoUtil.TipoSubTipo( tipo, typeof(BaseNegocio));
+                    TipoUtil.TipoSubTipo(tipo, typeof(BaseNegocio));
             }
             catch (Exception ex)
             {
@@ -236,7 +236,7 @@ namespace Snebur.VisualStudio
 
         private string RetornarConteudoNovaClasse(Type tipo)
         {
-             
+
             var sb = new StringBuilder();
             var metodos = tipo.GetMethods().Where(x => this.IsMetodoNegocio(tipo, x));
             var assemblyQualifiedName = $"{tipo.FullName}, {tipo.Assembly.GetName().Name}";
@@ -246,10 +246,6 @@ namespace Snebur.VisualStudio
             sb.AppendLine("\t{");
             foreach (var metodo in metodos)
             {
-                if (metodo.Name == "RetornarConfiguracaoRevelacao")
-                {
-                    var aqui = "";
-                }
                 var parametros = metodo.GetParameters();
                 var parametrosConcatenados = String.Join(", ", parametros.Select(x => $"{x.Name} : {TipoUtil.RetornarCaminhoTipoTS(x.ParameterType)}"));
                 sb.AppendLine($"\t\tpublic  {metodo.Name}Async = function({parametrosConcatenados}) : Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> ");
@@ -289,27 +285,27 @@ namespace Snebur.VisualStudio
 
         private List<Type> RetornarTodosTipo()
         {
-            if (!File.Exists(this.CaminhoDllAssembly))
+            if (!File.Exists(this.CaminhoAssembly))
             {
-                throw new FileNotFoundException(this.CaminhoDllAssembly);
+                throw new FileNotFoundException(this.CaminhoAssembly);
             }
-            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoDllAssembly);
+            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
             try
             {
                 return assembly.GetAccessibleTypes().Where(x => !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
             }
             catch (ReflectionTypeLoadException e)
             {
-                return e.Types.Where(x => x!= null && !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
+                return e.Types.Where(x => x != null && !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-            
+
         }
 
-       
+
         protected override void DispensarInerno()
         {
 

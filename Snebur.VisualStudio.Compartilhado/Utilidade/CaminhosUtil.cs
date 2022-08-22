@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Snebur.VisualStudio
 {
-    public class CaminhosUtil
+    public static class CaminhosUtil
     {
 
         public static string REPOSITORIO_SCHEMA_HTML => Path.Combine(ConfiguracaoGeralUtil.Instance.CaminhoInstalacaoVisualStudio, @"Common7\Packages\Schemas\html");

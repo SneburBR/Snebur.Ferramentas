@@ -1,4 +1,5 @@
-﻿using Snebur.Utilidade;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,8 +11,6 @@ namespace Snebur.VisualStudio
 {
     public partial class ProjetoDominio : BaseProjeto<ConfiguracaoProjetoDominio>
     {
-        public string CaminhoAssembly { get; }
-
         public bool IsProjetoSneburDominio { get; set; }
 
         public List<Type> TodosTipos { get; }
@@ -24,21 +23,21 @@ namespace Snebur.VisualStudio
             }
         }
 
-        public ProjetoDominio(ConfiguracaoProjetoDominio configuracaoProjeto,
-                              string caminhoProjeto,
+        public ProjetoDominio(Project projectVS, 
+                              ConfiguracaoProjetoDominio configuracaoProjeto,
+                              FileInfo arquivoProjeto,
                               string caminhoConfiguracao) :
-                              base(configuracaoProjeto, caminhoProjeto, caminhoConfiguracao)
+                              base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
 
             //ProjetoUtil.CompilarProjeto(dte, projetoVS);
 
-            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(configuracaoProjeto);
             this.AtualizarAssemblyDominiosDependentes();
             this.IsProjetoSneburDominio = this.ConfiguracaoProjeto.Namespace == "Snebur.Dominio";
             this.TodosTipos = this.RetornarTodosTipo();
         }
 
-        internal static ConfiguracaoProjetoDominio RetornarConfiguracaoDominio(string caminhoConfiguracao)
+        public static ConfiguracaoProjetoDominio RetornarConfiguracaoDominio(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
             var teste = TextoUtil.RemoverAcentos(json);

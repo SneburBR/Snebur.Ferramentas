@@ -67,8 +67,8 @@ namespace Snebur.VisualStudio
                 {
                     //var caminhoPublicacaoBuild = Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, versao.ToString());
                     var caminhoPublicacaoBuild = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ?
-                                                                           Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, versao.ToString()) :
-                                                                           Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
+                                                                           Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, versao.ToString()) :
+                                                                           Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
 
                     PublicacaoUtil.AplicarJsOptions(infoPublicacao,
                                                     caminhoProjeto,
@@ -110,7 +110,7 @@ namespace Snebur.VisualStudio
                                             string caminhoPublicacaoBuild,
                                             Version versao)
         {
-            var caminhoBuild = Path.Combine(caminhoProjeto, ExtensaoContantes.PASTA_BUILD);
+            var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD);
             var arquivosJs = infoPublicacao.Builds.Where(x => Path.GetExtension(x) == ".js");
             var sb = new StringBuilder();
             if (infoPublicacao.BuildJsOptions.IsEncapsular)
@@ -120,7 +120,7 @@ namespace Snebur.VisualStudio
             foreach (var arquivo in arquivosJs)
             {
                 sb.AppendLine($"\t\t//{arquivo}");
-                var caminhoJs = Path.Combine(caminhoProjeto, ExtensaoContantes.PASTA_BUILD, arquivo);
+                var caminhoJs = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD, arquivo);
                 var lines = File.ReadAllLines(caminhoJs, Encoding.UTF8);
                 foreach (var line in lines)
                 {
@@ -204,8 +204,8 @@ namespace Snebur.VisualStudio
                 case EnumTipoPasta.Build:
 
                     var caminhoBuild = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ?
-                                            Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, versao.ToString()) :
-                                            Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
+                                            Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, versao.ToString()) :
+                                            Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
 
                     CopriarArquivos(infoPublicacao,
                                     infoPasta.Caminho,
@@ -329,7 +329,7 @@ namespace Snebur.VisualStudio
 
                 case EnumTipoProjeto.Typescript:
 
-                    var caminhoBuild = Path.Combine(caminhoProjeto, ExtensaoContantes.PASTA_BUILD);
+                    var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD);
 
                     return new InfoPasta[] { new InfoPasta(caminhoBin, EnumTipoPasta.Bin) ,
                                              new InfoPasta(caminhoBuild, EnumTipoPasta.Build)};

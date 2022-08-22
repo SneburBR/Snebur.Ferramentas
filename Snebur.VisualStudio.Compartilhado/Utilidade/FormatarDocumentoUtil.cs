@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Snebur.VisualStudio.Utilidade
 {
-    public class FormatarDocumentoUtil
+    public static class FormatarDocumentoUtil
     {
         private static HashSet<string> Modificadores { get; } = new HashSet<string>() { "public", "private", "internal", "protected" };
         public static HashSet<string> ExtensoesSuportadas { get; } = new HashSet<string> { ".cs", ".ts" };

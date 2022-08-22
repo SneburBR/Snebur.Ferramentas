@@ -112,17 +112,16 @@ namespace Snebur.VisualStudio
             var fi = new FileInfo(this.CaminhoArquivoDestino);
             var caminhoDiretorio = Path.Combine(fi.Directory.FullName, "Atributos", "Validacao");
             var caminhoArquivo = Path.Combine(caminhoDiretorio, nomeArquivo);
-            var conteudoTypeScript = this.RetornarConteudoAtributoPartialTypeScript(tipoAtributo);
-
             if (!File.Exists(caminhoArquivo))
             {
+                var conteudoTypeScript = this.RetornarConteudoAtributoPartialTypeScript(tipoAtributo);
                 ArquivoUtil.SalvarArquivoTexto(caminhoArquivo, conteudoTypeScript, true);
             }
         }
 
         private string RetornarConteudoAtributoPartialTypeScript(Type tipoAtributo)
         {
-            var modelo = RecursoUtil.RetornarRecursoTexto("Snebur.VisualStudio.Resources.Modelos.AtributoPartial.ts");
+            var modelo = RecursoUtil.RetornarRecursoTexto("Resources.Modelos.AtributoPartial.ts");
             var _namespace = TipoUtil.RetornarNameSpace(tipoAtributo);
             var nomeTipoAtributo = TipoUtil.RetornarNomeTipoTS(tipoAtributo);
             var novoConteudo = modelo.Replace("$namespace", _namespace);

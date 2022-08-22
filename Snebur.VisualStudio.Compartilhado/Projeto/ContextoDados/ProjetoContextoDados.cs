@@ -1,4 +1,5 @@
-﻿using Snebur.Utilidade;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,10 +19,11 @@ namespace Snebur.VisualStudio
         private const string REGION_CONSTRUTOR_CONSULTAS_TS = "//#region Construtor Consultas";
 
 
-        public ProjetoContextoDados(ConfiguracaoProjetoContextoDados configuracaoProjeto,
-                                     string caminhoProjeto,
-                                     string caminhoConfiguracao) :
-                base(configuracaoProjeto, caminhoProjeto, caminhoConfiguracao)
+        public ProjetoContextoDados(Project projectVS, 
+                                    ConfiguracaoProjetoContextoDados configuracaoProjeto,
+                                    FileInfo arquivoProjeto,
+                                    string caminhoConfiguracao) :
+                                    base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
 
         }
@@ -225,7 +227,7 @@ namespace Snebur.VisualStudio
             return linhasTS;
         }
 
-        internal static ConfiguracaoProjetoContextoDados RetornarConfiguracao(string caminhoConfiguracao)
+        public static ConfiguracaoProjetoContextoDados RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
             return JsonUtil.Deserializar<ConfiguracaoProjetoContextoDados>(json, true);

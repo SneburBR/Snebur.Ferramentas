@@ -2,7 +2,7 @@
 
 namespace Snebur.VisualStudio
 {
-    public class ConfiguracaoGeral : BaseOptionModel<ConfiguracaoGeral>
+    public class ConfiguracaoGeral : BaseOptionModel<ConfiguracaoGeral>, IConfiguracaoGeral
     {
         [Category("Geral")]
         [DisplayName("Caminho VS")]

@@ -47,7 +47,7 @@ namespace Snebur.VisualStudio
                     return;
                 }
 
-                LogVSUtil.PortaDepuracao = this.Porta;
+                ConfiguracaoVSUtil.PortaDepuracao = this.Porta;
                 var servicoWebSocket = new WebSocketServer(System.Net.IPAddress.Any, this.Porta)
                 {
                     OnReceive = this.ServicoWebSocket_ReceberMensagem,
@@ -119,7 +119,7 @@ namespace Snebur.VisualStudio
                 }
 
             }
-            catch (Exception ex)
+            catch 
             {
                 //LogVSUtil.LogErro(ex);
             }

@@ -249,7 +249,8 @@ namespace Snebur.VisualStudio
         private static Dictionary<string, Assembly> ArmazenamentoDllCarregadas = new Dictionary<string, Assembly>();
         private static object bloqueio = new object();
 
-        public static Assembly RetornarAssembly(string caminhoProjeto, string nomeAssembly)
+        public static Assembly RetornarAssembly(string caminhoProjeto,
+                                                string nomeAssembly)
         {
             var caminhoDll = RetornarCaminhoAssembly(caminhoProjeto, nomeAssembly);
             return RetornarAssembly(caminhoDll);
@@ -282,13 +283,13 @@ namespace Snebur.VisualStudio
 
         }
 
-        public static string RetornarCaminhoAssembly(ConfiguracaoProjeto configuracaoProjeto)
-        {
-            return RetornarCaminhoAssembly(configuracaoProjeto.CaminhoProjeto,
-                                          configuracaoProjeto.NomeAssembly);
-        }
-        private static string RetornarCaminhoAssembly(string caminhoProjeto,
-                                                    string nomeAssembly )
+        //public static string RetornarCaminhoAssembly(ConfiguracaoProjeto configuracaoProjeto)
+        //{
+        //    return RetornarCaminhoAssembly(configuracaoProjeto.CaminhoProjeto,
+        //                                   configuracaoProjeto.NomeAssembly);
+        //}
+        public static string RetornarCaminhoAssembly(string caminhoProjeto,
+                                                      string nomeAssembly )
         {
             //var assembly = projeto.Properties.Cast<Property>().
             //                                         FirstOrDefault(x => x.Name == "AssemblyName");

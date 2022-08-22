@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Application\VisualStudioApplication.cs" />
+    <Compile Include="Aplicacao\AplicacaoVisualStudio.cs" />
     <Compile Include="Commands\AtualizarProjetosSnebur.cs" />
     <Compile Include="Commands\MigrationWindowCommand.cs" />
     <Compile Include="Commands\NormalizarAllProjectsCommand.cs" />
@@ -89,92 +89,12 @@
     <Compile Include="Gerenciadores\GerenciadorProjetos.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.NovoArquivo.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.Static.cs" />
-    <Compile Include="Gerenciadores\NormalizadorExpreessaoWhere.cs" />
-    <Compile Include="Gerenciadores\NormalizadorExpreessaWhereES6.cs" />
-    <Compile Include="Gerenciadores\NormalizarCompilacaoJavascript.cs" />
     <Compile Include="Gerenciadores\RenomearDocumento.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HtmlEditor\HtmlIntellisense.cs" />
     <Compile Include="HtmlEditor\HtmlIntellisense.Static.cs" />
     <Compile Include="ItemTemplate\InstalarItensTemplate.cs" />
     <Compile Include="Json\JsonSchemaSelector.cs" />
-    <Compile Include="Projeto\BaseProjeto.cs" />
-    <Compile Include="Projeto\ConfiguracaoProjeto.cs" />
-    <Compile Include="Projeto\ContextoDados\ConfiguracaoProjetoContextoDados.cs" />
-    <Compile Include="Projeto\ContextoDados\ProjetoContextoDados.cs" />
-    <Compile Include="Projeto\Dominio\Ajudante\AjudantePropriedades.cs" />
-    <Compile Include="Projeto\Dominio\AtribuirValorProprieadades\Gerador.cs" />
-    <Compile Include="Projeto\Dominio\Atributo\GeradorDominioAtributo.cs" />
-    <Compile Include="Projeto\Dominio\BaseGeradorDominio.cs" />
-    <Compile Include="Projeto\Dominio\Classes\GeradorDominioClasse.cs" />
-    <Compile Include="Projeto\Dominio\ConfiguracaoProjetoDominio.cs" />
-    <Compile Include="Projeto\Dominio\Constante\GeradorDominioConstante.cs" />
-    <Compile Include="Projeto\Dominio\Enum\GeradorDominioEnum.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\BaseEstrutura.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\BaseEstruturaClasse.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaClasseAtributo.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaClasseDominio.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaConstantes.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaConstrutor.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaInterface.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedade.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeEspecializada.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeEstatica.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadeMensagemValidacao.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\EstruturaPropriedadePublica.cs" />
-    <Compile Include="Projeto\Dominio\Estrutura\ParametroConstrutor.cs" />
-    <Compile Include="Projeto\Dominio\Interface\GeradorDominioInterface.cs" />
-    <Compile Include="Projeto\Dominio\OrdenarTipos.cs" />
-    <Compile Include="Projeto\Dominio\ProjetoDominio.AtribuirValorPropriedade.cs" />
-    <Compile Include="Projeto\Dominio\ProjetoDominio.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteAssembly.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.Atributos.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.Propriedades.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoBaseDominio.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEntidade.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEnum.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoPrimario.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\AtributoPropriedade.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\EstruturaPropriedadeReflexao.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.AdicionarTipos.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Atributos.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.Atributos.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Tipo.Atributos.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoBaseDominio.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoComplexo.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEntidade.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEnum.cs" />
-    <Compile Include="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TiposPrimario.cs" />
-    <Compile Include="Projeto\Estilo\ConfiguracaoProjetoEstilo.cs" />
-    <Compile Include="Projeto\Estilo\ProjetoEstilo.cs" />
-    <Compile Include="Projeto\RegrasNegocio\ConfiguracaoProjetoRegrasNegocio.cs" />
-    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioCSharp.cs" />
-    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioTypeScript.cs" />
-    <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioUtil.cs" />
-    <Compile Include="Projeto\Servicos\ConfiguracaoProjetoServico.cs" />
-    <Compile Include="Projeto\Servicos\ProjetoServicosDotNet.cs" />
-    <Compile Include="Projeto\Servicos\ProjetoServicosTypescript.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTSDominio.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTSSistema.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\ArquivoTypeScript.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\BaseArquivoTypeScript.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\EnumTipoArquivoTypeScript.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\ProjetoTSDepdencia.cs" />
-    <Compile Include="Projeto\TypeScript\Arquivo\TipoArquivoTypeScriptUtil.cs" />
-    <Compile Include="Projeto\TypeScript\CompilerOptions.cs" />
-    <Compile Include="Projeto\TypeScript\ConfiguracaoProjetoTypeScript.cs" />
-    <Compile Include="Projeto\TypeScript\DeclaracaoTipos.cs" />
-    <Compile Include="Projeto\TypeScript\ProjetoTypeScript.cs" />
-    <Compile Include="Projeto\Web\Apresentacao\ConfiguracaoProjetoWebApresentacao.cs" />
-    <Compile Include="Projeto\Web\Apresentacao\ProjetoWebApresentacao.cs" />
-    <Compile Include="Projeto\Web\BaseConfiguracaoProjetoWeb.cs" />
-    <Compile Include="Projeto\Web\ProjetoWeb.cs" />
-    <Compile Include="Projeto\Web\ProjetoWeb.Static.cs" />
-    <Compile Include="Projeto\Web\WebService\ConfiguracaoWebService.cs" />
-    <Compile Include="Projeto\Web\WebService\ProjetoWebService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\OutputWindowCommand.cs" />
     <Compile Include="Publicacao\BuildjsOptions.cs" />
@@ -192,20 +112,15 @@
     <Compile Include="ToolWindows\Output\OutputWindowControl.xaml.cs">
       <DependentUpon>OutputWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilidade\LogVSUtil - Copy.cs" />
+    <Compile Include="Utilidade\Ex\Class1.cs" />
+    <Compile Include="Utilidade\LogVS.cs" />
     <Compile Include="Utilidade\Repositorio.cs" />
-    <Compile Include="Utilidade\AssemblyInfoUtil.cs" />
     <Compile Include="Utilidade\CaminhosUtil.cs" />
     <Compile Include="Utilidade\CorUtil.cs" />
-    <Compile Include="Utilidade\ExtensaoContantes.cs" />
-    <Compile Include="Utilidade\FormatacaoVSUtil.cs" />
-    <Compile Include="Utilidade\FormatarDocumentoUtil.cs" />
-    <Compile Include="Utilidade\HtmlReferenciaUtil.cs" />
     <Compile Include="Utilidade\JsonUtil.cs" />
     <Compile Include="Utilidade\LogVSUtil.cs" />
     <Compile Include="Utilidade\ProjectHelprs.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtil.cs" />
-    <Compile Include="Utilidade\ProjetoTypeScriptUtil.Partial.cs" />
     <Compile Include="Utilidade\ProjetoUtil.cs" />
     <Compile Include="Utilidade\PropriedadeUtil.cs" />
     <Compile Include="Publicacao\PublicacaoUtil.cs" />
@@ -316,7 +231,7 @@
       <Version>6.4.4</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.11.39</Version>
+      <Version>1.11.43</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
@@ -346,6 +261,13 @@
       <Project>{538e7ecc-f8fc-49fe-9a6a-b5e704af096c}</Project>
       <Name>Snebur.Depuracao</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Snebur.VisualStudio.Compartilhado\Snebur.VisualStudio.Compartilhado.csproj">
+      <Project>{9446982b-f659-49ea-a137-a283707329fb}</Project>
+      <Name>Snebur.VisualStudio.Compartilhado</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Projeto\Dominio\Reflexao\Ajudante\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -790,7 +790,7 @@ namespace Snebur.VisualStudio.Commands
                         dte.AbrirArquivo(caminhoCodigo);
 
                         var documentoCodigo = dte.ActiveDocument;
-                        if (documentoCodigo.Name.EndsWith(ExtensaoContantes.EXTENSAO_CONTROLE_SHTML_TYPESCRIPT))
+                        if (documentoCodigo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_TYPESCRIPT))
                         {
                             var declaracao = new DeclaracaoComponentes(dte,
                                                                        caminhoApresentacao,

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Snebur.VisualStudio
 {
-    public class SubstituicaoNovoStringFormatTS
+    public  class SubstituicaoNovoStringFormatTS
     {
         public const string PESQUISAR = "String.Format(";
         public string Conteudo { get; }

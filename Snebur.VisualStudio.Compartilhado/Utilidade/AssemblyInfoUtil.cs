@@ -6,7 +6,7 @@ using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
-    internal static class AssemblyInfoUtil
+    public static class AssemblyInfoUtil
     {
         private const string PROCURAR_LINHA_VERSAO = "[assembly: AssemblyVersion";
         private const string PROCURAR_LINHA_VERSAO_ARQUIVO = "[assembly: AssemblyFileVersion";
@@ -78,7 +78,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-        internal static string RetornarCaminhoAssemblyInfo(string caminhoProjeto)
+        public static string RetornarCaminhoAssemblyInfo(string caminhoProjeto)
         {
             var caminhoAssembly = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
             if (File.Exists(caminhoAssembly))

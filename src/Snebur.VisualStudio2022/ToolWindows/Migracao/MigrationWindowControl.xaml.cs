@@ -265,14 +265,15 @@ namespace Snebur.VisualStudio
                 if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
                 {
                     var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
-                    var caminhoDllAssembly = AjudanteAssembly.RetornarCaminhoAssembly(projeto);
+                    var caminhoDllAssembly = AjudanteAssemblyEx.RetornarCaminhoAssembly(projeto);
                     return AjudanteAssembly.RetornarAssembly(caminhoDllAssembly);
                 }
             }
             return null;
         }
 
-        private void IniciarGeracaoScript(Project projetoMigracao, Project projetoEntidades)
+        private void IniciarGeracaoScript(Project projetoMigracao, 
+                                          Project projetoEntidades)
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
 
@@ -288,8 +289,8 @@ namespace Snebur.VisualStudio
 
             System.Threading.Thread.Sleep(1500);
 
-            var assemblyMigracao = AjudanteAssembly.RetornarAssembly(projetoMigracao);
-            var assemblyEntidade = AjudanteAssembly.RetornarAssembly(projetoEntidades);
+            var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
+            var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
             if (tipoConfiguracao == null)
             {
@@ -476,7 +477,7 @@ namespace Snebur.VisualStudio
         {
             AjudanteAssembly.Inicializar();
 
-            var assembly = AjudanteAssembly.RetornarAssembly(this.ProjetoEntidadesSelecionado);
+            var assembly = AjudanteAssemblyEx.RetornarAssembly(this.ProjetoEntidadesSelecionado);
             var todosTipos = assembly.GetAccessibleTypes().ToList();
             var tiposEntidade = todosTipos.Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
 
@@ -694,8 +695,8 @@ namespace Snebur.VisualStudio
 
             System.Threading.Thread.Sleep(1500);
 
-            var assemblyMigracao = AjudanteAssembly.RetornarAssembly(projetoMigracao);
-            var assemblyEntidade = AjudanteAssembly.RetornarAssembly(projetoEntidades);
+            var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
+            var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
             if (tipoConfiguracao == null)
             {
@@ -859,8 +860,8 @@ namespace Snebur.VisualStudio
 
                 System.Threading.Thread.Sleep(1500);
 
-                var assemblyEntidades = AjudanteAssembly.RetornarAssembly(projetoEntidades);
-                var assemblyMigracao = AjudanteAssembly.RetornarAssembly(projetoMigracao);
+                var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
+                var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
 
                 var tiposEntidade = assemblyEntidades.GetAccessibleTypes().Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
 

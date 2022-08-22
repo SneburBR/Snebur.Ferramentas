@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Snebur.VisualStudio
 {
-    internal class HtmlReferenciaUti
+    public static class HtmlReferenciaUti
     {
         internal const string NOME_ARQUIVO_HTML_REFENCIAS = "Html.Referencias.ts";
 

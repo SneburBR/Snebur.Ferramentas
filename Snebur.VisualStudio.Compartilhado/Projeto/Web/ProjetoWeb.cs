@@ -1,4 +1,5 @@
-﻿using Snebur.Utilidade;
+﻿using Snebur.VisualStudio.DteExtensao;
+using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,18 +9,17 @@ namespace Snebur.VisualStudio
     public abstract class ProjetoWeb<TConfiguracao> : BaseProjeto<TConfiguracao> where TConfiguracao : BaseConfiguracaoProjetoWeb
     {
         public string CaminhoBin { get; }
-        public string CaminhoDll { get; }
-        public FileInfo ArquivoDll => new FileInfo(this.CaminhoDll);
 
-        public string Checksum => ChecksumUtil.RetornarChecksum(this.CaminhoDll);
 
-        public ProjetoWeb(TConfiguracao configuracaProjeto, 
-                          string caminhoProjeto, 
+        public string Checksum => ChecksumUtil.RetornarChecksum(this.CaminhoAssembly);
+
+        public ProjetoWeb(Project projectVS,
+                          TConfiguracao configuracaProjeto,
+                          FileInfo arquivoProjeto,
                           string caminhoConfiguracao) :
-                          base(configuracaProjeto,   caminhoProjeto, caminhoConfiguracao)
+                          base(projectVS, configuracaProjeto, arquivoProjeto, caminhoConfiguracao)
         {
             this.CaminhoBin = Path.Combine(this.CaminhoProjeto, "bin");
-            this.CaminhoDll = AjudanteAssembly.RetornarCaminhoAssembly(configuracaProjeto);
         }
 
         protected override void AtualizarInterno()
@@ -54,7 +54,7 @@ namespace Snebur.VisualStudio
 
 
 
-       
+
 
     }
 }

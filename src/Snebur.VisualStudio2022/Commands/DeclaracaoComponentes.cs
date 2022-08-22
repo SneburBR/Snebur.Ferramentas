@@ -92,8 +92,7 @@ namespace Snebur.VisualStudio
                         this.InserirRegionDeclaracao(selecao);
                     }
                     selecao.SelectAll();
-                    var x = selecao.Text;
-
+                    //var x = selecao.Text;
 
                     selecao.StartOfDocument();
                     if (selecao.FindText(INICIO_REGION_DECLARACAO_APRESENTACAO))
