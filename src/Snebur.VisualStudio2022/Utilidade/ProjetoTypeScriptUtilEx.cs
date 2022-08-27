@@ -20,13 +20,13 @@ namespace Snebur.VisualStudio
                         
                         if (Path.GetExtension(arquivo) == ConstantesProjeto.EXTENSAO_TYPESCRIPT)
                         {
-                            var is_dirty = item.IsDirty;
-                            var is_open = item.IsOpen;
+                            //var is_dirty = item.IsDirty;
+                            //var is_open = item.IsOpen;
 
-                            if (VSUtil.IsArquivoVisualStudio(arquivo))
-                            {
-                                var aaa = "";
-                            }
+                            //if (VSUtil.IsArquivoVisualStudio(arquivo))
+                            //{
+                            //    var aaa = "";
+                            //}
 
                             arquivos.Add(arquivo);
                         }

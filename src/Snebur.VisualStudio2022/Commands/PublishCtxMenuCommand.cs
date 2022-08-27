@@ -25,7 +25,7 @@ namespace Snebur.VisualStudio.MenuSnebur
 
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e, SolutionItem item)
         {
-            if(item is ProjectTK project)
+            if (item is ProjectTK project)
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -64,16 +64,11 @@ namespace Snebur.VisualStudio.MenuSnebur
 
                         if (await VS.Build.BuildProjectAsync(project, BuildAction.Build))
                         {
-                            var isDebug = true;
-                            var caminhoDestino = PublicacaoUtil.PublicarVersao(tipoProjeto,
-                                                                               caminhoProjeto,
-                                                                               isDebug);
-                            if (Directory.Exists(caminhoDestino))
-                            {
-                                LogVSUtil.Sucesso($"Arquivos publicados  {caminhoDestino}", tempo);
-                                Process.Start(caminhoDestino);
-                            }
+                            await PublicacaoUtil.PublicarVersaoAsync(tipoProjeto,
+                                                                     caminhoProjeto,
+                                                                     tempo) ;
                         }
+
                     }
                     catch (Exception ex)
                     {
@@ -81,7 +76,7 @@ namespace Snebur.VisualStudio.MenuSnebur
                     }
                 }
             }
-          
+
         }
 
         //protected override IReadOnlyList<ProjectTK> GetItems()

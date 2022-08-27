@@ -217,17 +217,17 @@ namespace Snebur.VisualStudio.Reflexao
             }
         }
 
-        internal static List<Type> IgnorarAtributo(List<Type> tipos, string nomeAtributo)
+        public static List<Type> IgnorarAtributo(List<Type> tipos, string nomeAtributo)
         {
             return tipos.Where(x => !x.GetCustomAttributes(false).Any(k => k.GetType().Name == nomeAtributo)).ToList();
         }
 
-        internal static bool TipoPossuiAtributo(Type tipo, string nomeAtributo)
+        public static bool TipoPossuiAtributo(Type tipo, string nomeAtributo)
         {
             return tipo.GetCustomAttributes(false).Any(x => x.GetType().Name == nomeAtributo);
         }
 
-        internal static bool TipoImplementaInterface(Type tipo, Type tipoInterface)
+        public static bool TipoImplementaInterface(Type tipo, Type tipoInterface)
         {
             if (!tipoInterface.IsInterface)
             {
@@ -248,7 +248,7 @@ namespace Snebur.VisualStudio.Reflexao
         /// <param name="tipo"></param>
         /// <param name="nomeAtributo"></param>
         /// <returns></returns>
-        internal static bool TipoPossuiAtributo(Type tipo, Type tipoAtributo, bool herda)
+        public static bool TipoPossuiAtributo(Type tipo, Type tipoAtributo, bool herda)
         {
             if (herda)
             {
@@ -260,7 +260,7 @@ namespace Snebur.VisualStudio.Reflexao
             }
         }
 
-        internal static Attribute RetornarAtributo(Type tipo, Type tipoAtributo, bool atributoHerdadoTipo)
+        public static Attribute RetornarAtributo(Type tipo, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {
@@ -273,7 +273,7 @@ namespace Snebur.VisualStudio.Reflexao
         }
 
 
-        internal static List<Attribute> RetornarAtributos(Type tipo, Type tipoAtributo, bool atributoHerdadoTipo)
+        public static List<Attribute> RetornarAtributos(Type tipo, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {

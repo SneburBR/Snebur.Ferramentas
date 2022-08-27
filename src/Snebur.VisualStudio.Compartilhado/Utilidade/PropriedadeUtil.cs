@@ -8,22 +8,22 @@ namespace Snebur.VisualStudio.Reflexao
 {
     public static class PropriedadeUtil
     {
-        internal static bool PossuiAtributo(PropertyInfo propriedade, Type tipoAtributo)
+        public static bool PossuiAtributo(PropertyInfo propriedade, Type tipoAtributo)
         {
             return PossuiAtributo(propriedade, tipoAtributo.Name);
         }
 
-        internal static bool PossuiAtributo(MethodInfo propriedade, Type tipoAtributo)
+        public static bool PossuiAtributo(MethodInfo propriedade, Type tipoAtributo)
         {
             return PossuiAtributo(propriedade, tipoAtributo.Name);
         }
 
-        internal static bool PossuiAtributo(PropertyInfo propriedade, string nomeAtributo)
+        public static bool PossuiAtributo(PropertyInfo propriedade, string nomeAtributo)
         {
             return PossuiAtributo((MemberInfo)propriedade, nomeAtributo);
         }
 
-        internal static bool PossuiAtributo(MethodInfo metodo, string nomeAtributo)
+        public static bool PossuiAtributo(MethodInfo metodo, string nomeAtributo)
         {
             return PossuiAtributo((MemberInfo)metodo, nomeAtributo);
         }
@@ -58,7 +58,7 @@ namespace Snebur.VisualStudio.Reflexao
 
 
 
-        internal static Attribute RetornarAtributo(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
+        public static Attribute RetornarAtributo(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {
@@ -70,7 +70,7 @@ namespace Snebur.VisualStudio.Reflexao
             }
         }
 
-        internal static List<Attribute> RetornarAtributos(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
+        public static List<Attribute> RetornarAtributos(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {

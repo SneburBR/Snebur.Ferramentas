@@ -1,7 +1,10 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using System;
+using Snebur.Depuracao;
+using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
+using Snebur.VisualStudio.Reflexao;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -16,12 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
-using Snebur.Depuracao;
-using Snebur.Dominio;
-using Snebur.Dominio.Atributos;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
-using Snebur.VisualStudio.Utilidade;
 
 namespace Snebur.VisualStudio
 {
@@ -37,7 +34,15 @@ namespace Snebur.VisualStudio
         public ObservableCollection<FileInfo> ArquivosSql { get; set; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<LogMensagemViewModel> Logs { get; set; } = new ObservableCollection<LogMensagemViewModel>();
 
-        public Project ProjetoSelecionado { get { return (Project)this.GetValue(ProjetoSelecionadoProperty); } set { this.SetValue(ProjetoSelecionadoProperty, value); } }
+        public Project ProjetoSelecionado
+        {
+            get
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return (Project)this.GetValue(ProjetoSelecionadoProperty);
+            }
+            set { this.SetValue(ProjetoSelecionadoProperty, value); }
+        }
 
         internal static void ProjetoSelecionadoAlterado(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -63,9 +68,9 @@ namespace Snebur.VisualStudio
             this.Loaded += this.This_Loaded;
         }
 
-        private void This_Loaded(object sender, RoutedEventArgs e)
+        private async void This_Loaded(object sender, RoutedEventArgs e)
         {
-            this.AtualizarProjetos();
+            await this.AtualizarProjetosAsync();
             this.PopularAmbientesServidor();
 
             if (!Inicializado)
@@ -91,16 +96,18 @@ namespace Snebur.VisualStudio
 
         private void GerenciadorProjeto_SolucaoAberta(object sender, EventArgs e)
         {
-            this.AtualizarProjetos();
+            _ = this.AtualizarProjetosAsync();
         }
 
         private void BtnAtualizarProjeots_Click(object sender, RoutedEventArgs e)
         {
-            this.AtualizarProjetos();
+            _ = this.AtualizarProjetosAsync();
         }
 
-        private async void AtualizarProjetos()
+        private async Task AtualizarProjetosAsync()
         {
+            
+
             this.Projetos.Clear();
             var projetos = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
             foreach (var p in projetos)
@@ -113,12 +120,16 @@ namespace Snebur.VisualStudio
             }
             if (this.CmbProjetosEntidades.SelectedItem == null)
             {
-                this.CmbProjetosEntidades.SelectedItem = this.Projetos.Where(x => x.Name.Contains("Entidades")).LastOrDefault();
+                this.CmbProjetosEntidades.SelectedItem = this.Projetos.Where(x =>
+                {
+                    return x.Name.Contains("Entidades");
+                }).LastOrDefault();
             }
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 if (this.CmbProjetoMigracao.SelectedItem is Project projetoSelecionado)
@@ -152,6 +163,7 @@ namespace Snebur.VisualStudio
 
         private void BtnGerarScript_Click(object sender, RoutedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 this.AtualizandoConnectionStringEmTempoExecucao();
@@ -183,6 +195,7 @@ namespace Snebur.VisualStudio
 
         private void AtualizandoConnectionStringEmTempoExecucao()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 typeof(ConfigurationElementCollection).GetField("bReadOnly", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -257,6 +270,7 @@ namespace Snebur.VisualStudio
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var projeto = this.ProjetoEntidadesSelecionado;
             if (projeto != null)
             {
@@ -272,9 +286,10 @@ namespace Snebur.VisualStudio
             return null;
         }
 
-        private void IniciarGeracaoScript(Project projetoMigracao, 
+        private void IniciarGeracaoScript(Project projetoMigracao,
                                           Project projetoEntidades)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
 
             this.Log($"Limpando a solução");
@@ -310,6 +325,7 @@ namespace Snebur.VisualStudio
 
         private void IniciarGeracaoScriptInterno(Project projetoMigracao, Project projetoEntidades, DbMigrator migrador, Assembly assemblyMigracao)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 this.Scripts.Clear();
@@ -608,7 +624,7 @@ namespace Snebur.VisualStudio
 
         private void Log(string mensagem, EnumTipoLog tipo)
         {
-            this.Dispatcher.BeginInvoke((Action)(() =>
+            _ = this.Dispatcher.BeginInvoke((Action)(() =>
             {
                 this.Logs.Add(new LogMensagemViewModel(mensagem, tipo));
                 this.ScrollLog.ScrollToBottom();
@@ -621,7 +637,7 @@ namespace Snebur.VisualStudio
 
         private void BtnExecutar_Click(object sender, RoutedEventArgs e)
         {
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao && this.CmbProjetosEntidades.SelectedItem is Project projetoEntidades)
             {
                 this.Logs.Clear();
@@ -644,6 +660,7 @@ namespace Snebur.VisualStudio
 
         private void BtnAtualizar_Click(object sender, RoutedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 this.AtualizandoConnectionStringEmTempoExecucao();
@@ -667,8 +684,6 @@ namespace Snebur.VisualStudio
                         this.ExecutarAtualizarPendente(projetoMigracao, projetoEntidade);
                         this.Dispatcher.Invoke(this.Desocupar);
                     });
-
-
                 }
 
             }
@@ -680,7 +695,7 @@ namespace Snebur.VisualStudio
 
         private void ExecutarAtualizarPendente(Project projetoMigracao, Project projetoEntidades)
         {
-
+            ThreadHelper.ThrowIfNotOnUIThread();
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
 
             this.Log($"Limpando a solução");
@@ -773,6 +788,8 @@ namespace Snebur.VisualStudio
 
         private void AtualizarVersaoAssemby(Project projeto)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
             var arquivoAssemblyInfo = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
             if (File.Exists(arquivoAssemblyInfo))
@@ -817,6 +834,7 @@ namespace Snebur.VisualStudio
 
         private void ValidarMigracao(bool adicionarMigracao = false)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.Logs.Clear();
             if (this.AmbienteSelecionado == null)
             {
@@ -844,6 +862,7 @@ namespace Snebur.VisualStudio
         }
         private void IniciarValidacao(Project projetoMigracao, Project projetoEntidades, bool adicionarMigracao)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
@@ -868,12 +887,12 @@ namespace Snebur.VisualStudio
                 var tiposSemAtributoTabela = tiposEntidade.Where(x => !TipoUtil.TipoPossuiAtributo(x, typeof(TabelaAttribute), true)).ToList();
                 if (tiposSemAtributoTabela.Count > 0)
                 {
-                    throw new Exception($"O(s) tipo(s) não possui o atributo tabela  { String.Join(", ", tiposSemAtributoTabela)} ");
+                    throw new Exception($"O(s) tipo(s) não possui o atributo tabela  {String.Join(", ", tiposSemAtributoTabela)} ");
                 }
                 var tiposEntidadeNomeTabelaDiferenta = tiposEntidade.Where(x => x.Name != this.NomeTabela(x)).ToList();
                 if (tiposEntidadeNomeTabelaDiferenta.Count > 0)
                 {
-                    throw new Exception($"O(s) tipo(s) possui o nome diferente do nome da tabela  { String.Join(", ", tiposEntidadeNomeTabelaDiferenta)}");
+                    throw new Exception($"O(s) tipo(s) possui o nome diferente do nome da tabela  {String.Join(", ", tiposEntidadeNomeTabelaDiferenta)}");
                 }
                 var tiposValidacaoUnicoComposta = tiposEntidade.Where(x => TipoUtil.TipoPossuiAtributo(x, typeof(ValidacaoUnicoCompostaAttribute), true)).ToList();
                 foreach (var tipoEntidade in tiposValidacaoUnicoComposta)
@@ -961,7 +980,7 @@ namespace Snebur.VisualStudio
 
                     dte.ExecuteCommand("View.PackageManagerConsole");
                     System.Threading.Thread.Sleep(600);
-                    System.Windows.Forms.SendKeys.SendWait($"add-migration {proximaMigracao} -Project { projetoMigracao.Name} -StartupProject { projetoMigracao.Name} ");
+                    System.Windows.Forms.SendKeys.SendWait($"add-migration {proximaMigracao} -Project {projetoMigracao.Name} -StartupProject {projetoMigracao.Name} ");
                     System.Threading.Thread.Sleep(600);
                     System.Windows.Forms.SendKeys.SendWait("{ENTER}");
                 }
@@ -1064,10 +1083,10 @@ namespace Snebur.VisualStudio
                     if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoNnAttribute)) &&
                          !PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoFilhosAttribute)))
                     {
-                        validacoes.Add($"A propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name} não possui o atributo de relação, esperado '{nameof(RelacaoFilhosAttribute)}' ou { nameof(RelacaoFilhosAttribute)} ");
+                        validacoes.Add($"A propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name} não possui o atributo de relação, esperado '{nameof(RelacaoFilhosAttribute)}' ou {nameof(RelacaoFilhosAttribute)} ");
                     }
 
-                    if (propriedade.SetMethod== null || !propriedade.SetMethod.IsPublic)
+                    if (propriedade.SetMethod == null || !propriedade.SetMethod.IsPublic)
                     {
                         validacoes.Add($"A propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name} não possui está implementado o método SET, necessário para a serialização");
                     }
@@ -1075,7 +1094,7 @@ namespace Snebur.VisualStudio
                     if (PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoNnAttribute)) &&
                         PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoFilhosAttribute)))
                     {
-                        validacoes.Add($"A propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name} possui ambos atributos, somente um é permitido '{nameof(RelacaoFilhosAttribute)}' ou { nameof(RelacaoFilhosAttribute)} ");
+                        validacoes.Add($"A propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name} possui ambos atributos, somente um é permitido '{nameof(RelacaoFilhosAttribute)}' ou {nameof(RelacaoFilhosAttribute)} ");
                     }
                     if (PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoNnAttribute)))
                     {
@@ -1143,7 +1162,7 @@ namespace Snebur.VisualStudio
             if (ultimaVersao != null)
             {
                 var proximaVersao = new Version(ultimaVersao.Major, ultimaVersao.Minor, ultimaVersao.Build, ultimaVersao.Revision + 1);
-                return $"Versao_{proximaVersao.Major}.{proximaVersao.Minor}.{proximaVersao.Build}.{ proximaVersao.Revision}";
+                return $"Versao_{proximaVersao.Major}.{proximaVersao.Minor}.{proximaVersao.Build}.{proximaVersao.Revision}";
             }
             return "Versao_1.0.0.0";
         }

@@ -6,6 +6,7 @@ namespace EnvDTE
     {
         public static ProjectItem RetornarProjectItemPai(this ProjectItem projectItem)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var encontrarPai = new EncontrarPai(projectItem);
             return encontrarPai.RetornarProjectItemPai();
         }
@@ -18,12 +19,14 @@ namespace EnvDTE
 
             public EncontrarPai(ProjectItem projectItem)
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 this.ProjectItem = projectItem;
                 this.Projecto = projectItem.ContainingProject;
             }
 
             public ProjectItem RetornarProjectItemPai()
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 foreach (ProjectItem item in this.Projecto.ProjectItems)
                 {
                     var projectItem = this.VarrerProjectItens(item);
@@ -38,6 +41,8 @@ namespace EnvDTE
 
             private ProjectItem VarrerProjectItens(ProjectItem projectItem)
             {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
                 foreach (ProjectItem item in projectItem.ProjectItems)
                 {
                     var nome = item.Name;

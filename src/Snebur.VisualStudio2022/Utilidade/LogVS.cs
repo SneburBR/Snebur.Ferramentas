@@ -8,15 +8,7 @@ using System.Windows;
 
 namespace Snebur.VisualStudio
 {
-
-
-    //public class ConfiguracaoVSUtil
-    //{
-    //    public static bool IsNormalizandoTodosProjetos { get; set; }
-
-    //    public static int PortaDepuracao { get; set; }
-    //}
-
+ 
     public class LogVS : ILogVS
     {
 

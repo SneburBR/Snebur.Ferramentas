@@ -85,7 +85,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-      
+
         private async Task NormalizarInternoAsync(bool compilar = false)
         {
             AjudanteAssembly.Clear();
@@ -123,19 +123,19 @@ namespace Snebur.VisualStudio
                     var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
                     foreach (var projeto in projetosContextoDados)
                     {
-                       await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
                     foreach (var projeto in projetosRegrasNegocioTS)
                     {
-                       await  projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
                     foreach (var projeto in projetosRegrasNegocioCSharp)
                     {
-                      await   projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(true);
                     }
 
                     var projetosServicosTS = projetos.OfType<ProjetoServicosTypescript>().ToList();
@@ -219,7 +219,7 @@ namespace Snebur.VisualStudio
             {
                 GerenciadorProjetos.Instancia.IniciarServicoDepuracao();
             }
-            await System.Threading.Tasks.Task.Delay(3000);
+            await Task.Delay(3000);
             this.AtualizarEstadoServicoDepuracao();
         }
 
@@ -326,7 +326,7 @@ namespace Snebur.VisualStudio
                 await HtmlIntelliSense.InicializarAsync();
                 LogVSUtil.Sucesso("IntelliSense inicializado, Reinicie o VisualStudio e configure a extensão .shtml para 'HTML (WebForms) Editor'", stopwatch);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogVSUtil.LogErro(ex);
             }

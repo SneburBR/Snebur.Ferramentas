@@ -8,6 +8,8 @@ namespace Snebur.VisualStudio.Commands
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var dte = await VSEx.GetDTEAsync();
             var document = await VS.Documents.GetActiveDocumentViewAsync();
             var documento = dte.ActiveDocument;

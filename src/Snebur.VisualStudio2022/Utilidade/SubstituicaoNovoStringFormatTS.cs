@@ -1,12 +1,6 @@
-﻿using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using System;
+﻿using Snebur.Utilidade;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Utilidade;
 
 namespace Snebur.VisualStudio
 {

@@ -145,24 +145,25 @@
     <Compile Include="Projeto\TypeScript\Normalizar\NormalizarCompilacaoJavascript.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtil.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtil.Partial.cs" />
-    <Compile Include="Utilidade\ProjetoUtil.cs" />
+    <Compile Include="Utilidade\LocalProjetoUtil.cs" />
     <Compile Include="Utilidade\PropriedadeUtil.cs" />
     <Compile Include="Utilidade\RecursoUtil.cs" />
     <Compile Include="Utilidade\SubstituicaoNovoStringFormatTS.cs" />
+    <Compile Include="Utilidade\TagElementoUtil.cs" />
     <Compile Include="Utilidade\TipoCSUtil.cs" />
     <Compile Include="Utilidade\TipoUtils.cs" />
     <Compile Include="Utilidade\VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj">
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj">
       <Project>{ae39cd55-5282-48a5-8131-6704c825f26a}</Project>
       <Name>Snebur.AcessoDados</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Snebur.Framework\src\Core\Snebur.csproj">
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj">
       <Project>{ec174c4f-8122-41a3-8360-f04c4c8fc3ba}</Project>
       <Name>Snebur</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj">
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj">
       <Project>{538e7ecc-f8fc-49fe-9a6a-b5e704af096c}</Project>
       <Name>Snebur.Depuracao</Name>
     </ProjectReference>

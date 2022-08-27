@@ -41,8 +41,6 @@ namespace Snebur.VisualStudio
         public readonly List<string> Responsivos = new List<string> { SUFIXO_CELULAR, SUFIXO_TABLET, SUFIXO_NOTEBOOK /*, SUFIXO_DESKTOP */};
         public readonly List<string> ResponsivosAltura = new List<string> { SUFIXO_ALTURA_PEQUENA, SUFIXO_ALTURA_PEQUENA, SUFIXO_ALTURA_MEDIDA, SUFIXO_ALTURA_GRANDE };
 
-
-
         private HtmlIntelliSense()
         {
 
@@ -91,13 +89,10 @@ namespace Snebur.VisualStudio
             var posicaoCommonAttributes = linhasSchemaHtml.IndexOf(linhasSchemaHtml.Where(x => x.Trim().StartsWith(PROCURAR_COMMON_ATRIBUTES)).Single());
             linhasSchemaHtml.Insert(posicaoCommonAttributes + 1, String.Format("\t\t{0}", LINHA_REF_GRUPO_ATRIBUTOS));
 
-
-
             var linhasReferencia = this.RetornarLinhasReferencias();
 
             linhasReferencia.Insert(0, String.Format("\t\t\t{0}", INICIO_REFERENCIA));
             linhasReferencia.Add(String.Format("\t\t\t{0}", FIM_REFERENCIA));
-
 
             var posicaoReferencia = linhasSchemaHtml.IndexOf(linhasSchemaHtml.Where(x => x.Trim().StartsWith(PROCURAR_FLOW_CONTENT)).Single());
             linhasSchemaHtml.InsertRange(posicaoReferencia + 3, linhasReferencia);
@@ -469,7 +464,5 @@ namespace Snebur.VisualStudio
         }
 
         #endregion
-
-
     }
 }

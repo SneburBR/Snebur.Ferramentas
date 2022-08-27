@@ -10,6 +10,7 @@ namespace Snebur.VisualStudio
     {
         internal static void AbrirArquivo(this DTE2 dte, string caminhoArquivo)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 if (dte.get_IsOpenFile(Constants.vsViewKindCode, caminhoArquivo) ||
@@ -83,6 +84,8 @@ namespace Snebur.VisualStudio
 
         internal static string RetornarTexto(this Document documento)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (documento.Selection is TextSelection selecao)
             {
                 selecao.SelectAll();

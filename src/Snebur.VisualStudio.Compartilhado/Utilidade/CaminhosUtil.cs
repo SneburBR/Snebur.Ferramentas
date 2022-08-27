@@ -12,9 +12,9 @@ namespace Snebur.VisualStudio
         public const string ARQUIVO_X_HTML_5 = "xhtml_5.xsd";
 
 
-        private const string CAMINHO_PARCIAL_ATRIBUTOS_TYPESCRIPT = @"Snebur.Typescript\src\Snebur.UI.Typescript\src\Atributo\AtributosHtml.Statica.ts";
-        private const string CAMINHO_PARCIAL_CONTROLES_TYPESCRIPT = @"Snebur.Typescript\src\Snebur.UI.Typescript\src\Controle\ElementoControle\ElementoControle.Registrar.ts";
-        private const string CAMINHO_PARCIAL_ELEMENTOS_APRESENTACAO_TYPESCRIPT = @"Snebur.Typescript\src\Snebur.UI.Typescript\src\Componentes\Registrar\ComponentesApresentacao.Registrar.ts";
+        private const string CAMINHO_PARCIAL_ATRIBUTOS_TYPESCRIPT = @"Snebur.TS\src\Snebur.UI\src\Atributo\AtributosHtml.Statica.ts";
+        private const string CAMINHO_PARCIAL_CONTROLES_TYPESCRIPT = @"Snebur.TS\src\Snebur.UI\src\Controle\ElementoControle\ElementoControle.Registrar.ts";
+        private const string CAMINHO_PARCIAL_ELEMENTOS_APRESENTACAO_TYPESCRIPT = @"Snebur.TS\src\Snebur.UI\src\Componentes\Registrar\ComponentesApresentacao.Registrar.ts";
 
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR = @"Snebur.Framework\src\Core\bin\Debug\Snebur.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_ZYONCORE = @"Snebur.Framework\src\Core\bin\Debug\Zyoncore.dll";

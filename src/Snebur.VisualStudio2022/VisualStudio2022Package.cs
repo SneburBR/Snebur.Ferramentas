@@ -20,10 +20,11 @@ namespace Snebur.VisualStudio
     [ProvideToolWindow(typeof(OutputWindow.Pane), Style = VsDockStyle.Tabbed, Window = WindowGuids.OutputWindow)]
     [ProvideToolWindow(typeof(MigrationWindow.Pane), Style = VsDockStyle.Float, Window = WindowGuids.MainWindow)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasSingleProject_string)]
-    [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasSingleProject_string)]
+    //[ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasSingleProject_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasMultipleProjects_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.NoSolution_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.EmptySolution_string)]
+    [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionOpening_string)]
 
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.guidSneburVisualStudio2022String)]

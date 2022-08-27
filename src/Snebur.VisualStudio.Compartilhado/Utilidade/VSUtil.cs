@@ -6,7 +6,7 @@ namespace Snebur.VisualStudio
     {
         private const string PREFIXO_DIRETORIO_VISUAL_STUDIO = ".vs";
 
-        internal static bool IsDiretorioVisualStudio(DirectoryInfo ditetorio)
+        public static bool IsDiretorioVisualStudio(DirectoryInfo ditetorio)
         {
             while (ditetorio.Parent != null)
             {
@@ -19,12 +19,12 @@ namespace Snebur.VisualStudio
             return false;
         }
 
-        internal static bool IsArquivoVisualStudio(string caminhoArquivo)
+        public static bool IsArquivoVisualStudio(string caminhoArquivo)
         {
             return VSUtil.IsDiretorioVisualStudio(new FileInfo(caminhoArquivo).Directory);
         }
 
-        internal static bool IsArquivoVisualStudio(FileInfo arquivo)
+        public static bool IsArquivoVisualStudio(FileInfo arquivo)
         {
             return VSUtil.IsDiretorioVisualStudio(arquivo.Directory);
         }

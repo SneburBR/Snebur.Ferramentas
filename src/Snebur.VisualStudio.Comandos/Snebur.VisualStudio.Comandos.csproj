@@ -51,7 +51,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Snebur.Framework\src\Core\Snebur.csproj">
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj">
       <Project>{ec174c4f-8122-41a3-8360-f04c4c8fc3ba}</Project>
       <Name>Snebur</Name>
     </ProjectReference>

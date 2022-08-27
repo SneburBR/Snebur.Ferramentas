@@ -12,6 +12,8 @@ namespace Snebur.VisualStudio.Commands
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var dte = await VSEx.GetDTEAsync();
             if (dte.ActiveDocument != null)
             {

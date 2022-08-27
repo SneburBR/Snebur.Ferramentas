@@ -37,6 +37,8 @@ namespace Snebur.VisualStudio
 
         private string RetornarConteudoCodigo()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if (this.DocumentoCodigo?.Selection is TextSelection selecao)
             {
                 selecao.SelectAll();

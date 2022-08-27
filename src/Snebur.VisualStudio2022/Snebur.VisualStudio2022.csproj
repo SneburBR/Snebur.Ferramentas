@@ -115,21 +115,11 @@
     <Compile Include="Utilidade\Ex\Class1.cs" />
     <Compile Include="Utilidade\LogVS.cs" />
     <Compile Include="Utilidade\Repositorio.cs" />
-    <Compile Include="Utilidade\CaminhosUtil.cs" />
     <Compile Include="Utilidade\CorUtil.cs" />
-    <Compile Include="Utilidade\JsonUtil.cs" />
     <Compile Include="Utilidade\LogVSUtil.cs" />
-    <Compile Include="Utilidade\ProjectHelprs.cs" />
-    <Compile Include="Utilidade\ProjetoTypeScriptUtil.cs" />
+    <Compile Include="Utilidade\ProjetoTypeScriptUtilEx.cs" />
     <Compile Include="Utilidade\ProjetoUtil.cs" />
-    <Compile Include="Utilidade\PropriedadeUtil.cs" />
     <Compile Include="Publicacao\PublicacaoUtil.cs" />
-    <Compile Include="Utilidade\RecursoUtil.cs" />
-    <Compile Include="Utilidade\SubstituicaoNovoStringFormatTS.cs" />
-    <Compile Include="Utilidade\TagElementoUtil.cs" />
-    <Compile Include="Utilidade\TipoCSUtil.cs" />
-    <Compile Include="Utilidade\TipoUtils.cs" />
-    <Compile Include="Utilidade\VSUtil.cs" />
     <Compile Include="ViewModels\LogMensagemViewModel.cs" />
     <Compile Include="VisualStudio2022Package.cs" />
     <Compile Include="source.extension.cs">
@@ -224,7 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Community.VisualStudio.VSCT" Version="16.0.29.6" PrivateAssets="all" />
-    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.339" ExcludeAssets="Runtime">
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.451" ExcludeAssets="Runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Entityframework">
@@ -236,7 +226,10 @@
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5232" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.3.2093">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
@@ -261,7 +254,7 @@
       <Project>{538e7ecc-f8fc-49fe-9a6a-b5e704af096c}</Project>
       <Name>Snebur.Depuracao</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Snebur.VisualStudio.Compartilhado\Snebur.VisualStudio.Compartilhado.csproj">
+    <ProjectReference Include="..\Snebur.VisualStudio.Compartilhado\Snebur.VisualStudio.Compartilhado.csproj">
       <Project>{9446982b-f659-49ea-a137-a283707329fb}</Project>
       <Name>Snebur.VisualStudio.Compartilhado</Name>
     </ProjectReference>

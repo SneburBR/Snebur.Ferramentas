@@ -11,21 +11,44 @@ namespace Snebur.VisualStudio
 {
     internal static class PublicacaoUtil
     {
-        internal static Task<string> PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
-                                                         string caminhoProjeto,
-                                                         bool isDebug)
+        //internal static Task<string> PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
+        //                                                 string caminhoProjeto,
+        //                                                 bool isDebug)
+        //{
+
+        //   return Task.Factory.StartNew(() => PublicacaoUtil.PublicarVersao(tipoProjeto,
+        //                                                                    caminhoProjeto,
+        //                                                                    isDebug),
+        //                                                                    CancellationToken.None,
+        //                                                                    TaskCreationOptions.None,
+        //                                                                    TaskScheduler.Default);
+        //}
+
+        public static Task PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
+                                               string caminhoProjeto,
+                                               Stopwatch tempo)
         {
-            return Task.Factory.StartNew(() => PublicacaoUtil.PublicarVersao(tipoProjeto,
-                                                                            caminhoProjeto,
-                                                                            isDebug),
-                                                                            CancellationToken.None,
-                                                                            TaskCreationOptions.None,
-                                                                            TaskScheduler.Default);
+            return Task.Factory.StartNew(() =>
+            {
+                PublicarVersao(tipoProjeto, caminhoProjeto, tempo);
+            }, CancellationToken.None, 
+               TaskCreationOptions.None, 
+               TaskScheduler.Default);
+
+        }
+        private static void PublicarVersao(EnumTipoProjeto tipoProjeto,
+                                          string caminhoProjeto, Stopwatch tempo)
+        {
+            var caminhoDestino = PublicarVersaoInterno(tipoProjeto, caminhoProjeto);
+            if (Directory.Exists(caminhoDestino))
+            {
+                LogVSUtil.Sucesso($"Arquivos publicados  {caminhoDestino}", tempo);
+                Process.Start(caminhoDestino);
+            }
         }
 
-        public static string PublicarVersao(EnumTipoProjeto tipoProjeto,
-                                             string caminhoProjeto,
-                                             bool isDebug)
+        private static string PublicarVersaoInterno(EnumTipoProjeto tipoProjeto,
+                                                    string caminhoProjeto )
         {
             var infoPublicacao = RetornarInfoPulicacao(caminhoProjeto);
             if (infoPublicacao != null)
@@ -49,8 +72,7 @@ namespace Snebur.VisualStudio
 
 
                 var infosPastas = RetornarCaminhoPastas(tipoProjeto,
-                                                        caminhoProjeto,
-                                                        isDebug);
+                                                        caminhoProjeto );
                 foreach (var infoPasta in infosPastas)
                 {
                     if (Directory.Exists(infoPasta.Caminho))
@@ -266,7 +288,7 @@ namespace Snebur.VisualStudio
                 foreach (var arquivo in arquivos.Where(x => !String.IsNullOrWhiteSpace(x)))
                 {
                     var caminhoOrigem = Path.GetFullPath(Path.Combine(diretorioOrigem, arquivo));
-                    if(!File.Exists(caminhoOrigem))
+                    if (!File.Exists(caminhoOrigem))
                     {
                         LogVSUtil.LogErro($"Falha na publicação. Arquivo não encontrado: {caminhoOrigem} ");
                         continue;
@@ -313,9 +335,9 @@ namespace Snebur.VisualStudio
         }
 
         private static InfoPasta[] RetornarCaminhoPastas(EnumTipoProjeto tipoProjeto,
-                                                         string caminhoProjeto,
-                                                         bool isDebug)
+                                                         string caminhoProjeto )
         {
+            var isDebug = true;
             var caminhoBin = Path.Combine(caminhoProjeto, "bin");
 
             switch (tipoProjeto)

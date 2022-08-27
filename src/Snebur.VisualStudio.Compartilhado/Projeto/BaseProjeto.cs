@@ -38,7 +38,7 @@ namespace Snebur.VisualStudio
         {
             get
             {
-                if (this is ProjetoDominio)
+                if (this is ProjetoDominio || this is ProjetoServicosTypescript || this is ProjetoServicosDotNet)
                 {
                     return this.NomeProjeto == "Snebur" ? "Zyoncore" : this.NomeProjeto;
                 }

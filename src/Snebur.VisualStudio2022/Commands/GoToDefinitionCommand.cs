@@ -747,6 +747,8 @@ namespace Snebur.VisualStudio.Commands
                                            string nomeAtributo,
                                           string valorAtributo)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var inicio = valorAtributo.IndexOf("{{") + 2;
             var fim = valorAtributo.LastIndexOf("}}");
 

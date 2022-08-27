@@ -18,7 +18,7 @@ namespace Snebur.VisualStudio
             this.Conteudo = conteudo;
             this.IsCsharp = isCsharp;
         }
-        internal string RetornarConteudo()
+        public string RetornarConteudo()
         {
             var temp = this.Conteudo;
             var conteudo = this.Conteudo;
