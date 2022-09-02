@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" 
+            xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" 
+            xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  
+  <TemplateData>
+    <DefaultName>DocumentoPrincipal.shtml</DefaultName>
+    <Name>DocumentoPrincipal</Name>
+    <Description>DocumentoPrincipal Zyoncore Plataforma</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References />
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml" ReplaceParameters="true">DocumentoPrincipal.shtml</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml.ts" ReplaceParameters="true">DocumentoPrincipal.shtml.ts</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

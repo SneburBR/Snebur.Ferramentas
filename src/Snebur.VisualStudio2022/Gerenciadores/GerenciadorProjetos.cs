@@ -1,7 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using Snebur.Depuracao;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;

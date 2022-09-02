@@ -9,7 +9,7 @@ namespace Snebur.VisualStudio
     {
         internal static Assembly RetornarAssembly(Project projeto)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
 
             var caminhoAssembly = RetornarCaminhoAssembly(projeto);
             return AjudanteAssembly.RetornarAssembly(caminhoAssembly);
@@ -17,7 +17,7 @@ namespace Snebur.VisualStudio
 
         internal static string RetornarCaminhoAssembly(Project projeto)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+           //ThreadHelper.ThrowIfNotOnUIThread();
 
             var assembly = projeto.Properties.Cast<Property>().
                                               FirstOrDefault(x => x.Name == "AssemblyName");

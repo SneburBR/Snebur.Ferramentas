@@ -10,7 +10,7 @@ namespace Snebur.VisualStudio
     {
         internal static void AbrirArquivo(this DTE2 dte, string caminhoArquivo)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 if (dte.get_IsOpenFile(Constants.vsViewKindCode, caminhoArquivo) ||

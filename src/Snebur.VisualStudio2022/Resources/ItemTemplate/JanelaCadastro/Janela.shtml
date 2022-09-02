@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+</head>
+
+<body ap-largura="500px" ap-altura="320px">
+
+    <ap-painel ap-tipo-painel="PilhaVertical">
+
+       <zs-caixa-texto zs-bind="{{Entidade.Nome}}" ap-rotulo="Nome"></zs-caixa-texto>
+    </ap-painel>
+
+</body>
+</html>

@@ -324,6 +324,8 @@ namespace Snebur.VisualStudio
                 var stopwatch = Stopwatch.StartNew();
                 this.IsEnabled = false;
                 await HtmlIntelliSense.InicializarAsync();
+                await InstalarItensTemplate.InstalarAsync();
+
                 LogVSUtil.Sucesso("IntelliSense inicializado, Reinicie o VisualStudio e configure a extensão .shtml para 'HTML (WebForms) Editor'", stopwatch);
             }
             catch (Exception ex)

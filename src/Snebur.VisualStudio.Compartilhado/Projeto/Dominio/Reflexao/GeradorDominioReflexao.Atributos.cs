@@ -45,7 +45,7 @@ namespace Snebur.VisualStudio
                     return "Snebur.Dominio.Atributos.ChavePrimaria";
                 }
 
-                throw new ErroOperacaoInvalida("Atributo invalido");
+                throw new ErroOperacaoInvalida($"Atributo não suportado pelo Dominio TS. '{atributo.GetType().Name}'");
 
             }
             else

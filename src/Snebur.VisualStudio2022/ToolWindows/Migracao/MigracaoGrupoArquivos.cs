@@ -64,7 +64,7 @@ namespace Snebur.VisualStudio
             var sqls = new List<string>();
             //var nomeGrupoArquivo = $"{nomeFonteDados}_ {grupoArquivo}";
 
-            var nomeArquivo = $"{nomeBancoDados}_{nomeGrupoArquivo}.mdf";
+            var nomeArquivo = $"{nomeBancoDados}_{nomeGrupoArquivo}.ndf";
 
             var caminhoArquivo = Path.Combine(diretorioBancoDados, nomeArquivo);
 

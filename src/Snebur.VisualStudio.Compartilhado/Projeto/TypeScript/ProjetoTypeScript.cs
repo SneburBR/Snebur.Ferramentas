@@ -352,7 +352,7 @@ namespace Snebur.VisualStudio
             //var js = new System.Web.Script.Serialization.JavaScriptSerializer();
             var json = JsonUtil.Serializar(tsconfig, true, true);
 
-            ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json, false);
+            ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
         }
 
@@ -471,7 +471,7 @@ namespace Snebur.VisualStudio
             var conteudo = sb.ToString();
 
             var caminhoRepositorioHtmlReferencia = this.CaminhoHtmlReferencias;
-            ArquivoUtil.SalvarArquivoTexto(caminhoRepositorioHtmlReferencia, conteudo, true);
+            ArquivoUtil.SalvarArquivoTexto(caminhoRepositorioHtmlReferencia, conteudo);
         }
 
         private string RetornarDeclaracaoTiposUI(string namespaceReflexao)

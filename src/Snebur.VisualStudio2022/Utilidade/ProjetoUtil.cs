@@ -349,8 +349,6 @@ namespace Snebur.VisualStudio
 
         public static bool CompilarSolucao(DTE2 dte)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
             LogVSUtil.Log("Compilandos os projetos");
             try
             {
@@ -365,8 +363,6 @@ namespace Snebur.VisualStudio
 
         public static bool CompilarProjeto(DTE2 dte, Project projetoVS)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
             try
             {
                 dte.Solution.SolutionBuild.BuildProject("Debug", projetoVS.UniqueName, true);
@@ -497,7 +493,7 @@ namespace Snebur.VisualStudio
 
         internal static ProjectItem RetornarProjetoItem(ProjectItems items, string nome)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
 
             if (items != null)
             {

@@ -64,7 +64,8 @@ namespace Snebur.VisualStudio
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
             this.NomeProjeto = this.NormalizarNomeProjeto(Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name));
             this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(DiretorioProjeto.FullName,
-                                                                           this.NomeAssembly);
+                                                                           this.NomeAssembly, 
+                                                                           true);
         }
 
         private string NormalizarNomeProjeto(string nomeProjeto)

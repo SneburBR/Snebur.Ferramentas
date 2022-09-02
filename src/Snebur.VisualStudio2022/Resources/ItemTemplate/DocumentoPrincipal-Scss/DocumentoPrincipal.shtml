@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <ap-painel-vertical>
+        <ap-cabecalho ap-altura="100px">
+            <ap-texto ap-tipografia="Titulo">Documento principal - cabeçalho</ap-texto>
+        </ap-cabecalho>
+        <ap-linha>
+            <sn-navegador-principal
+                sn-pagina-inicial="PaginaInicial">
+            </sn-navegador-principal>
+        </ap-linha>
+        <ap-rodape>
+            <ap-texto ap-tipografia="Titulo">Roda pé</ap-texto>
+        </ap-rodape>
+    </ap-painel-vertical>
+</body>
+</html>

@@ -112,7 +112,7 @@
     <Compile Include="ToolWindows\Output\OutputWindowControl.xaml.cs">
       <DependentUpon>OutputWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilidade\Ex\Class1.cs" />
+    <Compile Include="Utilidade\Ex\AjudanteAssemblyEx.cs" />
     <Compile Include="Utilidade\LogVS.cs" />
     <Compile Include="Utilidade\Repositorio.cs" />
     <Compile Include="Utilidade\CorUtil.cs" />
@@ -143,11 +143,34 @@
     <Content Include="Resources\Icones\Icon.png" />
     <Content Include="Resources\Icones\Images.png" />
     <Content Include="Resources\Images.png" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario-Scss\ControleUsuario.shtml" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario-Scss\ControleUsuarioItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario-Scss\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario\ControleUsuario.shtml" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario\ControleUsuarioItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\ControleUsuario\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal-Scss\DocumentoPrincipal.shtml" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal-Scss\DocumentoPrincipalItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal-Scss\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal\DocumentoPrincipal.shtml" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal\DocumentoPrincipalItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\DocumentoPrincipal\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\JanelaCadastro\Janela.shtml" />
+    <Content Include="Resources\ItemTemplate\JanelaCadastro\JanelaItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\JanelaCadastro\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\Janela-Scss\Janela.shtml" />
+    <Content Include="Resources\ItemTemplate\Janela-Scss\JanelaItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\Janela-Scss\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\Janela\Janela.shtml" />
+    <Content Include="Resources\ItemTemplate\Janela\JanelaItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\Janela\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\PaginaI\Pagina.shtml" />
+    <Content Include="Resources\ItemTemplate\PaginaI\PaginaItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\PaginaI\__TemplateIcon.ico" />
+    <Content Include="Resources\ItemTemplate\Paginal-Scss\Pagina.shtml" />
+    <Content Include="Resources\ItemTemplate\Paginal-Scss\PaginaItemTemplate.vstemplate" />
+    <Content Include="Resources\ItemTemplate\Paginal-Scss\__TemplateIcon.ico" />
     <None Include="ItemTemplate\Configuracoes StickyChristmas-master.zip" />
-    <EmbeddedResource Include="Resources\ItemTemplate\ControleUsuarioItemTemplate.zip" />
-    <EmbeddedResource Include="Resources\ItemTemplate\DocumentoPrincipalItemTemplate.zip" />
-    <EmbeddedResource Include="Resources\ItemTemplate\JanelaItemTemplate.zip" />
-    <EmbeddedResource Include="Resources\ItemTemplate\PaginaItemTemplate.zip" />
     <Content Include="lib\Microsoft.WebTools.Languages.Json.dll" />
     <Content Include="lib\Microsoft.WebTools.Languages.Json.Editor.dll" />
     <Content Include="Monikers.imagemanifest">
@@ -165,6 +188,19 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Json\version.json" />
+    <EmbeddedResource Include="Resources\ItemTemplate\ControleUsuario-Scss.zip" />
+    <None Include="Resources\ItemTemplate\ControleUsuario-Scss\ControleUsuario.shtml.scss" />
+    <EmbeddedResource Include="Resources\ItemTemplate\ControleUsuario.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\DocumentoPrincipal-Scss.zip" />
+    <None Include="Resources\ItemTemplate\DocumentoPrincipal-Scss\DocumentoPrincipal.shtml.scss" />
+    <EmbeddedResource Include="Resources\ItemTemplate\DocumentoPrincipal.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\Janela-Scss.zip" />
+    <None Include="Resources\ItemTemplate\Janela-Scss\Janela.shtml.scss" />
+    <EmbeddedResource Include="Resources\ItemTemplate\Janela.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\Pagina.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\Pagina-Scss.zip" />
+    <EmbeddedResource Include="Resources\ItemTemplate\JanelaCadastro.zip" />
+    <None Include="Resources\ItemTemplate\Paginal-Scss\Pagina.shtml.scss" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
       <Generator>VsixManifestGenerator</Generator>
@@ -261,6 +297,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Projeto\Dominio\Reflexao\Ajudante\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Resources\ItemTemplate\ControleUsuario-Scss\ControleUsuario.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\ControleUsuario\ControleUsuario.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\DocumentoPrincipal-Scss\DocumentoPrincipal.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\JanelaCadastro\Janela.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\Janela-Scss\Janela.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\Janela\Janela.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\PaginaI\Pagina.shtml.ts" />
+    <TypeScriptCompile Include="Resources\ItemTemplate\Paginal-Scss\Pagina.shtml.ts" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

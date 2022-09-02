@@ -32,7 +32,7 @@ namespace Snebur.VisualStudio.Reflexao
         public static bool TipoIgual(Type tipo1, Type tipo2)
         {
             return tipo1 != null && tipo2 != null && (
-                   tipo1.Equals(tipo2) ||  (tipo1.Name == tipo2.Name && tipo1.Namespace == tipo2.Namespace));
+                   tipo1.Equals(tipo2) || (tipo1.Name == tipo2.Name && tipo1.Namespace == tipo2.Namespace));
         }
 
         public static bool TipoIgualOuSubTipo(Type tipo1, Type tipo2)
@@ -69,7 +69,7 @@ namespace Snebur.VisualStudio.Reflexao
             }
             return false;
         }
-         
+
         public static void RemoverTipo(HashSet<Type> tipos, Type tipo)
         {
             var tiposRemover = tipos.Where(x => (TipoUtil.TipoIgual(x, tipo))).ToList();
@@ -172,7 +172,7 @@ namespace Snebur.VisualStudio.Reflexao
             }
             else
             {
-                if (tipo.Namespace.StartsWith("System"))
+                if (tipo.Namespace != null && tipo.Namespace.StartsWith("System"))
                 {
                     if (tipo == typeof(object))
                     {
@@ -189,12 +189,12 @@ namespace Snebur.VisualStudio.Reflexao
                         return "SnBlob";
                     }
 
-                    if(tipo == typeof(Type))
+                    if (tipo == typeof(Type))
                     {
                         return "r.BaseTipo | string";
                     }
 
-                    if(tipo == typeof(PropertyInfo))
+                    if (tipo == typeof(PropertyInfo))
                     {
                         return "r.Propriedade | string";
                     }
@@ -233,9 +233,9 @@ namespace Snebur.VisualStudio.Reflexao
             {
                 throw new Erro($"O tipo {tipoInterface.Name}  não é interface");
             }
-            if(tipo.Name == tipoInterface.Name && 
+            if (tipo.Name == tipoInterface.Name &&
                tipo.Namespace == tipoInterface.Namespace &&
-               tipo.IsInterface )
+               tipo.IsInterface)
             {
                 return true;
             }
@@ -292,6 +292,11 @@ namespace Snebur.VisualStudio.Reflexao
 
         public static string RetornarNameSpace(Type tipo)
         {
+            if (tipo.Namespace == null)
+            {
+                return String.Empty;
+            }
+
             if (ReflexaoUtil.IsTipoNullable(tipo) && ReflexaoUtil.RetornarTipoSemNullable(tipo).IsEnum)
             {
                 return ReflexaoUtil.RetornarTipoSemNullable(tipo).Namespace;

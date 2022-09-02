@@ -3,6 +3,7 @@ using EnvDTE80;
 using Snebur.Depuracao;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
+using Snebur.Linq;
 using Snebur.Utilidade;
 using Snebur.VisualStudio.Reflexao;
 using System.Collections.Generic;
@@ -22,12 +23,11 @@ using System.Xml;
 
 namespace Snebur.VisualStudio
 {
-    /// <summary>
-    /// Interaction logic for JanelaMigracaoControl.
-    /// </summary>
     public partial class MigrationWindowControl : UserControl
     {
         private const string VERSAO = "Versao_";
+        private static bool IsInicializado = false;
+
         public static readonly DependencyProperty ProjetoSelecionadoProperty = DependencyProperty.Register("ProjetoSelecionado", typeof(Project), typeof(MigrationWindowControl), new PropertyMetadata(MigrationWindowControl.ProjetoSelecionadoAlterado));
 
         public ObservableCollection<Project> Projetos { get; set; } = new ObservableCollection<Project>();
@@ -59,8 +59,6 @@ namespace Snebur.VisualStudio
         public AmbienteViewModel AmbienteSelecionado { get; set; }
         public ObservableCollection<AmbienteViewModel> Ambientes { get; set; } = new ObservableCollection<AmbienteViewModel>();
 
-        private static bool Inicializado = false;
-
         public MigrationWindowControl()
         {
             this.InitializeComponent();
@@ -73,9 +71,9 @@ namespace Snebur.VisualStudio
             await this.AtualizarProjetosAsync();
             this.PopularAmbientesServidor();
 
-            if (!Inicializado)
+            if (!IsInicializado)
             {
-                Inicializado = true;
+                IsInicializado = true;
                 GerenciadorProjetos.SoluacaoAberta += this.GerenciadorProjeto_SolucaoAberta;
                 var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
                 dte.ExecuteCommand("View.PackageManagerConsole");
@@ -106,25 +104,16 @@ namespace Snebur.VisualStudio
 
         private async Task AtualizarProjetosAsync()
         {
-            
-
             this.Projetos.Clear();
             var projetos = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
             foreach (var p in projetos)
             {
                 this.Projetos.Add(p);
             }
-            if (this.CmbProjetoMigracao.SelectedItem == null)
-            {
-                this.CmbProjetoMigracao.SelectedItem = this.Projetos.Where(x => x.Name.Contains("Migracao") && x.Name != "Snebur.AcessoDados.Migracao").SingleOrDefault();
-            }
-            if (this.CmbProjetosEntidades.SelectedItem == null)
-            {
-                this.CmbProjetosEntidades.SelectedItem = this.Projetos.Where(x =>
-                {
-                    return x.Name.Contains("Entidades");
-                }).LastOrDefault();
-            }
+
+            this.CmbProjetoMigracao.SelectedItem ??= this.Projetos.Where(x => x.Name.Contains("Migracao") && x.Name != "Snebur.AcessoDados.Migracao").SingleOrDefault();
+            this.CmbProjetosEntidades.SelectedItem ??= this.Projetos.Where(x => x.Name.Contains("Entidades")).LastOrDefault();
+
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -182,8 +171,9 @@ namespace Snebur.VisualStudio
                     this.Scripts.Clear();
                     this.VersaoAtual = null;
                     this.ProjetoEntidadesSelecionado = projetoEntidade;
+                    var isCompilar = this.ChkIsCompilar.IsChecked ?? false;
 
-                    ThreadUtil.ExecutarAsync(() => this.IniciarGeracaoScript(projetoMigracao, projetoEntidade));
+                    ThreadUtil.ExecutarAsync(() => this.IniciarGeracaoScript(projetoMigracao, projetoEntidade, isCompilar));
                 }
 
             }
@@ -270,62 +260,82 @@ namespace Snebur.VisualStudio
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var projeto = this.ProjetoEntidadesSelecionado;
-            if (projeto != null)
+            try
             {
-                var nomeProjeto = projeto.Name;
-
-                if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
+                var projeto = this.ProjetoEntidadesSelecionado;
+                if (projeto != null)
                 {
-                    var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
-                    var caminhoDllAssembly = AjudanteAssemblyEx.RetornarCaminhoAssembly(projeto);
-                    return AjudanteAssembly.RetornarAssembly(caminhoDllAssembly);
+                    var nomeProjeto = projeto.Name;
+
+                    if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
+                        var caminhoDllAssembly = AjudanteAssemblyEx.RetornarCaminhoAssembly(projeto);
+                        return AjudanteAssembly.RetornarAssembly(caminhoDllAssembly);
+                    }
                 }
             }
+            catch
+            {
+
+            }
+
             return null;
         }
 
         private void IniciarGeracaoScript(Project projetoMigracao,
-                                          Project projetoEntidades)
+                                          Project projetoEntidades,
+                                          bool isCompilar)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-
-            this.Log($"Limpando a solução");
-            dte.Solution.SolutionBuild.Clean(true);
-            this.Log($"Compilando a solução");
-            dte.Solution.SolutionBuild.Build(true);
-
-            this.Log($"Compilando o projeto {projetoEntidades.Name}");
-            ProjetoUtil.CompilarProjeto(dte, projetoEntidades);
-            this.Log($"Compilando o projeto {projetoMigracao.Name}");
-            ProjetoUtil.CompilarProjeto(dte, projetoMigracao);
-
-            System.Threading.Thread.Sleep(1500);
-
-            var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
-            var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
-            var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
-            if (tipoConfiguracao == null)
+            try
             {
-                throw new Exception($"Não foi encontrado a configuracao do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
+                //ThreadHelper.ThrowIfNotOnUIThread();
+                if (isCompilar)
+                {
+                    var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+
+                    this.Log($"Limpando a solução");
+                    dte.Solution.SolutionBuild.Clean(true);
+                    this.Log($"Compilando a solução");
+                    dte.Solution.SolutionBuild.Build(true);
+
+                    this.Log($"Compilando o projeto {projetoEntidades.Name}");
+                    ProjetoUtil.CompilarProjeto(dte, projetoEntidades);
+                    this.Log($"Compilando o projeto {projetoMigracao.Name}");
+                    ProjetoUtil.CompilarProjeto(dte, projetoMigracao);
+                    System.Threading.Thread.Sleep(1500);
+                }
+
+                var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
+                var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
+                var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
+                if (tipoConfiguracao == null)
+                {
+                    throw new Exception($"Não foi encontrado a configuracao do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
+                }
+
+                var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
+                var migrador = new DbMigrator(instanciaConfiguracao);
+
+                this.Log(" -- Iniciando assistente de migração. isso pode deremorar um pouco. ");
+
+                this.IniciarGeracaoScriptInterno(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
+
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro(ex);
+            }
+            finally
+            {
+                this.Dispatcher.Invoke(this.Desocupar);
             }
 
-            var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
-            var migrador = new DbMigrator(instanciaConfiguracao);
-
-
-
-            this.Log(" -- Iniciando assistente de migração. isso pode deremorar um pouco. ");
-
-            this.IniciarGeracaoScriptInterno(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
-            this.Dispatcher.Invoke(this.Desocupar);
         }
 
         private void IniciarGeracaoScriptInterno(Project projetoMigracao, Project projetoEntidades, DbMigrator migrador, Assembly assemblyMigracao)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 this.Scripts.Clear();
@@ -399,8 +409,18 @@ namespace Snebur.VisualStudio
                     }
                     dte.AbrirArquivo(caminhoScript);
 
+                    var scriptsTransacao = this.RetornarSripts(scriptAtualizado.Script);
+                    var scriptsAlterDatabase = scriptsTransacao.Where(x => x.ToUpper().Trim().StartsWith("ALTER DATABASE")).ToList();
+                    scriptsTransacao.RemoveRange(scriptsAlterDatabase);
+                    scriptsAlterDatabase.Reverse();
+                    foreach (var s in scriptsAlterDatabase)
+                    {
+                        this.Scripts.Insert(0, s);
+                        this.ScriptsTransacao.Remove(s);
+                    }
+
                     this.Scripts.AddRange(scriptsGrupoArquivos);
-                    this.ScriptsTransacao.AddRange(this.RetornarSripts(scriptAtualizado.Script));
+                    this.ScriptsTransacao.AddRange(scriptsTransacao);
 
                     this.Log(this.Scripts);
                     this.Log(this.ScriptsTransacao);
@@ -487,6 +507,7 @@ namespace Snebur.VisualStudio
             this.Cursor = Cursors.Arrow;
             AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
         }
+
         #region Atualizando script
 
         private ScriptAtualizado RetornarScriptAtualizado(string script)
@@ -752,7 +773,8 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private void ExecutarScripts(Project projetoMigracao, Project projetoEntidade)
+        private void ExecutarScripts(Project projetoMigracao, 
+                                     Project projetoEntidade)
         {
             try
             {
@@ -768,11 +790,13 @@ namespace Snebur.VisualStudio
                     this.Log(script);
                     System.Threading.Thread.Sleep(50);
                 }
+
                 conexao.ExecutarComandos(this.ScriptsTransacao, (cmd) =>
                 {
                     this.Log(cmd.CommandText);
                     System.Threading.Thread.Sleep(15);
                 });
+
                 this.LogSucesso("Migração realizada com sucesso.");
 
             }
@@ -788,7 +812,7 @@ namespace Snebur.VisualStudio
 
         private void AtualizarVersaoAssemby(Project projeto)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
 
             var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
             var arquivoAssemblyInfo = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
@@ -815,10 +839,14 @@ namespace Snebur.VisualStudio
 
         private void CriarNovoBancoDados()
         {
-            var scriptNovoBancoDados = ScriptNovoBancoDados.RetornarScript(this.NomeConnectionString);
+            var scripts = ScriptNovoBancoDados.RetornarScripts(this.NomeConnectionString);
             var connectionScriptMastar = ScriptUtil.RetornarConnectionStringBancoMastar(this.NomeConnectionString);
             var conexao = new Conexao(connectionScriptMastar);
-            conexao.ExecutarComando(scriptNovoBancoDados);
+            foreach(var script in scripts)
+            {
+                conexao.ExecutarComando(script);
+            }
+  
         }
         #region Validar a proxima migração
 
@@ -832,7 +860,7 @@ namespace Snebur.VisualStudio
             this.ValidarMigracao(true);
         }
 
-        private void ValidarMigracao(bool adicionarMigracao = false)
+        private void ValidarMigracao(bool isAdicionarMigracao = false)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             this.Logs.Clear();
@@ -856,28 +884,37 @@ namespace Snebur.VisualStudio
                 this.VersaoAtual = null;
                 this.Scripts.Clear();
                 this.ProjetoEntidadesSelecionado = projetoEntidade;
+                var isCompilar = this.ChkIsCompilar.IsChecked ?? false;
 
-                ThreadUtil.ExecutarAsync(() => this.IniciarValidacao(projetoMigracao, projetoEntidade, adicionarMigracao));
+                ThreadUtil.ExecutarAsync(() => this.IniciarValidacao(projetoMigracao,
+                                                                     projetoEntidade,
+                                                                     isAdicionarMigracao,
+                                                                     isCompilar));
             }
         }
-        private void IniciarValidacao(Project projetoMigracao, Project projetoEntidades, bool adicionarMigracao)
+
+        private void IniciarValidacao(Project projetoMigracao,
+                                      Project projetoEntidades,
+                                      bool isAdicionarMigracao,
+                                      bool isCompilar)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+                if (isCompilar)
+                {
+                    this.Log($"Limpando a solução");
+                    dte.Solution.SolutionBuild.Clean(true);
+                    this.Log($"Compilando a solução");
+                    dte.Solution.SolutionBuild.Build(true);
 
-                this.Log($"Limpando a solução");
-                dte.Solution.SolutionBuild.Clean(true);
-                this.Log($"Compilando a solução");
-                dte.Solution.SolutionBuild.Build(true);
+                    this.Log($"Compilando o projeto {projetoEntidades.Name}");
+                    ProjetoUtil.CompilarProjeto(dte, projetoEntidades);
+                    this.Log($"Compilando o projeto {projetoMigracao.Name}");
+                    ProjetoUtil.CompilarProjeto(dte, projetoMigracao);
 
-                this.Log($"Compilando o projeto {projetoEntidades.Name}");
-                ProjetoUtil.CompilarProjeto(dte, projetoEntidades);
-                this.Log($"Compilando o projeto {projetoMigracao.Name}");
-                ProjetoUtil.CompilarProjeto(dte, projetoMigracao);
-
-                System.Threading.Thread.Sleep(1500);
+                    System.Threading.Thread.Sleep(1500);
+                }
 
                 var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
                 var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
@@ -969,7 +1006,7 @@ namespace Snebur.VisualStudio
 
                 this.LogSucesso("Validação concluída com sucesso");
 
-                if (adicionarMigracao)
+                if (isAdicionarMigracao)
                 {
                     var proximaMigracao = this.RetornarProximaMigracao(assemblyMigracao);
                     this.LogSucesso($"Adicionando migração  {proximaMigracao}");
@@ -979,8 +1016,9 @@ namespace Snebur.VisualStudio
                     System.Threading.Thread.Sleep(2000);
 
                     dte.ExecuteCommand("View.PackageManagerConsole");
+                    var comando = $"add-migration {proximaMigracao} -Project {projetoMigracao.Name} -StartupProject {projetoMigracao.Name} ";
                     System.Threading.Thread.Sleep(600);
-                    System.Windows.Forms.SendKeys.SendWait($"add-migration {proximaMigracao} -Project {projetoMigracao.Name} -StartupProject {projetoMigracao.Name} ");
+                    System.Windows.Forms.SendKeys.SendWait(comando);
                     System.Threading.Thread.Sleep(600);
                     System.Windows.Forms.SendKeys.SendWait("{ENTER}");
                 }

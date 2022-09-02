@@ -110,7 +110,7 @@ namespace Snebur.VisualStudio
                         var novoConteudo = String.Join(System.Environment.NewLine, linhas);
                         if (novoConteudo.Trim() != conteudo.Trim())
                         {
-                            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoShtml, novoConteudo, true);
+                            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoShtml, novoConteudo);
                         }
                     }
                 }
@@ -190,7 +190,7 @@ namespace Snebur.VisualStudio
             linhas.InsertRange(inicio + 1, linhasArquivo);
 
             var conteudo = String.Join("\n", linhas);
-            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoDestino, conteudo, true);
+            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoDestino, conteudo);
 
             if (isImportarVariaveisMixins)
             {
@@ -229,7 +229,7 @@ namespace Snebur.VisualStudio
                     if (existeAlteracao)
                     {
                         var conteudo = String.Join("\n", linhas);
-                        ArquivoUtil.SalvarArquivoTexto(arquivoSass.FullName, conteudo, true);
+                        ArquivoUtil.SalvarArquivoTexto(arquivoSass.FullName, conteudo);
                     }
                 }
             }

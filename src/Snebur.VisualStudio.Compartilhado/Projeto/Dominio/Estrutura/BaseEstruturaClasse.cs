@@ -46,7 +46,11 @@ namespace Snebur.VisualStudio
             {
                 var atributo = propriedadeRelacao.GetCustomAttributes().Where(x => x.GetType().Name == typeof(ChaveEstrangeiraAttribute).Name).Single();
                 var nomePropriedade = ReflexaoUtil.RetornarValorPropriedade(atributo, "NomePropriedade").ToString();
-                var proprieadeChaveEstrangeira = propriedades.Where(x => x.Name == nomePropriedade).Single();
+                var proprieadeChaveEstrangeira = propriedades.Where(x => x.Name == nomePropriedade).SingleOrDefault();
+                if(proprieadeChaveEstrangeira == null)
+                {
+                    throw new Exception($"Não foi encontrada a propriedade da chave estrangeira '{nomePropriedade}' no tipo '{this.Tipo.Name}'");
+                }
                 dicionario.Add(nomePropriedade, propriedadeRelacao);
             }
             return dicionario;

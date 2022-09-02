@@ -289,7 +289,8 @@ namespace Snebur.VisualStudio
         //                                   configuracaoProjeto.NomeAssembly);
         //}
         public static string RetornarCaminhoAssembly(string caminhoProjeto,
-                                                      string nomeAssembly )
+                                                      string nomeAssembly,
+                                                      bool isIgnorarErro = false)
         {
             //var assembly = projeto.Properties.Cast<Property>().
             //                                         FirstOrDefault(x => x.Name == "AssemblyName");
@@ -301,6 +302,7 @@ namespace Snebur.VisualStudio
             var diretorioDebug = Path.Combine(diretorioBin, "Debug");
             var caminhoDll = Path.Combine(diretorioDebug, nomeArquivoDll);
             var caminhoExe = Path.Combine(diretorioDebug, nomeArquivoExe);
+
             if (File.Exists(caminhoDll))
             {
                 return  caminhoDll;
@@ -316,7 +318,14 @@ namespace Snebur.VisualStudio
                 return caminhoBinDll;
             }
 
-            throw new FileNotFoundException($"Não foi encontrada a DLL debug do projeto {nomeAssembly} - caminho : {caminhoDll} ");
+            var mensagemErro = $"Não foi encontrada a DLL debug do projeto {nomeAssembly} - caminhos : {caminhoDll}, \r\n{caminhoBinDll} ";
+            if (isIgnorarErro)
+            {
+                LogVSUtil.Alerta(mensagemErro);
+                return caminhoDll;
+            }
+
+            throw new FileNotFoundException(mensagemErro);
         }
          
         private static string RetornarCaminhoAssemblyReflexao(string caminhoDll)

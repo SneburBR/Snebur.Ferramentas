@@ -48,6 +48,11 @@ namespace Snebur.VisualStudio
 
         private void SalvarContextoNET(string caminhoArquivo, List<string> linhasConsultaEntity, bool isIntarface = false)
         {
+            if (String.IsNullOrWhiteSpace(caminhoArquivo))
+            {
+                return;
+            }
+
             var caminhoAbsolutoContextoDadosNET = CaminhoUtil.RetornarCaminhosAbsoluto(caminhoArquivo, this.CaminhoProjeto);
 
             var linhasContextoDadosNET = File.ReadAllLines(caminhoAbsolutoContextoDadosNET, Encoding.UTF8).ToList();
@@ -72,7 +77,7 @@ namespace Snebur.VisualStudio
             }
 
             var conteudoNET = String.Join("\n", linhasContextoDadosNET);
-            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosNET, conteudoNET, true);
+            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosNET, conteudoNET);
         }
 
         //private void SalvarContextoNETCliente(List<string> linhasConsultaEntity)
@@ -95,11 +100,7 @@ namespace Snebur.VisualStudio
         //    //}
 
         //}
-
-
-
-
-
+         
         private void SalvarContextoTS(List<string> linhasConsultaEntity)
         {
             var caminhoAbsolutoContextoDadosTS = CaminhoUtil.RetornarCaminhosAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosTS, this.CaminhoProjeto);
@@ -125,7 +126,7 @@ namespace Snebur.VisualStudio
 
             var conteudoTS = String.Join("\n", linhasContextoDadosTS);
 
-            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosTS, conteudoTS, true);
+            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosTS, conteudoTS);
         }
 
         private List<string> RetornarLinhasConsultaNET(List<string> linhasConsultaEntity)

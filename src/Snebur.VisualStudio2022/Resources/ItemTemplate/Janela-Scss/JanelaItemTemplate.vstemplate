@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" 
+            xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" 
+            xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <DefaultName>Janela.shtml</DefaultName>
+    <Name>Janela com scss</Name>
+    <Description>Janela Zyoncore Plataforma</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References />
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml" ReplaceParameters="true">Janela.shtml</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml.scss" ReplaceParameters="false">Janela.shtml.scss</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.shtml.ts" ReplaceParameters="true">Janela.shtml.ts</ProjectItem>
+  </TemplateContent>
+</VSTemplate>
