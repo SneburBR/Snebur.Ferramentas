@@ -162,7 +162,7 @@ namespace Snebur.VisualStudio
                         var projetosTS = this.ProjetosTS.Values.Where(x => diretorio.Contains(x.CaminhoProjetoCaixaBaixa)).ToList();
                         if (projetosTS.Count == 0)
                         {
-                            LogVSUtil.Alerta($"Nenghum gerengiador de projeto foi inicializado ainda, arquivo {arquivo.Name} ignorado, aguarde a solução carregada por completo");
+                            LogVSUtil.Alerta($"Nenhum gerenciador de projeto foi inicializado ainda, arquivo {arquivo.Name} ignorado, aguarde a solução carregada por completo");
                             return;
                         }
                         if (projetosTS.Count > 1)
@@ -209,7 +209,7 @@ namespace Snebur.VisualStudio
 
                                         if (projectItemCodigo == null)
                                         {
-                                            LogVSUtil.LogErro($"Project item de codigo de {arquivo.Name} não foi encontrado");
+                                            LogVSUtil.LogErro($"Project item de código de {arquivo.Name} não foi encontrado");
                                         }
                                         else
                                         {
@@ -218,23 +218,19 @@ namespace Snebur.VisualStudio
                                             this.NormalizarNamespaceTS(projetoTS, caminhoCodigo);
                                             isAtualizarProjetoTS = true;
 
-                                            LogVSUtil.Log($"Normalizando o arquivo do codigo {arquivo.Name}{EXTENSAO_TYPESCRIPT}");
+                                            LogVSUtil.Log($"Normalizando o arquivo do código {arquivo.Name}{EXTENSAO_TYPESCRIPT}");
                                         }
 
                                         var projetoItemEstilo = DTE_GLOBAL.Solution.FindProjectItem(caminhoEstilo);
-                                        if (projetoItemEstilo == null)
-                                        {
-                                            LogVSUtil.LogErro($"Project item de estilo de {arquivo.Name} não foi encontrado");
-                                        }
-                                        else
+                                        if (projetoItemEstilo != null)
                                         {
                                             projetoTS.TodosArquivos.Add(caminhoEstilo.ToLower());
                                             LogVSUtil.Log($"Normalizando o arquivo do estilo {arquivo.Name}{EXTENSAO_SASS}");
                                         }
+                                        
 
                                         var isAgrupar = (projectItemLayout != null) &&
-                                                      (projectItemCodigo != null) &&
-                                                      (projetoItemEstilo != null);
+                                                        (projectItemCodigo != null);
                                         if (isAgrupar)
                                         {
                                             LogVSUtil.Log($"Agrupando arquivo {arquivo.Name}, {arquivo.Name}.ts, {arquivo.Name}{EXTENSAO_SASS}");
@@ -283,16 +279,21 @@ namespace Snebur.VisualStudio
                                      string caminhoCodigo,
                                      string caminhoEstilo)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (projectItemLayout.ProjectItems == null)
             {
-                LogVSUtil.LogErro("A propriedade ProjectItems do arquivo layout não está definido");
+                LogVSUtil.LogErro("A propriedade ProjectItems do arquivo layout não está definida");
                 return;
             }
 
             projectItemCodigo.Remove();
-            projetoItemEstilo.Remove();
-            projectItemLayout.ProjectItems.AddFromFile(caminhoEstilo);
+            projetoItemEstilo?.Remove();
+
+            if(projetoItemEstilo!= null)
+            {
+                projectItemLayout.ProjectItems.AddFromFile(caminhoEstilo);
+            }
+            
             projectItemLayout.ProjectItems.AddFromFile(caminhoCodigo);
 
         }

@@ -31,7 +31,7 @@ namespace Snebur.VisualStudio
             //var caminhoBancoDados = 
             var sb = new StringBuilder();
             sb.AppendLine($" CREATE DATABASE[{nomeBancoDados}]");
-            sb.AppendLine("         CONTAINMENT = NONE ");
+            //sb.AppendLine("         CONTAINMENT = NONE ");
             sb.AppendLine("            ON PRIMARY ");
             sb.AppendLine($@" ( NAME = N'{nomeBancoDados}', FILENAME = N'{caminhoArquivoDados}' , SIZE = 50MB , MAXSIZE = UNLIMITED, FILEGROWTH = 64MB )");
             sb.AppendLine($@"  LOG ON (NAME = N'{nomeBancoDados}_log', FILENAME = N'{caminhoArquivoLog}' , SIZE = 2MB , MAXSIZE = UNLIMITED , FILEGROWTH = 64MB ) ");

@@ -6,7 +6,7 @@ namespace Snebur.VisualStudio
 {
     public partial class AjudanteReflexao
     {
-        public  static string RetornarCaminhoTipoBaseDominio(Type tipo)
+        public static string RetornarCaminhoTipoBaseDominio(Type tipo)
         {
             return TipoUtil.RetornarCaminhoTipoTS(tipo);
         }
@@ -26,7 +26,8 @@ namespace Snebur.VisualStudio
 
         public static string RetornarAssemblyQualifiedNameTipoBaseDominio(Type tipo)
         {
-            return AjudanteReflexao.RetornarAssemblyQualifiedName(tipo);
+            return tipo.RetornarAssemblyQualifiedName();
+            //return AjudanteReflexao.RetornarAssemblyQualifiedName_NOVO(tipo);
         }
 
         //Lista
@@ -34,7 +35,7 @@ namespace Snebur.VisualStudio
         public static string RetornarCaminhoListaTipoBaseDominio(Type tipo)
         {
             var caminhoTipo = TipoUtil.RetornarCaminhoTipoTS(tipo);
-            return  String.Format("{0}{1}", PREFIXO_LISTA_TIPO_BASEDOMINIO, caminhoTipo);
+            return String.Format("{0}{1}", PREFIXO_LISTA_TIPO_BASEDOMINIO, caminhoTipo);
         }
 
         public static string RetornarNomeListaTipoBaseDominio(Type tipo)
@@ -46,8 +47,7 @@ namespace Snebur.VisualStudio
         {
             if (tipo == null)
             {
-                throw new NullReferenceException("");
-
+                throw new ArgumentNullException(nameof(tipo));
             }
             else
             {
@@ -57,19 +57,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-        public static string RetornarAssemblyQualifiedNameListaTipoBaseDominio(Type tipo)
-        {
-            var tipoList = typeof(List<>);
-            var tipoListGenerico = tipoList.MakeGenericType(tipo);
-
-            var q = tipoListGenerico.AssemblyQualifiedName;
-            var posicao = q.IndexOf(", Version");
-            if (posicao > 0)
-            {
-                return q.Substring(0, posicao).Trim() + "]], mscorlib";
-            }
-            return q;
-        }
+        
     }
 
 }

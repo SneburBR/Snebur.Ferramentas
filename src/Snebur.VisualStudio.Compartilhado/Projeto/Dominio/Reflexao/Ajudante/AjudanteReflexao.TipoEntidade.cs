@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Snebur;
+using Snebur.Dominio;
+using Snebur.Utilidade;
 using Snebur.VisualStudio.Reflexao;
 using Snebur.VisualStudio.Utilidade;
 
@@ -11,7 +14,7 @@ namespace Snebur.VisualStudio
 {
     public partial class AjudanteReflexao
     {
-		        
+
         public static string RetornarCaminhoListaTipoEntidade(Type tipo)
         {
             var caminhoTipo = TipoUtil.RetornarCaminhoTipoTS(tipo);
@@ -31,7 +34,7 @@ namespace Snebur.VisualStudio
             }
             else
             {
-                if(tipo.Name == AjudanteAssembly.TipoInterfaceIEntidade.Name)
+                if (tipo.Name == AjudanteAssembly.TipoInterfaceIEntidade.Name)
                 {
                     tipo = AjudanteAssembly.TipoEntidade;
                 }
@@ -40,9 +43,29 @@ namespace Snebur.VisualStudio
             }
         }
 
-		public static string RetornarAssemblyQualifiedNameListaTipoEntidade(Type tipo)
+        public static string RetornarAssemblyQualifiedNameListaTipoEntidade(Type tipo)
         {
-            return String.Format("Snebur.Dominio.ListaEntidades`1[[{0}]], Snebur", AjudanteReflexao.RetornarAssemblyQualifiedName(tipo));
+            var tipoListaEntidades = typeof(ListaEntidades<>);
+            var assemblyName = tipoListaEntidades.RetornarAssemblyQualifiedName();
+            var posicaoItemGerenciado = assemblyName.IndexOf("`1") + 2;
+            if (posicaoItemGerenciado > 0)
+            {
+                var inicio = assemblyName.Substring(0, posicaoItemGerenciado);
+                var fim = assemblyName.Substring(posicaoItemGerenciado);
+                return $"{inicio}[[{tipo.RetornarAssemblyQualifiedName()}]]{fim}";
+            }
+
+            throw new NotImplementedException();
+
+            //var partes = "";
+
+            //var tipoListaEntidadesTipado = tipoListaEntidades.MakeGenericType(tipo);
+
+            //var tipoListaEntidadesTipado2 = tipoListaEntidades.MakeGenericType(tipo);
+
+            //return tipoListaEntidadesTipado.RetornarAssemblyQualifiedName();
+
+            //return String.Format("Snebur.Dominio.ListaEntidades`1[[{0}]], Snebur", tipo.RetornarAssemblyQualifiedName());
         }
 
     }

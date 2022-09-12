@@ -65,7 +65,8 @@ namespace Snebur.VisualStudio
 
         public static string RetornarAssemblyQualifiedNameListaTipoEnum(Type tipo)
         {
-            return RetornarAssemblyQualifiedName(tipo);
+            return tipo.RetornarAssemblyQualifiedName();
+            //return RetornarAssemblyQualifiedName(tipo);
         }
     }
 }

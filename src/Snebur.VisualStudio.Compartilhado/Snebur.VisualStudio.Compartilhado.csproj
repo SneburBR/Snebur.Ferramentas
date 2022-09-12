@@ -187,5 +187,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensao\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

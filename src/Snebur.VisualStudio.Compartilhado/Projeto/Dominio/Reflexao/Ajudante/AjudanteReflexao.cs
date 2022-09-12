@@ -58,6 +58,10 @@ namespace Snebur.VisualStudio
 
         private static string RetornarDeclaracaoTipoColecao(Type tipo)
         {
+            if (!tipo.IsGenericType)
+            {
+                throw new Exception($"O tipo {tipo.Name} não é suportado pelo domínio. Utilize tipo genérico ex List<>");
+            }
             var tipoDefinicao = tipo.GetGenericTypeDefinition();
 
             if (tipo.GetGenericArguments().Count() != 1)
@@ -133,16 +137,7 @@ namespace Snebur.VisualStudio
 
         }
 
-        private static string RetornarAssemblyQualifiedName(Type tipo)
-        {
-            var q = tipo.AssemblyQualifiedName;
-            var posicao = q.IndexOf(", Version");
-            if (posicao > 0)
-            {
-                return q.Substring(0, posicao).Trim();
-            }
-            return q;
-        }
+      
 
     }
 }

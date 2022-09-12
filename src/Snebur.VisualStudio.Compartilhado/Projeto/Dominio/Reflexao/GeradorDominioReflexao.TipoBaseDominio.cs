@@ -102,7 +102,8 @@ namespace Snebur.VisualStudio
             var declaracaoReflexaoListaBaseDominio = AjudanteReflexao.RetornarDeclaracaoListaTipoBaseDominio(tipo);
             //var caminhoTipo = AjudanteReflexao.RetornarCaminhoListaTipoBaseDominio(tipo);
             var nomeTipo = AjudanteReflexao.RetornarNomeListaTipoBaseDominio(tipo);
-            var assemblyQualifiedName = AjudanteReflexao.RetornarAssemblyQualifiedNameListaTipoBaseDominio(tipo);
+            var assemblyQualifiedName = tipo.RetornarAssemblyQualifiedNameList();
+                //AjudanteReflexao.RetornarAssemblyQualifiedNameListaTipoBaseDominio(tipo);
             var caminhoTipoReflexaoBaseDominio = AjudanteReflexao.RetornarDeclaracaoTipoBaseDominio(tipo);
 
             var retorno = String.Format("const {0} = new Snebur.Reflexao.TipoListaBaseDominio(\"{1}\", \"{2}\", \"{3}\",{4});",

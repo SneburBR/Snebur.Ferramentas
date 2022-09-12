@@ -342,7 +342,7 @@ namespace Snebur.VisualStudio.Reflexao
                     }
                     else
                     {
-                        throw new NotImplementedException(tipo.Namespace);
+                        throw new Exception($"O tipo {tipo.Namespace}.{tipo.Name} não é suportado pelo domínio");
                     }
                 }
                 return tipo.Namespace;

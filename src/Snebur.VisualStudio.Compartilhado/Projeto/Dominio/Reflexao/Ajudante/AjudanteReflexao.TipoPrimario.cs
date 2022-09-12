@@ -18,7 +18,8 @@ namespace Snebur.VisualStudio
 
         public static string RetornarAssemblyQualifiedNameTipoPrimario(Type tipo)
         {
-            return AjudanteReflexao.RetornarAssemblyQualifiedName(tipo);
+            return tipo.RetornarAssemblyQualifiedName();
+            //return AjudanteReflexao.RetornarAssemblyQualifiedName_NOVO(tipo);
         }
 
         //Lista
@@ -34,7 +35,8 @@ namespace Snebur.VisualStudio
 
         public static string RetornarAssemblyQualifiedNameListaTipoPrimario(Type tipo)
         {
-            return AjudanteReflexao.RetornarAssemblyQualifiedName(tipo);
+            return tipo.RetornarAssemblyQualifiedName();
+            //return AjudanteReflexao.RetornarAssemblyQualifiedName_NOVO(tipo);
         }
 
     }
