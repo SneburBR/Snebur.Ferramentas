@@ -102,6 +102,7 @@
     <Compile Include="Publicacao\InfoVersao.cs" />
     <Compile Include="Publicacao\PublicacaoConfig.cs" />
     <Compile Include="ToolWindows\Migracao\AmbienteViewModel.cs" />
+    <Compile Include="ToolWindows\Migracao\MigrationWindowControl.Validacao.cs" />
     <Compile Include="ToolWindows\Migracao\MigrationWindowControl.xaml.cs">
       <DependentUpon>MigrationWindowControl.xaml</DependentUpon>
     </Compile>
