@@ -21,6 +21,7 @@ namespace Snebur.VisualStudio
         }
 
         [Guid("15f26c1c-d719-44fd-ab37-805acd9430a5")]
+        //[Guid("0fdbfc2f-fb91-4a98-9cd6-3a62c467be44")]
         internal class Pane : ToolWindowPane
         {
             public Pane()

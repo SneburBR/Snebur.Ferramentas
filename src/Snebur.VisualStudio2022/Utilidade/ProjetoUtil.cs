@@ -221,8 +221,7 @@ namespace Snebur.VisualStudio
             //var aaaa = dte.Solution.FileName;
 
             var projetosStartup = (Array)sb.StartupProjects;
-
-            if (projetosStartup.Length > 0)
+            if (projetosStartup?.Length > 0)
             {
                 DefinirProjetosInicializacao(dte, projetosStartup);
             }

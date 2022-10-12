@@ -64,6 +64,9 @@ namespace Snebur.VisualStudio
             this.InitializeComponent();
             this.DataContext = this;
             this.Loaded += this.This_Loaded;
+
+            //this.Foreground = Repositorio.BrushWindowText;
+            //this.Background = Repositorio.BrushBackground;
         }
 
         private async void This_Loaded(object sender, RoutedEventArgs e)
@@ -89,7 +92,6 @@ namespace Snebur.VisualStudio
             {
                 this.Ambientes.Add(new AmbienteViewModel(ambiente));
             }
-
         }
 
         private void GerenciadorProjeto_SolucaoAberta(object sender, EventArgs e)
@@ -333,7 +335,10 @@ namespace Snebur.VisualStudio
 
         }
 
-        private void IniciarGeracaoScriptInterno(Project projetoMigracao, Project projetoEntidades, DbMigrator migrador, Assembly assemblyMigracao)
+        private void IniciarGeracaoScriptInterno(Project projetoMigracao,
+                                                 Project projetoEntidades,
+                                                 DbMigrator migrador, 
+                                                 Assembly assemblyMigracao)
         {
             //ThreadHelper.ThrowIfNotOnUIThread();
             try

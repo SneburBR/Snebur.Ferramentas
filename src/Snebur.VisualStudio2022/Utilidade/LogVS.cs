@@ -94,7 +94,7 @@ namespace Snebur.VisualStudio
             Application.Current.Dispatcher.BeginInvoke(() =>
             {
                 this.Logs?.Add(new LogMensagemViewModel(mensagem, tipLogo, acao));
-                OutputWindowControl.Instacia?.ScrollLog?.ScrollToBottom();
+                OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
             });
         }
 

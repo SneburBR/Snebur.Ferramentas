@@ -206,6 +206,7 @@ namespace Snebur.VisualStudio
                  { "Zyoncore",   CaminhosUtil.CaminhoAssemblySnebur },
                  { "Snebur.Comunicacao", CaminhosUtil.CaminhoAssemblySneburComunicao },
                  { "Snebur.AcessoDados", CaminhosUtil.CaminhoAssemblySneburAcessoDados },
+                 { "Snebur.Globalizacao", CaminhosUtil.CaminhoAssemblySneburGlobalizacao },
                  { "Snebur.AcessoDados.Servidor", CaminhosUtil.CaminhoAssemblySneburAcessoDadosServidor },
                  { "Snebur.AcessoDados.Migracao", CaminhosUtil.CaminhoAssemblySneburAcessoDadosMigracao },
                  { "Snebur.Depuracao", CaminhosUtil.CaminhoAssemblySneburDepuracao},

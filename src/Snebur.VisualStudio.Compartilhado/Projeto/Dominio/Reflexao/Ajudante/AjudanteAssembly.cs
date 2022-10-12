@@ -196,7 +196,7 @@ namespace Snebur.VisualStudio
         }
 
 
-        public static Dictionary<string, string[]> AssemblyCaminhos => ThreadUtil.RetornarValorComBloqueio(ref _assemblyCaminhos, RetornarAssemblyCaminhos);
+        public static Dictionary<string, string[]> AssemblyCaminhos => LazyUtil.RetornarValorLazyComBloqueio (ref _assemblyCaminhos, RetornarAssemblyCaminhos);
 
         public static Dictionary<string, string[]> RetornarAssemblyCaminhos()
         {
@@ -204,9 +204,11 @@ namespace Snebur.VisualStudio
                  { "Snebur",   CaminhosUtil.CaminhoAssemblySnebur },
                  { "Zyoncore",   CaminhosUtil.CaminhoAssemblySnebur },
                  { "Snebur.Comunicacao", CaminhosUtil.CaminhoAssemblySneburComunicao },
+                 { "Snebur.Globalizacao", CaminhosUtil.CaminhoAssemblySneburGlobalizacao },
                  { "Snebur.AcessoDados", CaminhosUtil.CaminhoAssemblySneburAcessoDados },
                  { "Snebur.AcessoDados.Servidor", CaminhosUtil.CaminhoAssemblySneburAcessoDadosServidor },
                  { "Snebur.AcessoDados.Migracao", CaminhosUtil.CaminhoAssemblySneburAcessoDadosMigracao },
+                 { "Snebur.ServicoArquivo", CaminhosUtil.CaminhoAssemblySneburServicoArquivo },
                  { "Snebur.Depuracao", CaminhosUtil.CaminhoAssemblySneburDepuracao},
                  { "Newtonsoft.Json", CaminhosUtil.CaminhoAssemblyNewtonsoftJson },
                  { "Newtonsoft.Json.Alterado", CaminhosUtil.CaminhoAssemblyNewtonsoftJsonAlterado }

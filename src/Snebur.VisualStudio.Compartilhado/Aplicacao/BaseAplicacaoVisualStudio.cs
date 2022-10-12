@@ -12,14 +12,14 @@ namespace Snebur.VisualStudio
         private ILogVS _logVS;
         private IGerenciadorProjetos _gerenciadorProjetos;
 
-        public IConfiguracaoGeral ConfiguracaoGeral => ThreadUtil.RetornarValorComBloqueio(ref this._configuracaoGeral,
+        public IConfiguracaoGeral ConfiguracaoGeral => LazyUtil.RetornarValorLazyComBloqueio(ref this._configuracaoGeral,
                                                                                            this.RetornarConfiguracaoGeral);
 
-        public ILogVS LogVS => ThreadUtil.RetornarValorComBloqueio(ref this._logVS,
-                                                                   this.RetornarLogVS);
+        public ILogVS LogVS => LazyUtil.RetornarValorLazyComBloqueio(ref this._logVS,
+                                                                     this.RetornarLogVS);
 
-        public IGerenciadorProjetos GerenciadorProjetos => ThreadUtil.RetornarValorComBloqueio(ref this._gerenciadorProjetos,
-                                                                                               this.RetornarGerenciadorProjetos);
+        public IGerenciadorProjetos GerenciadorProjetos => LazyUtil.RetornarValorLazyComBloqueio(ref this._gerenciadorProjetos,
+                                                                                                 this.RetornarGerenciadorProjetos);
 
         protected abstract IConfiguracaoGeral RetornarConfiguracaoGeral();
         protected abstract ILogVS RetornarLogVS();

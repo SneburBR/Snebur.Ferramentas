@@ -17,15 +17,15 @@ namespace Snebur.VisualStudio
         private static Dictionary<string, string> _tiposHtml = null;
         private static Dictionary<string, string> _tiposSvg = null;
 
-        private static Dictionary<string, string> TagsControles = ThreadUtil.RetornarValorComBloqueio(ref TagElementoUtil._tiposControles,
+        private static Dictionary<string, string> TagsControles = LazyUtil.RetornarValorLazyComBloqueio(ref TagElementoUtil._tiposControles,
                                                                                                           TagElementoUtil.RetornarTagsControle);
-        private static Dictionary<string, string> TagsComponentes = ThreadUtil.RetornarValorComBloqueio(ref TagElementoUtil._tiposComponentes,
+        private static Dictionary<string, string> TagsComponentes = LazyUtil.RetornarValorLazyComBloqueio(ref TagElementoUtil._tiposComponentes,
                                                                                                             TagElementoUtil.RetornarTagsComponentes);
 
-        private static Dictionary<string, string> TagsHtml = ThreadUtil.RetornarValorComBloqueio(ref TagElementoUtil._tiposHtml,
+        private static Dictionary<string, string> TagsHtml = LazyUtil.RetornarValorLazyComBloqueio(ref TagElementoUtil._tiposHtml,
                                                                                                      TagElementoUtil.RetornarTagsHtml);
 
-        private static Dictionary<string, string> TagsSvg = ThreadUtil.RetornarValorComBloqueio(ref TagElementoUtil._tiposSvg,
+        private static Dictionary<string, string> TagsSvg = LazyUtil.RetornarValorLazyComBloqueio(ref TagElementoUtil._tiposSvg,
                                                                                                     TagElementoUtil.RetornarTagsSvg);
 
         public static string RetornarTipo(string tagName)

@@ -21,6 +21,8 @@ namespace Snebur.VisualStudio
 
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_DEPURACAO = @"Snebur.Framework\src\Depuracao\bin\Debug\Snebur.Depuracao.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_COMUNICACAO = @"Snebur.Framework\src\Comunicacao\src\Comunicacao\bin\Debug\Snebur.Comunicacao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_GLOBALIZACAO = @"Snebur.Framework\src\Globalizacao\bin\Debug\Snebur.Globalizacao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_SERVICO_ARQUIVO = @"Snebur.Framework\src\ServicoArquivo\src\ServicoArquivo\bin\Debug\Snebur.ServicoArquivo.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS = @"Snebur.Framework\src\AcessoDados\src\AcessoDados\bin\Debug\Snebur.AcessoDados.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_SERVIDOR = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Servidor\bin\Debug\Snebur.AcessoDados.Servidor.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_MIGRACAO = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Migracao\bin\Debug\Snebur.AcessoDados.Migracao.dll";
@@ -105,10 +107,10 @@ namespace Snebur.VisualStudio
             {
                 //if (ProjetoUtil.IsProjetoZyoncore)
                 //{
-                var caminhoZyoncore = Path.Combine(CaminhosUtil.CaminhoProjetos, CAMINHO_PARCIAL_ASSEMBLY_ZYONCORE);
                 var caminhoSnebur = Path.Combine(CaminhosUtil.CaminhoProjetos, CAMINHO_PARCIAL_ASSEMBLY_SNEBUR);
+                //var caminhoZyoncore = Path.Combine(CaminhosUtil.CaminhoProjetos, CAMINHO_PARCIAL_ASSEMBLY_ZYONCORE);
                 //}
-                return new string[] { caminhoZyoncore , caminhoSnebur };
+                return new string[] { caminhoSnebur /*, caminhoZyoncore*/ };
             }
         }
 
@@ -156,6 +158,21 @@ namespace Snebur.VisualStudio
             }
         }
 
+        public static string[] CaminhoAssemblySneburGlobalizacao
+        {
+            get
+            {
+                return new string[] { Path.Combine(CaminhosUtil.CaminhoProjetos, CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_GLOBALIZACAO) };
+            }
+        }
+
+        public static string[] CaminhoAssemblySneburServicoArquivo
+        {
+            get
+            {
+                return new string[] { Path.Combine(CaminhosUtil.CaminhoProjetos, CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_SERVICO_ARQUIVO) };
+            }
+        }
 
         public static string RetornarNomeSemExtensao(string caminho, bool removerTodas = false)
         {

@@ -49,8 +49,13 @@ namespace Snebur.VisualStudio
             var bancoCaminhos = conexao.Mapear<BancoCaminho>(sql);
             if (bancoCaminhos.Count == 0)
             {
+                if(nomeBancoDados == "Zyoncore.SigiX")
+                {
+                    return @"G:\Program Files\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\DATA\";
+                }
                 throw new Exception($"A connectionString {nomeConnectionString} não possui acesso ao banco master");
             }
+
             if (bancoCaminhos.Count > 1)
             {
                 throw new Exception($"A connectionString {nomeConnectionString}, foi encontra mais de um caminho para banco de dados {nomeBancoDados}");
