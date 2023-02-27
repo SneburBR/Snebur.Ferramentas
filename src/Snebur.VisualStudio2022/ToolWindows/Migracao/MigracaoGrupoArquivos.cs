@@ -59,7 +59,9 @@ namespace Snebur.VisualStudio
             return scripts;
         }
 
-        private static List<string> RetornarScriptsAdicioanarFileGroup(string diretorioBancoDados, string nomeBancoDados, string nomeGrupoArquivo)
+        private static List<string> RetornarScriptsAdicioanarFileGroup(string diretorioBancoDados, 
+                                                                       string nomeBancoDados, 
+                                                                       string nomeGrupoArquivo)
         {
             var sqls = new List<string>();
             //var nomeGrupoArquivo = $"{nomeFonteDados}_ {grupoArquivo}";

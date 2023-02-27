@@ -337,7 +337,7 @@ namespace Snebur.VisualStudio
 
         private void IniciarGeracaoScriptInterno(Project projetoMigracao,
                                                  Project projetoEntidades,
-                                                 DbMigrator migrador, 
+                                                 DbMigrator migrador,
                                                  Assembly assemblyMigracao)
         {
             //ThreadHelper.ThrowIfNotOnUIThread();
@@ -778,7 +778,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private void ExecutarScripts(Project projetoMigracao, 
+        private void ExecutarScripts(Project projetoMigracao,
                                      Project projetoEntidade)
         {
             try
@@ -847,11 +847,11 @@ namespace Snebur.VisualStudio
             var scripts = ScriptNovoBancoDados.RetornarScripts(this.NomeConnectionString);
             var connectionScriptMastar = ScriptUtil.RetornarConnectionStringBancoMastar(this.NomeConnectionString);
             var conexao = new Conexao(connectionScriptMastar);
-            foreach(var script in scripts)
+            foreach (var script in scripts)
             {
                 conexao.ExecutarComando(script);
             }
-  
+
         }
         #region Validar a proxima migração
 
@@ -898,10 +898,18 @@ namespace Snebur.VisualStudio
             }
         }
 
-     
 
-        private string RetornarProximaMigracao(Assembly assemblyMigracao)
+        //private string RetornarProximaMigracao(Assembly assemblyMigracao)
+        //{
+        //    this.Log("Verificando migrações pendente e retornando a proxima versão");
+
+         
+        //}
+
+        private string RetornarProximaMigracao_Antigo(Assembly assemblyMigracao)
         {
+            this.Log("Verificando migrações pendentes");
+
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
             var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
             var migrador = new DbMigrator(instanciaConfiguracao);
@@ -945,6 +953,7 @@ namespace Snebur.VisualStudio
             var atributoTabela = TipoUtil.RetornarAtributo(tipoEntidade, typeof(TabelaAttribute), true);
             return ReflexaoUtil.RetornarValorPropriedade<TabelaAttribute>(x => x.Name, atributoTabela).ToString(); ;
         }
+
         #endregion
 
 

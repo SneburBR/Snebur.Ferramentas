@@ -17,15 +17,15 @@ namespace Snebur.VisualStudio
 
         protected override List<string> RetornarNomesPastaServidor()
         {
-            if (_nomesPastaServidor == null)
+            if (this._nomesPastaServidor == null)
             {
-                _nomesPastaServidor = ThreadUtil.RetornarValorComBloqueio(ref this._nomesPastaServidor,
-                                                                       base.RetornarNomesPastaServidor);
+                this._nomesPastaServidor = LazyUtil.RetornarValorLazyComBloqueio(ref this._nomesPastaServidor,
+                                                                                 base.RetornarNomesPastaServidor);
 
 
 
             }
-            return _nomesPastaServidor;
+            return this._nomesPastaServidor;
         }
     }
 }

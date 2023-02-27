@@ -130,7 +130,15 @@ namespace Snebur.VisualStudio
 
                 if (isAdicionarMigracao)
                 {
-                    var proximaMigracao = this.RetornarProximaMigracao(assemblyMigracao);
+                    var ajudante = new AjudanteRetornarProximaMigracao(assemblyMigracao);
+                    var proximaMigracao = ajudante.RetornarProximaMigracao(); 
+
+                    if (ajudante.IsErro)
+                    {
+                        this.LogErro(ajudante.MensagemErro);
+                        return;
+                    }
+
                     this.LogSucesso($"Adicionando migração  {proximaMigracao}");
 
                     //dte.Solution.Properties.Item("StartupProject").Value = projetoMigracao.Name;
@@ -226,7 +234,7 @@ namespace Snebur.VisualStudio
                         }
                     }
                 }
-              
+
                 if (TipoUtil.TipoIgualOuSubTipo(propriedade.PropertyType, typeof(string)))
                 {
                     if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(ValidacaoTextoTamanhoAttribute)))
@@ -302,7 +310,7 @@ namespace Snebur.VisualStudio
                                 validacoes.Add($"Adicione o atributo {nameof(NaoMapearAttribute)}  propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name}. Isso é necessário existe mais de um RelacaoFilhos para a entidade {tipoItemEntidade.Name}.");
                             }
 
-                            
+
                             if (String.IsNullOrWhiteSpace(valorNomePropriedadeChaveEstrangeira?.ToString()))
                             {
                                 validacoes.Add($"Adicione o  nome do propriedade chave estrangeira no atributo  {nameof(RelacaoFilhosAttribute)} na  propriedade {propriedade.Name} na entidade {propriedade.DeclaringType.Name}. Isso é necessário existe mais de um RelacaoFilhos para a entidade {tipoItemEntidade.Name}.");
@@ -317,7 +325,7 @@ namespace Snebur.VisualStudio
                                 validacoes.Add($" RelacaoFilhos {propriedade.DeclaringType.Name}.{propriedade.Name}. A propriedade da relação chave estrangeira '{valorNomePropriedadeChaveEstrangeira}' não foi encontrada em {tipoItemEntidade.Name}.");
                             }
                         }
-                        
+
                     }
                 }
             }

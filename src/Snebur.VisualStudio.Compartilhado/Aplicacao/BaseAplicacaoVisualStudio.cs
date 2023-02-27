@@ -31,7 +31,7 @@ namespace Snebur.VisualStudio
 
 
         private static BaseAplicacaoVisualStudio _instancia;
-        public static BaseAplicacaoVisualStudio Instancia => ThreadUtil.RetornarValorComBloqueio(ref _instancia, () =>
+        public static BaseAplicacaoVisualStudio Instancia => LazyUtil.RetornarValorLazyComBloqueio(ref _instancia, () =>
         {
             if (Atual is BaseAplicacaoVisualStudio instancia)
             {

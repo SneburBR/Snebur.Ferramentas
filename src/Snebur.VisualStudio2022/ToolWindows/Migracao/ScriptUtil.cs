@@ -49,9 +49,9 @@ namespace Snebur.VisualStudio
             var bancoCaminhos = conexao.Mapear<BancoCaminho>(sql);
             if (bancoCaminhos.Count == 0)
             {
-                if(nomeBancoDados == "Zyoncore.SigiX")
+                if(nomeConnectionString == "Zyoncore.FotoAlbum" || nomeBancoDados == "FotoAlbum"  )
                 {
-                    return @"G:\Program Files\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\DATA\";
+                    return @"G:\Program Files\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\DATA\FotoAlbum\";
                 }
                 throw new Exception($"A connectionString {nomeConnectionString} não possui acesso ao banco master");
             }

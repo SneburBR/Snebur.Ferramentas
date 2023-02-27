@@ -39,7 +39,8 @@ namespace Snebur.VisualStudio
 
             var tiposExtensaoEntidade = tipos.Where(x => this.IsExtensaoEntidade(x)).ToList();
 
-            foreach (var grupoNamespace in tiposExtensaoEntidade.GroupBy(x => this.RetornarTipoEntidade(x).Namespace))
+            var gruposEntidades = tiposExtensaoEntidade.GroupBy(x => this.RetornarTipoEntidade(x).Namespace);
+            foreach (var grupoNamespace in gruposEntidades)
             {
                 sb.AppendLine($"namespace " + grupoNamespace.Key);
                 sb.AppendLine("{");
@@ -55,7 +56,9 @@ namespace Snebur.VisualStudio
             }
 
             var tiposClasses = tipos.Where(x => this.IsClasseNegocio(x)).ToList();
-            foreach (var grupoNamespace in tiposClasses.GroupBy(x => x.Namespace))
+            var gruposClasse = tiposClasses.GroupBy(x => x.Namespace);
+
+            foreach (var grupoNamespace in gruposClasse)
             {
                 sb.AppendLine($"namespace " + grupoNamespace.Key);
                 sb.AppendLine("{");

@@ -320,7 +320,10 @@ namespace Snebur.VisualStudio
                     using (var leitor = new StreamReader(fsOriginal, this.CODIFICACAO))
                     {
                         var primeiraLinha = leitor.ReadLine();
-                        return !primeiraLinha.Contains(NORMALIZADO);
+                        if(primeiraLinha!= null)
+                        {
+                            return !primeiraLinha.Contains(NORMALIZADO);
+                        }
                     }
                 }
             }

@@ -32,17 +32,18 @@ namespace Snebur.VisualStudio
             }
 
             var tipos = this.RetornarTodosTipo();
-
             var sb = new StringBuilder();
             sb.AppendLine("using System;");
             sb.AppendLine("using System.Reflection;");
             sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("using Snebur;");
             sb.AppendLine("using Snebur.AcessoDados;");
             sb.AppendLine("");
 
             var tiposExtensaoEntidade = tipos.Where(x => this.IsExtensaoEntidade(x)).ToList();
 
-            foreach (var grupoNamespace in tiposExtensaoEntidade.GroupBy(x => this.RetornarTipoEntidade(x).Namespace))
+            var gruposEntidade = tiposExtensaoEntidade.GroupBy(x => this.RetornarTipoEntidade(x).Namespace);
+            foreach (var grupoNamespace in gruposEntidade)
             {
 
                 sb.AppendLine($"namespace " + grupoNamespace.Key);
@@ -57,7 +58,8 @@ namespace Snebur.VisualStudio
             }
 
             var tiposClasses = tipos.Where(x => this.IsClasseNegocio(x)).ToList();
-            foreach (var grupoNamespace in tiposClasses.GroupBy(x => x.Namespace))
+            var gruposClasse = tiposClasses.GroupBy(x => x.Namespace);
+            foreach (var grupoNamespace in gruposClasse)
             {
                 sb.AppendLine($"namespace " + grupoNamespace.Key);
                 sb.AppendLine("{");

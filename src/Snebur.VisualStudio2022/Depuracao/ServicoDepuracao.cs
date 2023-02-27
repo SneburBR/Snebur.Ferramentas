@@ -27,7 +27,7 @@ namespace Snebur.VisualStudio
         public ServicoDepuracao()
         {
             this.Porta = ConfiguracaoGeral.Instance.PortaDepuracao;
-            this.Iniciar();
+            //this.Iniciar();
         }
 
         public void Iniciar()
@@ -54,7 +54,7 @@ namespace Snebur.VisualStudio
                     OnSend = this.ServicoWebSocket_MensagemEnviada,
                     OnConnected = this.ServicoWebSocketTeste_SessaoConectado,
                     OnDisconnect = this.ServicoWebSocketTeste_SessaoDesconetado,
-                    TimeOut = new TimeSpan(0, 5, 0)
+                    TimeOut = new TimeSpan(0, 5, 0),
                 };
                 servicoWebSocket.Inicializar();
                 this.ServidorWebSocket = servicoWebSocket;
