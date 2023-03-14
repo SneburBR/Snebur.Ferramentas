@@ -34,6 +34,8 @@ namespace Snebur.VisualStudio
 
         //public static DTE2 DTE { get; private set; }
 
+        public bool IsOcupado { get; private set; }
+
         public OutputWindowControl()
         {
             this.InitializeComponent();
@@ -81,15 +83,16 @@ namespace Snebur.VisualStudio
 
         public async Task NormalizarProjetosReferenciasAsync()
         {
-            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
+            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos || 
+                this.IsOcupado)
             {
                 return;
             }
 
             try
             {
+                await this.OcuparAsync();
                 this.Logs.Clear();
-                this.BtnNormalizar.IsEnabled = false;
                 ConfiguracaoVSUtil.IsNormalizandoTodosProjetos = true;
                 await this.NormalizarInternoAsync(false);
             }
@@ -99,8 +102,8 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                this.BtnNormalizar.IsEnabled = true;
                 ConfiguracaoVSUtil.IsNormalizandoTodosProjetos = false;
+                await this.DesocuparAsync();
             }
         }
 
@@ -381,6 +384,7 @@ namespace Snebur.VisualStudio
 
         internal async Task OcuparAsync()
         {
+            this.IsOcupado = true;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.IsEnabled = false;
             this.Cursor = Cursors.Wait;
@@ -391,6 +395,7 @@ namespace Snebur.VisualStudio
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.IsEnabled = true;
             this.Cursor = Cursors.Arrow;
+            this.IsOcupado = false;
         }
     }
 

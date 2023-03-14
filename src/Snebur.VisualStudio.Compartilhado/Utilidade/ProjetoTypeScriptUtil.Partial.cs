@@ -56,7 +56,8 @@ namespace Snebur.VisualStudio
                 if (dataHoraScriptNormalizado != null &&
                     dataHoraScriptNormalizado > NormalizarCompilacaoJavascript.DATA_NORMALIZACAO_IMPLEMENTADA)
                 {
-                    if (dataHoraScriptNormalizadoDebug == null || (dataHoraScriptNormalizado > dataHoraScriptNormalizadoDebug))
+                    if (dataHoraScriptNormalizadoDebug != null && 
+                        (dataHoraScriptNormalizado > dataHoraScriptNormalizadoDebug))
                     {
                         ProjetoTypeScriptUtil.CopiarScripts(caminhoScript, caminhoScriptDebug);
                     }

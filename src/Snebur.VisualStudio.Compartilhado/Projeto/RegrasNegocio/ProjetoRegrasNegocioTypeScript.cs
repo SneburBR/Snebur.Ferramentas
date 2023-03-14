@@ -181,7 +181,7 @@ namespace Snebur.VisualStudio
                 sb.AppendLine($"\t{TipoUtil.RetornarCaminhoTipoTS(tipoEntidade)}.prototype.{metodo.Name}Async = function({parametrosConcatenados}) : Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> ");
                 sb.AppendLine("\t{");
                 sb.AppendLine($"\t\tlet {parametroEntidade.Name} = this");
-                sb.AppendLine($"\t\treturn new Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> (async resolver =>");
+                sb.AppendLine($"\t\treturn new Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> (resolver =>");
                 sb.AppendLine("\t\t{");
 
                 var parametrosRegras = String.Join(", ", parametrosSemContexto.Select(x => this.RetornarParametroRegraNegocio(x)));
@@ -252,7 +252,7 @@ namespace Snebur.VisualStudio
                 sb.AppendLine($"\t\tpublic  {metodo.Name}Async = function({parametrosConcatenados}) : Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> ");
                 sb.AppendLine("\t\t{");
 
-                sb.AppendLine($"\t\treturn new Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> (async resolver =>");
+                sb.AppendLine($"\t\treturn new Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}> (resolver =>");
                 sb.AppendLine("\t\t\t{");
 
                 var parametrosRegras = String.Join(", ", metodo.GetParameters().Select(x => this.RetornarParametroRegraNegocio(x)));

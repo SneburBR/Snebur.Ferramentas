@@ -18,7 +18,7 @@ namespace Snebur.VisualStudio
         private const string REGION_CONSTRUTOR_CONSULTAS_TS = "//#region Construtor Consultas";
 
 
-        public ProjetoContextoDados(ProjetoViewModel projetoVM, 
+        public ProjetoContextoDados(ProjetoViewModel projetoVM,
                                     ConfiguracaoProjetoContextoDados configuracaoProjeto,
                                     FileInfo arquivoProjeto,
                                     string caminhoConfiguracao) :
@@ -99,7 +99,7 @@ namespace Snebur.VisualStudio
         //    //}
 
         //}
-         
+
         private void SalvarContextoTS(List<string> linhasConsultaEntity)
         {
             var caminhoAbsolutoContextoDadosTS = CaminhoUtil.RetornarCaminhosAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosTS, this.CaminhoProjeto);
@@ -161,10 +161,11 @@ namespace Snebur.VisualStudio
                     //public AtividadesUsuario: Snebur.AcessoDados.IConsultaEntidade<PhotosApp.Entidades.AtividadeUsuario>;
                     //public DbSet<AtividadeUsuario> AtividadesUsuario { get; set; }
 
+
+                    var comentar = linha.TrimStart().StartsWith("//") ? "//" : "";
                     var nomeConsulta = linha.Substring(linha.IndexOf(">") + 1, linha.IndexOf("{") - linha.IndexOf(">") - 1).Trim();
                     var nomeTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
-
-                    var linhaTS = String.Format("{0}public readonly {1} : Snebur.AcessoDados.IConsultaEntidade<{2}.{3}>; ", espacoBranco, nomeConsulta, this.ConfiguracaoProjeto.NamespaceEntidades, nomeTipoEntidade);
+                    var linhaTS = $"{espacoBranco}{comentar}public readonly {nomeConsulta} : Snebur.AcessoDados.IConsultaEntidade<{this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}>;";
                     linhasTS.Add(linhaTS);
                 }
                 else
@@ -194,8 +195,6 @@ namespace Snebur.VisualStudio
         private List<string> RetornarLinhasConstrutorConsultaTS(List<string> linhasConsultaEntity)
         {
 
-
-
             var linhasTS = new List<string>();
 
             var espacoBranco = "            ";
@@ -206,13 +205,14 @@ namespace Snebur.VisualStudio
             {
                 if (linha.Contains("DbSet"))
                 {
+                    var comentar = linha.TrimStart().StartsWith("//") ? "//" : "";
                     // this.AtividadesUsuario = new Snebur.AcessoDados.ConstrutorConsultaEntidade<PhotosApp.Entidades.AtividadeUsuario>(this, PhotosApp.Entidades.AtividadeUsuario.GetType() as r.TipoBaseDominio);
                     //public DbSet<AtividadeUsuario> AtividadesUsuario { get; set; }
 
                     var nomeConsulta = linha.Substring(linha.IndexOf(">") + 1, linha.IndexOf("{") - linha.IndexOf(">") - 1).Trim();
                     var nomeTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
 
-                    var linhaTS = String.Format("{0}this.{1} = new Snebur.AcessoDados.ConstrutorConsultaEntidade<{2}.{3}>(this, {2}.{3}.GetType() as r.TipoEntidade); ", espacoBranco, nomeConsulta, this.ConfiguracaoProjeto.NamespaceEntidades, nomeTipoEntidade);
+                    var linhaTS = $"{espacoBranco}{comentar}this.{nomeConsulta} = new Snebur.AcessoDados.ConstrutorConsultaEntidade<{this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}>(this, {this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}.GetType() as r.TipoEntidade); ";
                     linhasTS.Add(linhaTS);
                 }
                 else
