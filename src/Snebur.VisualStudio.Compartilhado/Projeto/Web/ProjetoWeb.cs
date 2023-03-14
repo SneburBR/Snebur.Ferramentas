@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
+﻿using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,11 +12,10 @@ namespace Snebur.VisualStudio
 
         public string Checksum => ChecksumUtil.RetornarChecksum(this.CaminhoAssembly);
 
-        public ProjetoWeb(Project projectVS,
-                          TConfiguracao configuracaProjeto,
+        public ProjetoWeb(ProjetoViewModel projetoVM, 
+                          TConfiguracao configuracaProjeto, 
                           FileInfo arquivoProjeto,
-                          string caminhoConfiguracao) :
-                          base(projectVS, configuracaProjeto, arquivoProjeto, caminhoConfiguracao)
+                          string caminhoConfiguracao) : base(projetoVM, configuracaProjeto, arquivoProjeto, caminhoConfiguracao)
         {
             this.CaminhoBin = Path.Combine(this.CaminhoProjeto, "bin");
         }

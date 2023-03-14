@@ -16,16 +16,16 @@ namespace Snebur.VisualStudio
         private const string CAMINHO_PARCIAL_CONTROLES_TYPESCRIPT = @"Snebur.TS\src\Snebur.UI\src\Controle\ElementoControle\ElementoControle.Registrar.ts";
         private const string CAMINHO_PARCIAL_ELEMENTOS_APRESENTACAO_TYPESCRIPT = @"Snebur.TS\src\Snebur.UI\src\Componentes\Registrar\ComponentesApresentacao.Registrar.ts";
 
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR = @"Snebur.Framework\src\Core\bin\Debug\Snebur.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR = @"Snebur.Framework\src\Core\bin\Debug\net48\Snebur.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_ZYONCORE = @"Snebur.Framework\src\Core\bin\Debug\Zyoncore.dll";
 
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_DEPURACAO = @"Snebur.Framework\src\Depuracao\bin\Debug\Snebur.Depuracao.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_COMUNICACAO = @"Snebur.Framework\src\Comunicacao\src\Comunicacao\bin\Debug\Snebur.Comunicacao.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_GLOBALIZACAO = @"Snebur.Framework\src\Globalizacao\bin\Debug\Snebur.Globalizacao.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_SERVICO_ARQUIVO = @"Snebur.Framework\src\ServicoArquivo\src\ServicoArquivo\bin\Debug\Snebur.ServicoArquivo.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS = @"Snebur.Framework\src\AcessoDados\src\AcessoDados\bin\Debug\Snebur.AcessoDados.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_SERVIDOR = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Servidor\bin\Debug\Snebur.AcessoDados.Servidor.dll";
-        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_MIGRACAO = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Migracao\bin\Debug\Snebur.AcessoDados.Migracao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_DEPURACAO = @"Snebur.Framework\src\Depuracao\bin\Debug\net48\Snebur.Depuracao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_COMUNICACAO = @"Snebur.Framework\src\Comunicacao\src\Comunicacao\bin\Debug\net48\Snebur.Comunicacao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_GLOBALIZACAO = @"Snebur.Framework\src\Globalizacao\bin\Debug\net48\Snebur.Globalizacao.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_SERVICO_ARQUIVO = @"Snebur.Framework\src\ServicoArquivo\src\ServicoArquivo\bin\Debug\net48\Snebur.ServicoArquivo.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS = @"Snebur.Framework\src\AcessoDados\src\AcessoDados\bin\Debug\net48\Snebur.AcessoDados.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_SERVIDOR = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Servidor\bin\Debug\net48\Snebur.AcessoDados.Servidor.dll";
+        private const string CAMINHO_PARCIAL_ASSEMBLY_SNEBUR_ACESSO_DADOS_MIGRACAO = @"Snebur.Framework\src\AcessoDados\src\AcessoDados.Migracao\bin\Debug\net48\Snebur.AcessoDados.Migracao.dll";
 
         private const string CAMINHO_PARCIAL_ASSEMBLY_NEWTONSOFT_JSON = @"Snebur.Framework\src\Newtonsoft.Json\Newtonsoft.Json\bin\Debug\Net45\Newtonsoft.Json.dll";
         private const string CAMINHO_PARCIAL_ASSEMBLY_NEWTONSOFT_JSON_ALTERADO = @"Snebur.Framework\src\Newtonsoft.Json.Alterado\bin\Debug\Newtonsoft.Json.Alterado.dll";
@@ -36,7 +36,7 @@ namespace Snebur.VisualStudio
 
         //private const string CAMINHO_PROJETOS_PADRAO = @"Projetos\TFS";
 
-        public static string CaminhoProjetos => ThreadUtil.RetornarValorComBloqueio(ref _caminhoProjetos, RetornarCaminhoProjetos);
+        public static string CaminhoProjetos => LazyUtil.RetornarValorLazyComBloqueio(ref _caminhoProjetos, RetornarCaminhoProjetos);
         public static string RetornarCaminhoProjetos()
         {
             var caminhoProejtos = ConfiguracaoGeralUtil.Instance.CaminhoProjetos;

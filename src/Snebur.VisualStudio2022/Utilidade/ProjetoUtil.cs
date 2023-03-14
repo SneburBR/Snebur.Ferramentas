@@ -1,7 +1,10 @@
-﻿using EnvDTE;
+﻿using Community.VisualStudio.Toolkit;
+using EnvDTE;
 using EnvDTE80;
+using Microsoft.Build.Framework.XamlTypes;
 using Snebur.Utilidade;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,22 +21,24 @@ namespace Snebur.VisualStudio
         public static async Task<List<BaseProjeto>> RetornarProjetosAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var projetos = new List<BaseProjeto>();
             var dte = await VSEx.GetDTEAsync();
             if (dte.Solution.Count > 0)
             {
-
                 var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
-
                 //var UIH = (EnvDTE.UIHierarchy)dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Object;
 
                 foreach (var projetoVS in projetosVS)
                 {
                     try
                     {
-                        var projetoVS2 = (DteExtensao.Project)projetoVS;
+                        var propriedadesVM = projetoVS.Properties.RetornarPropriedadesViewModel();
+                        var projetoVM = new ProjetoViewModel(projetoVS, propriedadesVM);
                         var nomeArquivoProjeto = projetoVS.FileName;
-                        if (!String.IsNullOrWhiteSpace(nomeArquivoProjeto) && (File.Exists(Path.GetFullPath(projetoVS.FileName))))
+
+                        if (!String.IsNullOrWhiteSpace(nomeArquivoProjeto) &&
+                            (File.Exists(Path.GetFullPath(projetoVS.FileName))))
                         {
                             var arquivoProjeto = new FileInfo(projetoVS.FileName);
                             var diretorioProjeto = arquivoProjeto.Directory;
@@ -52,7 +57,8 @@ namespace Snebur.VisualStudio
                             var caminhoConfiguracaoAppSettings = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_APP_SETTINGS);
 
                             //Domínio
-                            if (File.Exists(caminhoConfiguracaoDominio) && File.Exists(caminhoConfiguracaoTypeScript))
+                            if (File.Exists(caminhoConfiguracaoDominio) &&
+                                File.Exists(caminhoConfiguracaoTypeScript))
                             {
                                 throw new NotSupportedException(String.Format("Não é suportado no mesmo projetos arquivos de configuração de dominio.json e tsconfig.json juntos: Projeto {0}", projetoVS.Name));
                             }
@@ -60,12 +66,11 @@ namespace Snebur.VisualStudio
                             if (File.Exists(caminhoConfiguracaoDominio))
                             {
                                 var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
-                                projetos.Add(new ProjetoDominio(projetoVS2,
+                                projetos.Add(new ProjetoDominio(projetoVM,
                                                                 configuracaoDominio,
                                                                 arquivoProjeto,
                                                                 caminhoConfiguracaoDominio));
                                 LogVSUtil.Log($"Compilando o projeto {projetoVS.Name}");
-
                             }
 
                             if (File.Exists(caminhoConfiguracaoTypeScript))
@@ -74,7 +79,7 @@ namespace Snebur.VisualStudio
                                 LogVSUtil.Log($"Projeto TypeScript encontrado : {projetoVS.Name} ");
                                 var configuracao = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(caminhoConfiguracaoTypeScript);
                                 projetos.Add(ProjetoTypeScriptUtil.RetornarProjetoTypeScript(configuracao,
-                                                                                             projetoVS2,
+                                                                                             projetoVM,
                                                                                              arquivoProjeto,
                                                                                              caminhoConfiguracaoTypeScript));
                             }
@@ -84,7 +89,7 @@ namespace Snebur.VisualStudio
                             {
                                 LogVSUtil.Log(String.Format("Projeto ContextoDados encontrado : {0} ", projetoVS.Name));
                                 var configuracao = ProjetoContextoDados.RetornarConfiguracao(caminhoConfiguracaoContextoDados);
-                                projetos.Add(new ProjetoContextoDados(projetoVS2, configuracao, arquivoProjeto, caminhoConfiguracaoContextoDados));
+                                projetos.Add(new ProjetoContextoDados(projetoVM, configuracao, arquivoProjeto, caminhoConfiguracaoContextoDados));
                             }
 
                             //RegrasNegocio
@@ -98,7 +103,7 @@ namespace Snebur.VisualStudio
                                 var caminhoExtensaoCS = configuracao.RetornarCaminhoExtensaoCSharpCompleto(caminhoBase);
                                 if (File.Exists(caminhoExtensaoTS))
                                 {
-                                    projetos.Add(new ProjetoRegrasNegocioTypeScript(projetoVS2,
+                                    projetos.Add(new ProjetoRegrasNegocioTypeScript(projetoVM,
                                                                                     configuracao,
                                                                                     arquivoProjeto,
                                                                                     caminhoConfiguracaoContextoDados));
@@ -106,7 +111,7 @@ namespace Snebur.VisualStudio
 
                                 if (File.Exists(caminhoExtensaoCS))
                                 {
-                                    projetos.Add(new ProjetoRegrasNegocioCSharp(projetoVS2,
+                                    projetos.Add(new ProjetoRegrasNegocioCSharp(projetoVM,
                                                                                 configuracao,
                                                                                 arquivoProjeto,
                                                                                 caminhoConfiguracaoContextoDados));
@@ -117,14 +122,14 @@ namespace Snebur.VisualStudio
                             //Serviço
                             if (File.Exists(caminhoConfiguracaoServicos))
                             {
-                                LogVSUtil.Log(String.Format("Projeto servicos encontrado : {0} ", projetoVS.Name));
+                                LogVSUtil.Log(String.Format("Projeto serviços encontrado : {0} ", projetoVS.Name));
                                 var configuracaoServicoes = ProjetoServicosTypescript.RetornarConfiguracao(caminhoConfiguracaoServicos);
-                                projetos.Add(new ProjetoServicosTypescript(projetoVS2,
+                                projetos.Add(new ProjetoServicosTypescript(projetoVM,
                                                                            configuracaoServicoes,
                                                                            arquivoProjeto,
                                                                            caminhoConfiguracaoServicos));
 
-                                projetos.Add(new ProjetoServicosDotNet(projetoVS2,
+                                projetos.Add(new ProjetoServicosDotNet(projetoVM,
                                                                         configuracaoServicoes,
                                                                         arquivoProjeto,
                                                                         caminhoConfiguracaoServicos));
@@ -137,7 +142,7 @@ namespace Snebur.VisualStudio
                                 var configuracaoSass = ProjetoEstilo.RetornarConfiguracao(caminhoConfiguracaoSass);
                                 if (configuracaoSass != null && !configuracaoSass.IsIgnorar)
                                 {
-                                    projetos.Add(new ProjetoEstilo(projetoVS2,
+                                    projetos.Add(new ProjetoEstilo(projetoVM,
                                                                    configuracaoSass,
                                                                    arquivoProjeto,
                                                                    caminhoConfiguracaoSass));
@@ -157,7 +162,7 @@ namespace Snebur.VisualStudio
 
                                         var projetoTypescript = projetos.OfType<ProjetoTypeScript>().Where(x => x.ProjetoVS == projetoVS).Single();
 
-                                        projetos.Add(new ProjetoWebApresentacao(projetoVS2,
+                                        projetos.Add(new ProjetoWebApresentacao(projetoVM,
                                                                                 configuracaoProjetoWebApresentacao,
                                                                                 projetoTypescript,
                                                                                 arquivoProjeto,
@@ -167,7 +172,7 @@ namespace Snebur.VisualStudio
 
                                     case ConfiguracaoProjetoWebService configuracaoWebService:
 
-                                        projetos.Add(new ProjetoWebService(projetoVS2,
+                                        projetos.Add(new ProjetoWebService(projetoVM,
                                                                            configuracaoWebService,
                                                                            arquivoProjeto,
                                                                            caminhoConfiguracaoWebConfig));
@@ -188,7 +193,7 @@ namespace Snebur.VisualStudio
 
                 foreach (var projeto in projetos)
                 {
-                    projeto.UniqueName = ((Project)projeto.ProjetoVS).UniqueName;
+                    projeto.UniqueName = (projeto.ProjetoVS as Project).UniqueName;
                 }
             }
             else
@@ -212,6 +217,7 @@ namespace Snebur.VisualStudio
         public static void DefinirProjetosInicializacao()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
             GerenciadorProjetos.Instancia.DiretorioProjetoTypescriptInicializacao = null;
 
@@ -264,15 +270,19 @@ namespace Snebur.VisualStudio
         }
 
         //private static readonly string[] PastarIgnorar = new string[] { "build", "pr" };
-        private static readonly HashSet<string> PastarIgnorar = new() { "build", "packages", "node_modules", ".vs", ".git", "test",
-                                                                       "tests","lib", "obj", "bin", "Recursos",
-                                                                       "resources", "Properties"};
 
-        public async static Task<List<Project>> RetornarProjetosVisualStudioAsync()
+        private static readonly HashSet<string> PastarIgnorar = new() { "build", "packages",
+                                                                        "node_modules", ".vs",
+                                                                        ".git", "test",
+                                                                        "tests","lib", "obj",
+                                                                        "bin", "Recursos",
+                                                                        "resources", "Properties"};
+
+        public async static Task<List<EnvDTE.Project>> RetornarProjetosVisualStudioAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var projetos = new List<Project>();
+            var projetos = new List<EnvDTE.Project>();
             var dte = await VSEx.GetDTEAsync();
             var item = dte.Solution.Projects.GetEnumerator();
             while (item.MoveNext())
@@ -281,13 +291,12 @@ namespace Snebur.VisualStudio
                 if (itemSolucao != null && itemSolucao.Name != null)
                 {
                     //if (itemSolucao.Kind == ProjectKinds.vsProjectKindSolutionFolder)
-                    if (itemSolucao.Kind == VsConstantes.VsProjectItemKindPhysicalFolder  )
+                    if (itemSolucao.Kind == VsConstantes.VsProjectItemKindPhysicalFolder)
                     {
                         if (ProjetoUtil.PastarIgnorar.Contains(itemSolucao.Name))
                         {
                             continue;
                         }
-                        
                     }
 
                     if (itemSolucao.Kind == VsConstantes.VsProjectItemKindSolutionFolder)
@@ -486,7 +495,6 @@ namespace Snebur.VisualStudio
         internal static ProjectItem RetornarProjetoItem(Project projeto, string nome)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-
             return RetornarProjetoItem(projeto.ProjectItems, nome);
         }
 
@@ -514,8 +522,18 @@ namespace Snebur.VisualStudio
 
         }
 
+        public static async Task DeletarBinAndObjAsync()
+        {
+            var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
+            foreach (var projeto in projetosVS)
+            {
+                var caminhoProjeto = Path.GetDirectoryName(projeto.FullName);
+                var pastaBin = Path.Combine(caminhoProjeto, "bin");
+                var pastaObj = Path.Combine(caminhoProjeto, "obj");
 
-
-
+                DiretorioUtil.ExcluirTodosArquivo(pastaBin, true, true);
+                DiretorioUtil.ExcluirTodosArquivo(pastaObj, true, true);
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web.Handlers;
 using Snebur.Comunicacao;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
@@ -196,7 +197,7 @@ namespace Snebur.VisualStudio
         }
 
 
-        public static Dictionary<string, string[]> AssemblyCaminhos => LazyUtil.RetornarValorLazyComBloqueio (ref _assemblyCaminhos, RetornarAssemblyCaminhos);
+        public static Dictionary<string, string[]> AssemblyCaminhos => LazyUtil.RetornarValorLazyComBloqueio(ref _assemblyCaminhos, RetornarAssemblyCaminhos);
 
         public static Dictionary<string, string[]> RetornarAssemblyCaminhos()
         {
@@ -247,14 +248,15 @@ namespace Snebur.VisualStudio
             return null;
 
         }
-         
+
         private static Dictionary<string, Assembly> ArmazenamentoDllCarregadas = new Dictionary<string, Assembly>();
         private static object bloqueio = new object();
 
-        public static Assembly RetornarAssembly(string caminhoProjeto,
-                                                string nomeAssembly)
+        public static Assembly RetornarAssembly(EnumTipoCsProj tipoCsProj,
+                                                 string caminhoProjeto,
+                                                 string nomeAssembly)
         {
-            var caminhoDll = RetornarCaminhoAssembly(caminhoProjeto, nomeAssembly);
+            var caminhoDll = RetornarCaminhoAssembly(tipoCsProj, caminhoProjeto, nomeAssembly);
             return RetornarAssembly(caminhoDll);
         }
 
@@ -262,11 +264,11 @@ namespace Snebur.VisualStudio
         {
             lock (bloqueio)
             {
-                var caminhoReflexao = AjudanteAssembly.RetornarCaminhoAssemblyReflexao(caminhoDll).ToLower();
+                var caminhoReflexao = AjudanteAssembly.RetornarCaminhoAssemblyReflexao(caminhoDll)?.ToLower();
 
-                if (!File.Exists(caminhoReflexao))
+                if (caminhoReflexao == null || !File.Exists(caminhoReflexao))
                 {
-                    throw new Exception(String.Format("Arquivo não encontrado {0}", caminhoReflexao));
+                    throw new Exception($"Arquivo reflexão não encontrado {caminhoReflexao}, Origem {caminhoDll}");
                 }
 
                 if (AjudanteAssembly.ArmazenamentoDllCarregadas.ContainsKey(caminhoReflexao))
@@ -290,24 +292,31 @@ namespace Snebur.VisualStudio
         //    return RetornarCaminhoAssembly(configuracaoProjeto.CaminhoProjeto,
         //                                   configuracaoProjeto.NomeAssembly);
         //}
-        public static string RetornarCaminhoAssembly(string caminhoProjeto,
-                                                      string nomeAssembly,
-                                                      bool isIgnorarErro = false)
+        public static string RetornarCaminhoAssembly(EnumTipoCsProj tipoCsProj,
+                                                     string caminhoProjeto,
+                                                     string nomeAssembly,
+                                                     bool isIgnorarErro = false)
         {
             //var assembly = projeto.Properties.Cast<Property>().
             //                                         FirstOrDefault(x => x.Name == "AssemblyName");
             //var nomeAssembly = assembly?.Value ?? projeto.Name;
+            nomeAssembly = NormalizarNomeAssembly(tipoCsProj, nomeAssembly);
             var nomeArquivoDll = $"{nomeAssembly}.dll";
             var nomeArquivoExe = $"{nomeAssembly}.exe";
             //var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
             var diretorioBin = Path.Combine(caminhoProjeto, "bin");
             var diretorioDebug = Path.Combine(diretorioBin, "Debug");
+            if(tipoCsProj == EnumTipoCsProj.MicrosoftSdk)
+            {
+                diretorioDebug = Path.Combine(diretorioDebug, "net48");
+            }
+
             var caminhoDll = Path.Combine(diretorioDebug, nomeArquivoDll);
             var caminhoExe = Path.Combine(diretorioDebug, nomeArquivoExe);
 
             if (File.Exists(caminhoDll))
             {
-                return  caminhoDll;
+                return caminhoDll;
             }
             if (File.Exists(caminhoExe))
             {
@@ -329,16 +338,36 @@ namespace Snebur.VisualStudio
 
             throw new FileNotFoundException(mensagemErro);
         }
-         
+
+        private static string NormalizarNomeAssembly(EnumTipoCsProj tipoCsProj, 
+                                                    string nomeAssembly)
+        {
+            if(tipoCsProj == EnumTipoCsProj.MicrosoftSdk &&
+               nomeAssembly.EndsWith(".Net"))
+            {
+                return nomeAssembly.Substring(0, nomeAssembly.Length - 4);
+            }
+            return nomeAssembly;
+        }
+
         private static string RetornarCaminhoAssemblyReflexao(string caminhoDll)
         {
-            var caminhoReflexao = caminhoDll.Replace("\\Debug\\", "\\Reflexao\\");
-            DiretorioUtil.ExcluirTodosArquivo(caminhoReflexao, true);
             var fi = new FileInfo(caminhoDll);
-            var diretorioDebug = fi.Directory.FullName;
-            var diretorioRefexao = Path.Combine(fi.Directory.Parent.FullName, "Reflexao");
-            DiretorioUtil.CopiarTodosArquivo(diretorioDebug, diretorioRefexao);
-            return caminhoReflexao;
+            if (fi.Exists)
+            {
+                var diretorioDebug = fi.Directory.FullName;
+                var diretorioRefexao = Path.Combine(fi.Directory.Parent.FullName, "Reflexao");
+                var caminhoReflexao = Path.Combine(diretorioRefexao, Path.GetFileName(caminhoDll));
+                DiretorioUtil.ExcluirTodosArquivo(diretorioRefexao, true);
+                DiretorioUtil.CopiarTodosArquivo(diretorioDebug, diretorioRefexao);
+                if (File.Exists(caminhoReflexao))
+                {
+                    return caminhoReflexao;
+                }
+                throw new Exception($"Falha ao copiar arquivos da reflexão. DLL não encontrada {caminhoReflexao}");
+                
+            }
+            return null;
         }
 
         public static void Clear()
@@ -348,6 +377,6 @@ namespace Snebur.VisualStudio
             CaminhosUtil.Clear();
         }
 
-      
+
     }
 }

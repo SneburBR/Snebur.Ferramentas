@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
+﻿using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,11 +18,11 @@ namespace Snebur.VisualStudio
         private const string REGION_CONSTRUTOR_CONSULTAS_TS = "//#region Construtor Consultas";
 
 
-        public ProjetoContextoDados(Project projectVS, 
+        public ProjetoContextoDados(ProjetoViewModel projetoVM, 
                                     ConfiguracaoProjetoContextoDados configuracaoProjeto,
                                     FileInfo arquivoProjeto,
                                     string caminhoConfiguracao) :
-                                    base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
+                                    base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
 
         }

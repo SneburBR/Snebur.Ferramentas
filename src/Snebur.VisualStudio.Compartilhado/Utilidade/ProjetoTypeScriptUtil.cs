@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
+﻿using Snebur.Utilidade;
 using System;
 using System.IO;
 using System.Text;
@@ -9,11 +8,11 @@ namespace Snebur.VisualStudio
     public static partial class ProjetoTypeScriptUtil
     {
         public static ProjetoTypeScript RetornarProjetoTypeScript(ConfiguracaoProjetoTypeScript configuracaoTS,
-                                                                  Project projectVS,
+                                                                  ProjetoViewModel projetoVM,
                                                                   FileInfo arquivoProjeto,
                                                                   string caminhoConfiguracao)
         {
-            return new ProjetoTypeScript(projectVS, 
+            return new ProjetoTypeScript(projetoVM, 
                                          configuracaoTS, 
                                          arquivoProjeto, 
                                          caminhoConfiguracao);

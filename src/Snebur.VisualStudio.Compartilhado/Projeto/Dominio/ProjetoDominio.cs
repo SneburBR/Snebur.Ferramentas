@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
+﻿using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,11 +22,11 @@ namespace Snebur.VisualStudio
             }
         }
 
-        public ProjetoDominio(Project projectVS, 
+        public ProjetoDominio(ProjetoViewModel projetoVM, 
                               ConfiguracaoProjetoDominio configuracaoProjeto,
                               FileInfo arquivoProjeto,
                               string caminhoConfiguracao) :
-                              base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
+                              base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
 
             //ProjetoUtil.CompilarProjeto(dte, projetoVS);
@@ -52,7 +51,15 @@ namespace Snebur.VisualStudio
                 var geradores = this.RetornarGeradoresDominio();
                 foreach (var gerador in geradores)
                 {
-                    gerador.Gerar();
+                    try
+                    {
+                        gerador.Gerar();
+                    }
+                    catch(Exception ex)
+                    {
+                        LogVSUtil.LogErro($"Falha no geradora {gerador.GetType().Name}", ex);
+                    }
+                    
                 }
             }
         }

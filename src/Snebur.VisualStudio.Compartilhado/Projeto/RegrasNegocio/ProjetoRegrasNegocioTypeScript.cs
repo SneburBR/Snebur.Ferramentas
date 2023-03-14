@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.AcessoDados;
+﻿using Snebur.AcessoDados;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.RegrasNegocio;
@@ -17,11 +16,10 @@ namespace Snebur.VisualStudio
     public class ProjetoRegrasNegocioTypeScript : BaseProjeto<ConfiguracaoProjetoRegrasNegocio>
     {
 
-        public ProjetoRegrasNegocioTypeScript(Project projectVS, 
-                                              ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
-                                              FileInfo arquivoProjeto,
-                                              string caminhoConfiguracao) :
-                                              base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
+        public ProjetoRegrasNegocioTypeScript(ProjetoViewModel projetoVM,
+                                              ConfiguracaoProjetoRegrasNegocio configuracaoProjeto, 
+                                              FileInfo arquivoProjeto, 
+                                              string caminhoConfiguracao) : base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
         }
 

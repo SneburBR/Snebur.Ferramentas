@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Snebur.Linq;
+using Snebur.Publicacao;
+using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Snebur.VisualStudio.DteExtensao;
-using Snebur.Linq;
-using Snebur.Publicacao;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
@@ -46,10 +45,10 @@ namespace Snebur.VisualStudio
         public string Namespace => this.NomeProjeto.Replace(".Typescript", String.Empty);
 
 
-        public ProjetoTypeScript(Project projectVS, 
+        public ProjetoTypeScript(ProjetoViewModel projetoVM, 
                                  ConfiguracaoProjetoTypeScript configuracaoProjeto,
                                  FileInfo arquivoProjeto,
-                                 string caminhoConfiguracao) : base(projectVS, 
+                                 string caminhoConfiguracao) : base(projetoVM, 
                                                                     configuracaoProjeto,
                                                                    arquivoProjeto,
                                                                    caminhoConfiguracao)
@@ -64,9 +63,9 @@ namespace Snebur.VisualStudio
 
         private void PopularArquivosTS()
         {
-            var todosArquivos = LocalProjetoUtil.RetornarTodosArquivos(this.ProjetoVS, 
-                                                                            this.CaminhoProjeto, 
-                                                                            false);
+            var todosArquivos = LocalProjetoUtil.RetornarTodosArquivos(this.ProjetoViewModel.ProjetoVS, 
+                                                                       this.CaminhoProjeto, 
+                                                                       false);
 
             var arquivosTypeScript = todosArquivos.Where(X => Path.GetExtension(X) == ConstantesProjeto.EXTENSAO_TYPESCRIPT).ToHashSet();
 

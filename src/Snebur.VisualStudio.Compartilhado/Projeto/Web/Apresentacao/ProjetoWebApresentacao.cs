@@ -1,17 +1,16 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using System.IO;
+﻿using System.IO;
 
 namespace Snebur.VisualStudio
 {
     public class ProjetoWebApresentacao : ProjetoWeb<ConfiguracaoProjetoWebApresentacao>
     {
         public ProjetoTypeScript ProjetoTypeScript { get; }
-        public ProjetoWebApresentacao(Project projectVS,
+        public ProjetoWebApresentacao(ProjetoViewModel projetoVM,
                                       ConfiguracaoProjetoWebApresentacao configuracaProjeto,
                                       ProjetoTypeScript projetoTypeScript,
                                       FileInfo arquivoProjeto,
                                       string caminhoConfiguracao) :
-                                      base(projectVS, 
+                                      base(projetoVM, 
                                           configuracaProjeto,
                                           arquivoProjeto,
                                           caminhoConfiguracao)

@@ -1,5 +1,4 @@
 ﻿using Snebur.Dominio;
-using Snebur.VisualStudio.DteExtensao;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +37,7 @@ namespace Snebur.VisualStudio
         {
             get
             {
-                if (this is ProjetoDominio || 
+                if (this is ProjetoDominio ||
                     this is ProjetoServicosTypescript || this is ProjetoServicosDotNet)
                 {
                     return this.NomeProjeto;
@@ -52,12 +51,14 @@ namespace Snebur.VisualStudio
             }
         }
         public string UniqueName { get; set; }
-        public Project ProjetoVS { get; }
-        public BaseProjeto(Project projectVS,
+        internal ProjetoViewModel ProjetoViewModel { get; }
+
+        public object ProjetoVS => this.ProjetoViewModel.ProjetoVS;
+        public BaseProjeto(ProjetoViewModel projetoVM,
                            FileInfo arquivoProjeto,
                            string caminhoConfiguracao)
         {
-            this.ProjetoVS = projectVS;
+            this.ProjetoViewModel = projetoVM;
             this.ArquivooProjeto = arquivoProjeto;
             this.DiretorioProjeto = arquivoProjeto.Directory;
             this.CaminhoConfiguracao = caminhoConfiguracao;
@@ -65,9 +66,10 @@ namespace Snebur.VisualStudio
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
             this.NomeProjeto = this.NormalizarNomeProjeto(Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name));
-            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(DiretorioProjeto.FullName,
-                                                                           this.NomeAssembly, 
-                                                                           true);
+            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(this.ProjetoViewModel.TipoCsProj,
+                                                                            this.DiretorioProjeto.FullName,
+                                                                            this.NomeAssembly,
+                                                                            true);
         }
 
         private string NormalizarNomeProjeto(string nomeProjeto)
@@ -99,6 +101,13 @@ namespace Snebur.VisualStudio
             {
                 nomeProjeto = nomeProjeto.Substring(0, nomeProjeto.Length - ".TS".Length);
             }
+
+            if(this.ProjetoViewModel.TipoCsProj == EnumTipoCsProj.MicrosoftSdk &&
+                nomeProjeto.EndsWith(".Net"))
+            {
+                return nomeProjeto.Substring(0, nomeProjeto.Length - 4); ;
+            }
+
             return nomeProjeto;
         }
 
@@ -188,10 +197,10 @@ namespace Snebur.VisualStudio
 
 
 
-        public BaseProjeto(Project projectVS,
+        public BaseProjeto(ProjetoViewModel projetoVM,
                            TConfiguracaoProjeto configuracaoProjeto,
                            FileInfo arquivoProjeto, string caminhoConfiguracao) :
-                           base(projectVS, arquivoProjeto, caminhoConfiguracao)
+                           base(projetoVM, arquivoProjeto, caminhoConfiguracao)
         {
             this.ConfiguracaoProjeto = configuracaoProjeto;
         }
@@ -200,12 +209,7 @@ namespace Snebur.VisualStudio
         {
             return this.ConfiguracaoProjeto as TConfiguracao;
         }
-
-
-
     }
-
-
 }
 
 

@@ -1,15 +1,13 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using System.IO;
+﻿using System.IO;
 
 namespace Snebur.VisualStudio
 {
     public class ProjetoWebService : ProjetoWeb<ConfiguracaoProjetoWebService>
     {
-        public ProjetoWebService(Project projectVS,
+        public ProjetoWebService(ProjetoViewModel projetoVM,
                                  ConfiguracaoProjetoWebService configuracaProjeto,
                                  FileInfo arquivoProjeto,
-                                 string caminhoConfiguracao) :
-                                 base(projectVS, configuracaProjeto, arquivoProjeto, caminhoConfiguracao)
+                                 string caminhoConfiguracao) : base(projetoVM, configuracaProjeto, arquivoProjeto, caminhoConfiguracao)
         {
             //ProjetoUtil.CompilarProjeto(dte, projetoVS);
 

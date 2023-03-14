@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.AcessoDados;
+﻿using Snebur.AcessoDados;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.Utilidade;
@@ -15,10 +14,10 @@ namespace Snebur.VisualStudio
 {
     public class ProjetoRegrasNegocioCSharp : BaseProjeto<ConfiguracaoProjetoRegrasNegocio>
     {
-        public ProjetoRegrasNegocioCSharp(Project projectVS, 
+        public ProjetoRegrasNegocioCSharp(ProjetoViewModel projetoVM, 
                                           ConfiguracaoProjetoRegrasNegocio configuracaoProjeto,
                                           FileInfo arquivoProjeto,
-                                          string caminhoConfiguracao) : base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
+                                          string caminhoConfiguracao) : base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
         }
 

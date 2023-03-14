@@ -906,7 +906,7 @@ namespace Snebur.VisualStudio
          
         //}
 
-        private string RetornarProximaMigracao_Antigo(Assembly assemblyMigracao)
+        private string RetornarProximaMigracao(Assembly assemblyMigracao)
         {
             this.Log("Verificando migrações pendentes");
 

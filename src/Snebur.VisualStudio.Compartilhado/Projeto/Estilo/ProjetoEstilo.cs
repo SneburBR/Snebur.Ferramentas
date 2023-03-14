@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Snebur.Linq;
+using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Snebur.VisualStudio.DteExtensao;
-using Snebur.Linq;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
@@ -33,10 +32,10 @@ namespace Snebur.VisualStudio
 
         private HashSet<string> PrefixosReservado { get; } = new HashSet<string> { PREFIXO_SEM_IMPORTACAO, PREFIXO_SEM_IMPORTACAO };
          
-        public ProjetoEstilo(Project projectVS, 
+        public ProjetoEstilo(ProjetoViewModel projetoVM, 
                              ConfiguracaoProjetoEstilo configuracaoProjeto,
                              FileInfo arquivoProjeto, string caminhoConfiguracao) :
-                             base(projectVS, 
+                             base(projetoVM, 
                                   configuracaoProjeto,
                                   arquivoProjeto, 
                                   caminhoConfiguracao)
@@ -297,7 +296,8 @@ namespace Snebur.VisualStudio
             var diretorioProjeto = new DirectoryInfo(this.CaminhoProjeto);
 
             //var arquivos =   diretorioProjeto.GetFiles("*.scss", SearchOption.AllDirectories);
-            var arquivos = LocalProjetoUtil.RetornarTodosArquivos( this.ProjetoVS, this.CaminhoProjeto, true).
+            var arquivos = LocalProjetoUtil.RetornarTodosArquivos( this.ProjetoViewModel.ProjetoVS,
+                                                                    this.CaminhoProjeto, true).
                                             Select(x => new FileInfo(x)).
                                             Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
              

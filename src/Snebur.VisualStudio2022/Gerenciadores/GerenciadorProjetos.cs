@@ -125,6 +125,10 @@ namespace Snebur.VisualStudio
         private async Task SolucaoAbertaAsync()
         {
             await this.AtualizarProjetosAsync();
+            if (this.ProjetosTS.Count > 0)
+            {
+                await this.IniciarServicoDepuracaoAsync();
+            }
             this.SoluacaoAbertaInterno?.Invoke(this, EventArgs.Empty);
         }
 
@@ -139,7 +143,7 @@ namespace Snebur.VisualStudio
 
             if (this.TempoCompilacao != null) this.TempoCompilacao.Stop();
             this.TempoCompilacao = Stopwatch.StartNew();
-           
+
             if (this.IsLimparLogCompilandoInterno)
             {
                 LogVSUtil.Clear();
@@ -157,18 +161,8 @@ namespace Snebur.VisualStudio
                 //var solutionsBuild = (SolutionBuild2)this.DTE.Solution.SolutionBuild;
                 //(Array)solutionsBuild.StartupProjects
 
-                var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
-
-                foreach (var projetoVS in projetosVS)
-                {
-                    var identificador = ProjetoUtil.RetornarChave(projetoVS);
-                    if (this.ProjetosTS.TryGetValue(identificador, out ProjetoTypeScript projetoTS))
-                    {
-                        this.ServicoDepuracao?.SalvarPorta(projetoTS.CaminhoProjeto);
-                    }
-
-                }
-
+                await this.ServicoDepuracao.SalvarPortaAsync();
+                 
                 tempoGeral.Stop();
                 LogVSUtil.Sucesso($"Processos antes de compilar", tempoGeral);
             }
@@ -380,9 +374,12 @@ namespace Snebur.VisualStudio
 
         }
 
-        public void IniciarServicoDepuracao()
+        public async Task IniciarServicoDepuracaoAsync()
         {
-            this.ServicoDepuracao.Iniciar();
+            if (this.ServicoDepuracao.Estado != EnumEstadoServicoDepuracao.Ativo)
+            {
+                await this.ServicoDepuracao.IniciarAsync();
+            }
         }
 
         public void PararServicoDepuracao()
@@ -460,8 +457,6 @@ namespace Snebur.VisualStudio
                 }
 
                 this._isProjetosAtualizados = (projetosVS.Count > 0);
-
-
                 this.DipensarProjetosDescarregados(projetosVS);
             }
             catch (Exception ex)
@@ -485,9 +480,10 @@ namespace Snebur.VisualStudio
                     var configuracaoTS = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(caminhoConfiguracao);
                     if (!configuracaoTS?.IsIgnorar ?? false)
                     {
-                        var projetoVS2 = (DteExtensao.Project)projetoVS;
+                        var propriedadesVM = projetoVS.Properties.RetornarPropriedadesViewModel();
+                        var projetoVM = new ProjetoViewModel(projetoVS, propriedadesVM);
                         var projetoTS = ProjetoTypeScriptUtil.RetornarProjetoTypeScript(configuracaoTS,
-                                                                                        projetoVS2,
+                                                                                        projetoVM,
                                                                                         arquivoProjeto,
                                                                                         caminhoConfiguracao);
 
@@ -514,8 +510,9 @@ namespace Snebur.VisualStudio
                     var configuracaoSass = ProjetoEstilo.RetornarConfiguracao(caminhoConfiguracao);
                     if (!configuracaoSass.IsIgnorar)
                     {
-                        var projetoVS2 = (DteExtensao.Project)projetoVS;
-                        var projetoSass = new ProjetoEstilo(projetoVS2, configuracaoSass, arquivioProjeto, caminhoConfiguracao);
+                        var propriedadesVM = projetoVS.Properties.RetornarPropriedadesViewModel();
+                        var projetoVM = new ProjetoViewModel(projetoVS, propriedadesVM);
+                        var projetoSass = new ProjetoEstilo(projetoVM, configuracaoSass, arquivioProjeto, caminhoConfiguracao);
                         this.ProjetosSass2.TryAdd(ProjetoUtil.RetornarChave(projetoVS), projetoSass);
                     }
                 }

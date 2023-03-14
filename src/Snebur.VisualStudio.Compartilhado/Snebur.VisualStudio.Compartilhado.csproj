@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Snebur.VisualStudio.Compartilhado</RootNamespace>
     <AssemblyName>Snebur.VisualStudio.Compartilhado</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -103,6 +103,7 @@
     <Compile Include="Projeto\Estilo\ConfiguracaoProjetoEstilo.cs" />
     <Compile Include="Projeto\Estilo\ProjetoEstilo.cs" />
     <Compile Include="Projeto\ProjectVS.cs" />
+    <Compile Include="Projeto\ProjetoViewModel.cs" />
     <Compile Include="Projeto\RegrasNegocio\ConfiguracaoProjetoRegrasNegocio.cs" />
     <Compile Include="Projeto\RegrasNegocio\ExtensaoEntidade.cs" />
     <Compile Include="Projeto\RegrasNegocio\ProjetoRegrasNegocioCSharp.cs" />

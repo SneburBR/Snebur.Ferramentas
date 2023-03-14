@@ -48,11 +48,20 @@ namespace Snebur.VisualStudio
                     throw new Exception($"O(s) tipo(s) não possui o atributo tabela  {String.Join(", ", tiposSemAtributoTabela)} ");
                 }
 
-                var tiposEntidadeNomeTabelaDiferenta = tiposEntidade.Where(x => x.Name != this.NomeTabela(x)).ToList();
-                if (tiposEntidadeNomeTabelaDiferenta.Count > 0)
+                var isNaoValidarNomeTabela = assemblyEntidades.GetCustomAttributes().
+                                                               Where(x => x.GetType().Name == nameof(NaoValidarNomeTabelaAttribute)).
+                                                               SingleOrDefault() != null;
+
+                if (isNaoValidarNomeTabela == false)
                 {
-                    throw new Exception($"O(s) tipo(s) possui o nome diferente do nome da tabela  {String.Join(", ", tiposEntidadeNomeTabelaDiferenta)}");
+                    var tiposEntidadeNomeTabelaDiferenta = tiposEntidade.Where(x => x.Name != this.NomeTabela(x)).ToList();
+                    if (tiposEntidadeNomeTabelaDiferenta.Count > 0)
+                    {
+                        throw new Exception($"O(s) tipo(s) possui o nome diferente do nome da tabela  {String.Join(", ", tiposEntidadeNomeTabelaDiferenta)}");
+                    }
                 }
+
+
                 var tiposValidacaoUnicoComposta = tiposEntidade.Where(x => TipoUtil.TipoPossuiAtributo(x, typeof(ValidacaoUnicoCompostaAttribute), true)).ToList();
                 foreach (var tipoEntidade in tiposValidacaoUnicoComposta)
                 {
@@ -130,15 +139,7 @@ namespace Snebur.VisualStudio
 
                 if (isAdicionarMigracao)
                 {
-                    var ajudante = new AjudanteRetornarProximaMigracao(assemblyMigracao);
-                    var proximaMigracao = ajudante.RetornarProximaMigracao(); 
-
-                    if (ajudante.IsErro)
-                    {
-                        this.LogErro(ajudante.MensagemErro);
-                        return;
-                    }
-
+                    var proximaMigracao = this.RetornarProximaMigracao(assemblyMigracao);
                     this.LogSucesso($"Adicionando migração  {proximaMigracao}");
 
                     //dte.Solution.Properties.Item("StartupProject").Value = projetoMigracao.Name;

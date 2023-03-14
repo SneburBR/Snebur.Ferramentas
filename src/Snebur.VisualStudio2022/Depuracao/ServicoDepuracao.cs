@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using Snebur.Comunicacao.WebSocket.Experimental;
 using Snebur.Comunicacao.WebSocket.Experimental.Classes;
@@ -30,10 +32,11 @@ namespace Snebur.VisualStudio
             //this.Iniciar();
         }
 
-        public void Iniciar()
+        public async Task IniciarAsync()
         {
             try
             {
+                await OutputWindow.Instance.OcuparAsync();
                 if (ConfiguracaoGeral.Instance.IsUtilizarPortaDepuradaRandomica)
                 {
                     this.Porta = (ushort)(new Random().Next(1, UInt16.MaxValue));
@@ -59,7 +62,10 @@ namespace Snebur.VisualStudio
                 servicoWebSocket.Inicializar();
                 this.ServidorWebSocket = servicoWebSocket;
                 this.Estado = EnumEstadoServicoDepuracao.Ativo;
+                await this.SalvarPortaAsync();
                 LogVSUtil.Sucesso($"Serviço de depuração inicializado: Porta {this.Porta}", null);
+
+                await OutputWindow.Instance.AtualizarEstadoServicoDepuracaoAsync();
             }
             catch (Exception ex)
             {
@@ -69,6 +75,11 @@ namespace Snebur.VisualStudio
                 LogVSUtil.LogErro($"Erro: {ex.Message}");
                 this.Estado = EnumEstadoServicoDepuracao.Parado;
                 this.Porta += 1;
+                
+            }
+            finally
+            {
+                await OutputWindow.Instance.DesocuparAsync();
             }
         }
 
@@ -119,27 +130,49 @@ namespace Snebur.VisualStudio
                 }
 
             }
-            catch 
+            catch
             {
                 //LogVSUtil.LogErro(ex);
             }
         }
 
-        internal void SalvarPorta(string caminhoProjeto)
+        public async Task SalvarPortaAsync()
         {
-            if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
+            foreach (var projetoVS in projetosVS)
             {
-                var caminhoArquivo = Path.Combine(caminhoProjeto, NOME_ARQUIVO_ÎNFO_PORTA);
-                try
-                {
-                    ArquivoUtil.DeletarArquivo(caminhoArquivo);
-                    File.WriteAllText(caminhoArquivo, this.Porta.ToString(), Encoding.UTF8);
-                }
-                catch (Exception ex)
-                {
-                    LogVSUtil.LogErro($"Não foi possível salvar a porta da depuração {caminhoArquivo}", ex);
-                }
+                var caminhoProjeto = Path.GetDirectoryName(projetoVS.FullName);
+                await this.SalvarPortaAsync(caminhoProjeto);
             }
+        }
+        private Task SalvarPortaAsync(string caminhoProjeto)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
+                {
+                    var caminhoTSConfig = Path.Combine(caminhoProjeto, "tsconfig.json");
+                    if (File.Exists(caminhoTSConfig))
+                    {
+                        var caminhoArquivo = Path.Combine(caminhoProjeto, NOME_ARQUIVO_ÎNFO_PORTA);
+                        try
+                        {
+                            ArquivoUtil.DeletarArquivo(caminhoArquivo, false, true);
+                            File.WriteAllText(caminhoArquivo, this.Porta.ToString(), Encoding.UTF8);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogVSUtil.LogErro($"Não foi possível salvar a porta da depuração {caminhoArquivo}", ex);
+                        }
+                    }
+                }
+            },
+            CancellationToken.None,
+            TaskCreationOptions.None,
+            TaskScheduler.Default);
+            
         }
 
         internal void EnviarMensagemParaTodos(Mensagem mensagem)
@@ -153,7 +186,7 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-                    
+
                     foreach (var sessaoConecta in conexoes)
                     {
                         sessaoConecta.EnviarMensagem(mensagem);

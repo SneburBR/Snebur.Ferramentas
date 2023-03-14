@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Snebur.Utilidade;
+using Snebur.VisualStudio.Reflexao;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -16,14 +15,10 @@ namespace Snebur.VisualStudio
         private const string END_REGION = "//#endregion";
         public List<Type> TodosTipo { get; }
 
-        public ProjetoServicosTypescript(Project projectVS, 
-                                        ConfiguracaoProjetoServico configuracaoProjeto,
-                                        FileInfo arquivoProjeto,
-                                        string caminhoConfiguracao) :
-                                        base(projectVS, 
-                                             configuracaoProjeto,
-                                             arquivoProjeto, 
-                                             caminhoConfiguracao)
+        public ProjetoServicosTypescript(ProjetoViewModel projetoVM, 
+                                         ConfiguracaoProjetoServico configuracaoProjeto, 
+                                         FileInfo arquivoProjeto, 
+                                         string caminhoConfiguracao) : base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
             this.TodosTipo = this.RetornarTodosTipo();
         }

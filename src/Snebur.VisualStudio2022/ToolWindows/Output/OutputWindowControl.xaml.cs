@@ -20,6 +20,7 @@ namespace Snebur.VisualStudio
     using Snebur.Publicacao;
     using Snebur.Utilidade;
     using Snebur.VisualStudio.Utilidade;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for JanelaSneburControl.
@@ -54,8 +55,8 @@ namespace Snebur.VisualStudio
         {
             //LogVSUtil.Logs = this.Logs;
             this.TxtTitulo.Text = "Snebur v." + this.GetType().Assembly.GetName().Version.ToString();
-            this.AtualizarEstadoServicoDepuracao();
             LogUtil.CriarEspacoSneburVisualizadorEventos();
+            _ = this.AtualizarEstadoServicoDepuracaoAsync();
         }
 
         private void BtnNormalizar_Click(object sender, RoutedEventArgs e)
@@ -220,39 +221,37 @@ namespace Snebur.VisualStudio
             }
             else
             {
-                GerenciadorProjetos.Instancia.IniciarServicoDepuracao();
+                await GerenciadorProjetos.Instancia.IniciarServicoDepuracaoAsync();
             }
             await Task.Delay(3000);
-            this.AtualizarEstadoServicoDepuracao();
         }
 
 
-        private void AtualizarEstadoServicoDepuracao()
+        public async Task AtualizarEstadoServicoDepuracaoAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             if (GerenciadorProjetos.EstadoServicoDepuracao == EnumEstadoServicoDepuracao.Ativo)
             {
-                this.TxtPortaDepuracao.Text = $"Depuracao porta: {this.PortaDepuracao}";
-                this.BtnIniciarPararServicoDepuracao.Content = "Parar depuracao";
+                this.TxtPortaDepuracao.Text = $"Depuração porta: {this.PortaDepuracao}";
+                this.BtnIniciarPararServicoDepuracao.Content = "Parar depuração";
             }
             else
             {
                 this.TxtPortaDepuracao.Text = String.Empty;
-                this.BtnIniciarPararServicoDepuracao.Content = "Iniciar depuracao";
+                this.BtnIniciarPararServicoDepuracao.Content = "Iniciar depuração";
             }
             this.BtnIniciarPararServicoDepuracao.IsEnabled = true;
         }
 
         private void Link_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is FrameworkElement el && el.DataContext is LogMensagemViewModel logVM)
+            if (sender is FrameworkElement element &&
+                element.DataContext is LogMensagemViewModel logVM)
             {
-                if (logVM.Acao != null)
-                {
-                    logVM.Acao.Invoke();
-                }
+                logVM.Acao?.Invoke();
             }
         }
-
 
         private void BtnFormatarStringFormat_Click(object sender, RoutedEventArgs e)
         {
@@ -339,6 +338,44 @@ namespace Snebur.VisualStudio
             {
                 this.IsEnabled = true;
             }
+        }
+
+        private void BtnDeletarBinAndObj_Click(object sender, RoutedEventArgs e)
+        {
+            _ = this.DeletarBinAndObjAsync();
+        }
+
+        private async Task DeletarBinAndObjAsync()
+        {
+            this.IsEnabled = false;
+            try
+            {
+                var stopwatch = Stopwatch.StartNew();
+                await ProjetoUtil.DeletarBinAndObjAsync();
+                LogVSUtil.Sucesso("Pastas bin e obj deletados com sucesso", stopwatch);
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro("Falha os excluir pasta Bin e Obj", ex);
+            }
+            finally
+            {
+                this.IsEnabled = true;
+            }
+        }
+
+        internal async Task OcuparAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            this.IsEnabled = false;
+            this.Cursor = Cursors.Wait;
+        }
+
+        internal async Task DesocuparAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            this.IsEnabled = true;
+            this.Cursor = Cursors.Arrow;
         }
     }
 

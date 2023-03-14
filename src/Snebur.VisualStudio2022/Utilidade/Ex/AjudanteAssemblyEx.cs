@@ -15,7 +15,7 @@ namespace Snebur.VisualStudio
             return AjudanteAssembly.RetornarAssembly(caminhoAssembly);
         }
 
-        internal static string RetornarCaminhoAssembly(Project projeto)
+        internal static string RetornarCaminhoAssembly( Project projeto)
         {
            //ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -24,7 +24,10 @@ namespace Snebur.VisualStudio
 
             var nomeAssembly = (string)assembly?.Value ?? projeto.Name;
             var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
-            return AjudanteAssembly.RetornarCaminhoAssembly(caminhoProjeto, nomeAssembly);
+            var tipoCsPro = TipoCsProjUtil.RetornarTipoCsProjet(projeto);
+            return AjudanteAssembly.RetornarCaminhoAssembly(tipoCsPro,
+                                                            caminhoProjeto, 
+                                                            nomeAssembly);
         }
     }
 }

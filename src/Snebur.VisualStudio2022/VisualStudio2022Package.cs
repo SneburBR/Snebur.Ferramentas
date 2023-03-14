@@ -32,7 +32,7 @@ namespace Snebur.VisualStudio
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            AplicacaoSnebur.Atual = new AplicacaoVisualStudio();
+            var app = new AplicacaoVisualStudio();
 
             await this.RegisterCommandsAsync();
             this.RegisterToolWindows();

@@ -1,5 +1,4 @@
-﻿using Snebur.VisualStudio.DteExtensao;
-using Snebur.Utilidade;
+﻿using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,11 +16,10 @@ namespace Snebur.VisualStudio
         public List<Type> TodosTipo { get; }
 
 
-        public ProjetoServicosDotNet(Project projectVS, 
+        public ProjetoServicosDotNet(ProjetoViewModel projetoVM, 
                                      ConfiguracaoProjetoServico configuracaoProjeto,
-                                     FileInfo arquivoProjeto,
-                                     string caminhoConfiguracao) :
-                                     base(projectVS, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
+                                     FileInfo arquivoProjeto, 
+                                     string caminhoConfiguracao) : base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
             this.TodosTipo = this.RetornarTodosTipo();
          }
@@ -63,7 +61,7 @@ namespace Snebur.VisualStudio
                         sb.AppendLine("");
                         sb.AppendLine($"\t\tpublic {TipoCSUtil.RetornarNomeTipo(metodo.ReturnType)} {metodo.Name}({descricaoParametros})");
                         sb.AppendLine("\t\t{");
-                        sb.AppendLine($"\t\t\tvar parametros = new object[] {{ {String.Join(",", metodo.GetParameters().Select(x => x.Name)) } }}; ");
+                        sb.AppendLine($"\t\t\tvar parâmetros = new object[] {{ {String.Join(",", metodo.GetParameters().Select(x => x.Name)) } }}; ");
                         sb.AppendLine($"\t\t\t{retorno}this.ChamarServico{TipoCSUtil.RetornarNomeTipo(metodo.ReturnType, true, true)}(MethodBase.GetCurrentMethod(), parametros);");
                         sb.AppendLine("\t\t}");
 
