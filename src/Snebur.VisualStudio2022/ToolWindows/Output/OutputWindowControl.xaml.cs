@@ -51,12 +51,27 @@ namespace Snebur.VisualStudio
             //this.Background = Repositorio.BrushBackground;
         }
 
+        private bool _isInicializado;
         public void Janela_Loaded(object sender, RoutedEventArgs e)
         {
+            if (!this._isInicializado)
+            {
+                this._isInicializado = true;
+            }
+            _ = this.InicializarAsync();
             //LogVSUtil.Logs = this.Logs;
+        }
+
+        private async Task InicializarAsync()
+        {
+            await this.OcuparAsync();
             this.TxtTitulo.Text = "Snebur v." + this.GetType().Assembly.GetName().Version.ToString();
             LogUtil.CriarEspacoSneburVisualizadorEventos();
-            _ = this.AtualizarEstadoServicoDepuracaoAsync();
+            await GerenciadorProjetos.Instancia.AnalisarNecessidadeServicoDepuracaoAsync();
+            await this.AtualizarEstadoServicoDepuracaoAsync();
+            await this.DesocuparAsync();
+            this._isInicializado = true;
+            LogVSUtil.Log("Extensão inicializada");
         }
 
         private void BtnNormalizar_Click(object sender, RoutedEventArgs e)

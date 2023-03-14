@@ -30,7 +30,8 @@ namespace Snebur.VisualStudio
                 var tipoInterface = this.TodosTipo.Where(x => x.IsInterface && x.Name == configServico.NomeInterface).SingleOrDefault();
                 if (tipoInterface == null)
                 {
-                    throw new Exception($"O interface {tipoInterface} não foi encontrada em {this.CaminhoAssembly} ");
+                    throw new Exception($"A interface {configServico.NomeInterface} não foi encontrada no assembly {this.NomeAssembly} " +
+                                        $" Caminho: {this.CaminhoAssembly} ");
                 }
                 if (!String.IsNullOrWhiteSpace(configServico.CaminhoTypeScript))
                 {

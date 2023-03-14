@@ -264,7 +264,7 @@
       <Version>6.4.4</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.11.43</Version>
+      <Version>1.11.46</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
@@ -298,7 +298,7 @@
       <Name>Snebur.Depuracao</Name>
     </ProjectReference>
     <ProjectReference Include="..\Snebur.VisualStudio.Compartilhado\Snebur.VisualStudio.Compartilhado.csproj">
-      <Project>{9446982b-f659-49ea-a137-a283707329fb}</Project>
+      <Project>{820d2c85-872f-4740-b7e6-0ee35a3c8e32}</Project>
       <Name>Snebur.VisualStudio.Compartilhado</Name>
     </ProjectReference>
   </ItemGroup>

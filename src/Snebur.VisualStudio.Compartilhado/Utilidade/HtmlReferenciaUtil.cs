@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Snebur.Utilidade;
 using System.IO;
 using System.Web;
+using System.Net;
 
 namespace Snebur.VisualStudio
 {
@@ -39,7 +40,8 @@ namespace Snebur.VisualStudio
             {
                 html = html.Replace("  ", " ");
             }
-            var resultado = HttpUtility.HtmlEncode(html.Trim());
+            //var resultado = HttpUtility.HtmlEncode(html.Trim());
+            var resultado = WebUtility.HtmlEncode(html.Trim());
             return resultado;
         }
 

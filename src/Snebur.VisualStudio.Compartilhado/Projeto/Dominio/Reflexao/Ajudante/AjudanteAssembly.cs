@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Snebur.Comunicacao;
+using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.Handlers;
-using Snebur.Comunicacao;
-using Snebur.Dominio;
-using Snebur.Dominio.Atributos;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {

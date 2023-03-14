@@ -124,6 +124,11 @@ namespace Snebur.VisualStudio
 
         private async Task SolucaoAbertaAsync()
         {
+            await this.AnalisarNecessidadeServicoDepuracaoAsync();
+        }
+
+        public async Task AnalisarNecessidadeServicoDepuracaoAsync()
+        {
             await this.AtualizarProjetosAsync();
             if (this.ProjetosTS.Count > 0)
             {
