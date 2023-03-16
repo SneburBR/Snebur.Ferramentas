@@ -1,11 +1,13 @@
-﻿using Microsoft.WebTools.Languages.Json.Schema;
+﻿//caminho
+//C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Web Tools\Languages\Microsoft.WebTools.Languages.Json.Schema.dll
+using Microsoft.WebTools.Languages.Json.Schema;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-
+ 
 namespace Snebur.VisualStudio.Json
 {
     [Export(typeof(IJsonSchemaSelector))]

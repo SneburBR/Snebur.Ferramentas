@@ -5,7 +5,7 @@
   <TemplateData>
     <DefaultName>Janela.shtml</DefaultName>
     <Name>Janela com scss</Name>
-    <Description>Janela Zyoncore Plataforma</Description>
+    <Description>Janela Snebur Plataforma</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>

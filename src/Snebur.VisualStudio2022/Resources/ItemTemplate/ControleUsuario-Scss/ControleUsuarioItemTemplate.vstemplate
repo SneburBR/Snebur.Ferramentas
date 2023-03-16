@@ -5,7 +5,7 @@
   <TemplateData>
     <DefaultName>ControleUsuario.shtml</DefaultName>
     <Name>ControleUsuario com Scss</Name>
-    <Description>ControleUsuario Zyoncore Plataforma</Description>
+    <Description>ControleUsuario Snebur Plataforma</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>

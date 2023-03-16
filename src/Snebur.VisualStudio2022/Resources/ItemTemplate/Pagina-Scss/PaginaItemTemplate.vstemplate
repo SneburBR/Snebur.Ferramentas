@@ -5,7 +5,7 @@
   <TemplateData>
     <DefaultName>Pagina.shtml</DefaultName>
     <Name>Pagina com scss</Name>
-    <Description>Pagina Zyoncore Plataforma</Description>
+    <Description>Pagina Snebur Plataforma</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>

@@ -11,10 +11,16 @@ namespace Snebur.VisualStudio
         public string CaminhoInstalacaoVisualStudio { get; set; } = @"C:\Program Files\Microsoft Visual Studio\2022\Community\";
 
         [Category("Geral")]
-        [DisplayName("Projetos")]
-        [Description("Caminho dos projetos")]
-        [DefaultValue(@"E:\Projetos\TFS")]
-        public string CaminhoProjetos { get; set; } = @"E:\GitHub\";
+        [DisplayName("Projetos Snebur")]
+        [Description("Caminho do diretorio que contem os projetios Snebur.Framework e Snebur.TS ")]
+        [DefaultValue(@"D:\OneDrive\GitHub\Snebur")]
+        public string CaminhoProjetosSnebur { get; set; } = @"D:\OneDrive\GitHub\Snebur";
+
+        [Category("Geral")]
+        [DisplayName("Diretório dos Itens templates")]
+        [Description("Caminho dos itens templates")]
+        [DefaultValue(@"")]
+        public string DiretorioItensTemplate { get; set; } = @"";
 
         [Category("Depuração")]
         [DisplayName("Porta de depuração aleatória")]

@@ -9,7 +9,7 @@
 
     <ap-painel ap-tipo-painel="PilhaVertical">
 
-       <zs-caixa-texto zs-bind="{{Entidade.Nome}}" ap-rotulo="Nome"></zs-caixa-texto>
+       <sn-caixa-texto zs-bind="{{Entidade.Nome}}" ap-rotulo="Nome"></sn-caixa-texto>
     </ap-painel>
 
 </body>

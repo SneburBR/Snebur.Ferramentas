@@ -39,10 +39,10 @@ namespace Snebur.VisualStudio
         public static string CaminhoProjetos => LazyUtil.RetornarValorLazyComBloqueio(ref _caminhoProjetos, RetornarCaminhoProjetos);
         public static string RetornarCaminhoProjetos()
         {
-            var caminhoProejtos = ConfiguracaoGeralUtil.Instance.CaminhoProjetos;
+            var caminhoProejtos = ConfiguracaoGeralUtil.Instance.CaminhoProjetosSnebur;
             if (Directory.Exists(caminhoProejtos))
             {
-                return ConfiguracaoGeralUtil.Instance.CaminhoProjetos;
+                return ConfiguracaoGeralUtil.Instance.CaminhoProjetosSnebur;
             }
 
             //var discos = DriveInfo.GetDrives();
@@ -56,7 +56,7 @@ namespace Snebur.VisualStudio
             //}
 
 
-            throw new Exception($"Não foi possível encontrar o diretórios padrão dos projetos {ConfiguracaoGeralUtil.Instance.CaminhoProjetos}");
+            throw new Exception($"O diretório que contem os projetos Snebur.Framework  e Snebur.TS não foi encontrado {ConfiguracaoGeralUtil.Instance.CaminhoProjetosSnebur}");
 
 
         }

@@ -50,7 +50,7 @@ namespace Snebur.VisualStudio
 
     public interface IConfiguracaoGeral
     {
-        string CaminhoProjetos { get; }
+        string CaminhoProjetosSnebur { get; }
         string CaminhoInstalacaoVisualStudio { get; }
     }
 }
