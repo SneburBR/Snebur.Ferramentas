@@ -1,14 +1,14 @@
 ﻿using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Snebur.Depuracao;
 using Snebur.Utilidade;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
-using System.Windows;
 
 namespace Snebur.VisualStudio
 {
- 
+
     public class LogVS : ILogVS
     {
 
@@ -24,13 +24,13 @@ namespace Snebur.VisualStudio
         }
         public void Log(string mensagem)
         {
-            this.LogInternoAsync(mensagem, EnumTipoLog.Normal);
+            this.LogInterno(mensagem, EnumTipoLog.Normal);
             //LogVSUtil.LogInterno(String.Format(mensagem, args), EnumTipoLog.Normal);
         }
 
         public void Log(string mensagem, EnumTipoLog tipoLog)
         {
-            this.LogInternoAsync(mensagem, tipoLog);
+            this.LogInterno(mensagem, tipoLog);
         }
 
         public void Sucesso(string mensagem, Stopwatch tempo, bool isPararTempo = true)
@@ -47,13 +47,13 @@ namespace Snebur.VisualStudio
 
             }
 
-            this.LogInternoAsync(mensagem, EnumTipoLog.Sucesso);
+            this.LogInterno(mensagem, EnumTipoLog.Sucesso);
             this.OutputBuild("sucesso: " + mensagem);
         }
 
         public void Alerta(string mensagem)
         {
-            this.LogInternoAsync(mensagem, EnumTipoLog.Alerta);
+            this.LogInterno(mensagem, EnumTipoLog.Alerta);
         }
 
         public void LogErro(string mensagem)
@@ -68,7 +68,7 @@ namespace Snebur.VisualStudio
 
         public void LogAcaoLink(string descricao, Action acao)
         {
-            this.LogInternoAsync(descricao, EnumTipoLog.Acao, acao);
+            this.LogInterno(descricao, EnumTipoLog.Acao, acao);
         }
 
         public void LogErro(Exception erro)
@@ -78,35 +78,40 @@ namespace Snebur.VisualStudio
             while (erroAtual != null)
             {
                 sb.AppendLine(erroAtual.Message);
-                LogInternoAsync($"Tipo erro {erroAtual.GetType().Name} - {erroAtual.Message}", EnumTipoLog.Erro);
+                LogInterno($"Tipo erro {erroAtual.GetType().Name} - {erroAtual.Message}", EnumTipoLog.Erro);
 
                 if (!String.IsNullOrWhiteSpace(erroAtual.StackTrace))
                 {
-                    LogInternoAsync(erroAtual.StackTrace, EnumTipoLog.Erro);
+                    LogInterno(erroAtual.StackTrace, EnumTipoLog.Erro);
                 }
                 erroAtual = erroAtual.InnerException;
             }
             this.OutputBuild("erro: " + sb.ToString());
         }
 
-        private void LogInternoAsync(string mensagem, EnumTipoLog tipLogo, Action acao = null)
+        private void LogInterno(string mensagem, EnumTipoLog tipLog, Action acao = null)
         {
-            Application.Current.Dispatcher.BeginInvoke(() =>
-            {
-                this.Logs?.Add(new LogMensagemViewModel(mensagem, tipLogo, acao));
-                OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
-            });
+            _ = this.LogInternoAsync(mensagem, tipLog, acao);
+        }
+
+        private async Task LogInternoAsync(string mensagem, EnumTipoLog tipoLog, Action acao)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            this.Logs?.Add(new LogMensagemViewModel(mensagem, tipoLog, acao));
+            OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
         }
 
         public void Clear()
         {
-            Application.Current.Dispatcher.BeginInvoke(() =>
-                       {
-                           this.Logs.Clear();
-                       });
+            _ = this.ClearAsync();
         }
 
-
+        private async Task ClearAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
+            this.Logs.Clear();
+        }
 
         public void OutputDebug(string mensagem)
         {
@@ -157,7 +162,7 @@ namespace Snebur.VisualStudio
                 if (outputWindowPane != null)
                 {
                     outputWindowPane.Activate();
-                    outputWindowPane.OutputString(text + "\r\n");
+                    outputWindowPane.OutputStringThreadSafe(text + "\r\n");
                 }
             }
             catch
@@ -167,7 +172,7 @@ namespace Snebur.VisualStudio
         }
 
         private static LogVS _instance;
-        internal static LogVS Instance => ThreadUtil.RetornarValorComBloqueio(ref _instance, () => new LogVS());
+        internal static LogVS Instance => LazyUtil.RetornarValorLazyComBloqueio(ref _instance, () => new LogVS());
 
     }
 

@@ -72,7 +72,6 @@ namespace Snebur.VisualStudio
 
         internal static Project RetornarProjetoAtivo(this DTE2 dte)
         {
-
             Project projetoAtivo = null;
             var projetosAtivos = dte.ActiveSolutionProjects as Array;
             if (projetosAtivos != null && projetosAtivos.Length > 0)

@@ -218,8 +218,6 @@ namespace Snebur.VisualStudio
         public static Assembly Assembly_AssemblyResolve(object sender, ResolveEventArgs e)
         {
             var nome = e.Name.Split(", ".ToCharArray()).First().Trim();
-
-
             if (!AjudanteAssembly.AssemblyCaminhos.ContainsKey(nome))
             {
                 if (!(nome.StartsWith("System") ||

@@ -301,7 +301,7 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
 
         }

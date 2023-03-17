@@ -268,7 +268,6 @@ namespace Snebur.VisualStudio
                 if (projeto != null)
                 {
                     var nomeProjeto = projeto.Name;
-
                     if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
                     {
                         var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
@@ -277,11 +276,10 @@ namespace Snebur.VisualStudio
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                LogVSUtil.Alerta(ex.Message);
             }
-
             return null;
         }
 
@@ -295,7 +293,6 @@ namespace Snebur.VisualStudio
                 if (isCompilar)
                 {
                     var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-
                     this.Log($"Limpando a solução");
                     dte.Solution.SolutionBuild.Clean(true);
                     this.Log($"Compilando a solução");
@@ -313,13 +310,13 @@ namespace Snebur.VisualStudio
                 var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
                 if (tipoConfiguracao == null)
                 {
-                    throw new Exception($"Não foi encontrado a configuracao do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
+                    throw new Exception($"Não foi encontrado a configuração do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
                 }
 
                 var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
                 var migrador = new DbMigrator(instanciaConfiguracao);
 
-                this.Log(" -- Iniciando assistente de migração. isso pode deremorar um pouco. ");
+                this.Log(" -- Iniciando assistente de migração. isso pode demorar um pouco. ");
 
                 this.IniciarGeracaoScriptInterno(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
 
@@ -330,7 +327,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                this.Dispatcher.Invoke(this.Desocupar);
+                _ = this.DesocuparAsync();
             }
 
         }
@@ -357,7 +354,7 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-                    this.Log(" -- Gerando scriptps");
+                    this.Log(" -- Gerando scripts");
 
                     var tipoContexto = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbContext))).SingleOrDefault();
                     if (tipoContexto == null)
@@ -374,7 +371,7 @@ namespace Snebur.VisualStudio
 
                     if (!this.ValidarNomeclaturaMigracao(migracaoPendente))
                     {
-                        throw new Exception(" A nomeclatura do migracao não é valida pelo padrão Snebur Versao_X.X.X.X");
+                        throw new Exception(" A nomenclatura do migração não é valida pelo padrão Snebur Versao_X.X.X.X");
                     }
 
                     this.VersaoMigracao = Version.Parse(migracaoPendente.Substring(VERSAO.Length));
@@ -506,8 +503,9 @@ namespace Snebur.VisualStudio
             });
         }
 
-        private void Desocupar()
+        private async Task DesocuparAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.IsEnabled = true;
             this.Cursor = Cursors.Arrow;
             AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
@@ -679,7 +677,7 @@ namespace Snebur.VisualStudio
                         this.AtualizarVersaoAssemby(projetoEntidades);
                     }
 
-                    this.Dispatcher.Invoke(this.Desocupar);
+                    _ = this.DesocuparAsync();
                 });
             };
         }
@@ -708,7 +706,7 @@ namespace Snebur.VisualStudio
                     ThreadUtil.ExecutarAsync(() =>
                     {
                         this.ExecutarAtualizarPendente(projetoMigracao, projetoEntidade);
-                        this.Dispatcher.Invoke(this.Desocupar);
+                        _ = this.DesocuparAsync();
                     });
                 }
 
@@ -741,7 +739,7 @@ namespace Snebur.VisualStudio
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
             if (tipoConfiguracao == null)
             {
-                throw new Exception($"Não foi encontrado a configuracao do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
+                throw new Exception($"Não foi encontrado a configuração do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
             }
 
             var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
@@ -765,7 +763,7 @@ namespace Snebur.VisualStudio
                     this.VersaoAtual = null;
                 });
 
-                this.Log(" -- Iniciando assistente de migração. isso pode deremorar um pouco. ");
+                this.Log(" -- Iniciando assistente de migração. isso pode demorar um pouco. ");
 
                 this.IniciarGeracaoScriptInterno(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
                 this.ExecutarScripts(projetoMigracao, projetoEntidades);
@@ -853,7 +851,7 @@ namespace Snebur.VisualStudio
             }
 
         }
-        #region Validar a proxima migração
+        #region Validar a próxima migração
 
         private void BtnValidacaoAssembly_Click(object sender, RoutedEventArgs e)
         {
@@ -901,23 +899,37 @@ namespace Snebur.VisualStudio
 
         //private string RetornarProximaMigracao(Assembly assemblyMigracao)
         //{
-        //    this.Log("Verificando migrações pendente e retornando a proxima versão");
+        //    this.Log("Verificando migrações pendente e retornando a próxima versão");
 
-         
+
         //}
 
         private string RetornarProximaMigracao(Assembly assemblyMigracao)
         {
             this.Log("Verificando migrações pendentes");
+            assemblyMigracao.ModuleResolve += (s, e) =>
+            {
+                if (e.Name == "")
+                {
+
+                }
+                return null;
+            };
 
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
+            if (tipoConfiguracao == null)
+            {
+                throw new Exception($"Não foi encontrada a class de configuração das migrações " +
+                                     $"Verifique versão do EntityFramework 6.4.4" +
+                                     $"Verifique se o projeto {new AssemblyName(assemblyMigracao.FullName).Name} possui uma classe que herda de {nameof(DbMigrationsConfiguration)}");
+            }
             var instanciaConfiguracao = Activator.CreateInstance(tipoConfiguracao) as DbMigrationsConfiguration;
             var migrador = new DbMigrator(instanciaConfiguracao);
             var pendentes = migrador.GetPendingMigrations().ToList();
 
             if (pendentes.Count > 0)
             {
-                throw new Exception($"Migracao pendente {pendentes.Last()}");
+                throw new Exception($"Migração pendente {pendentes.Last()}");
             }
             Version ultimaVersao = this.RetornarUltimaVersao(migrador);
             if (ultimaVersao != null)
@@ -945,7 +957,7 @@ namespace Snebur.VisualStudio
             {
                 return versao;
             }
-            throw new Exception($"Não foi possivel convertrer a string '{versaoMigracao}' numa tipo {nameof(Version)}");
+            throw new Exception($"Não foi possível converter a string '{versaoMigracao}' numa tipo {nameof(Version)}");
         }
 
         private string NomeTabela(Type tipoEntidade)

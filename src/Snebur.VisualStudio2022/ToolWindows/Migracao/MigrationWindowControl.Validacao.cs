@@ -15,9 +15,9 @@ namespace Snebur.VisualStudio
     public partial class MigrationWindowControl
     {
         private void IniciarValidacao(Project projetoMigracao,
-                                   Project projetoEntidades,
-                                   bool isAdicionarMigracao,
-                                   bool isCompilar)
+                                      Project projetoEntidades,
+                                      bool isAdicionarMigracao,
+                                      bool isCompilar)
         {
             try
             {

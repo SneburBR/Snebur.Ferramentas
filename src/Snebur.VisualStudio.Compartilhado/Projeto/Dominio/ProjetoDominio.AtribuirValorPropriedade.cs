@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
+using Snebur.VisualStudio.Reflexao;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Snebur.Dominio;
-using Snebur.Dominio.Atributos;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -66,7 +65,7 @@ namespace Snebur.VisualStudio
                 //var linhas = conteuto.ToLines();
                 var linhas = File.ReadAllLines(caminhoArquivo, Encoding.UTF8).ToList();
 
-                this.NormalizarLinhas(linhas);
+                this.NormalizarLinhas(tipoBaseDominio, linhas);
 
                 var linhaClass = linhas.Where(x => x.Trim().StartsWith("public") && x.Contains("class")).FirstOrDefault();
                 if (linhaClass == null)
@@ -123,8 +122,8 @@ namespace Snebur.VisualStudio
                 List<(PropertyInfo propriedadeRelacao, PropertyInfo propriedadeChavaEtrangeira)> proproriedadesChaveEstrangeiras = propriedadesRelacao.Select(x => (x, PropriedadeUtil.RetornarPropriedadeChaveEstrangeira(x))).ToList();
 
                 proproriedadesChaveEstrangeiras = proproriedadesChaveEstrangeiras.Where(x => x.propriedadeChavaEtrangeira != null).ToList();
-                
-                var  isImplementarIAtivo = TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) && 
+
+                var isImplementarIAtivo = TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) &&
                                            TipoUtil.TipoImplementaInterface(tipoBaseDominio, typeof(IAtivo));
 
                 foreach (var propriedadeCampo in propriedadesCampos)
@@ -159,9 +158,9 @@ namespace Snebur.VisualStudio
                             if (propriedadeChavaEtrangeira != null)
                             {
 
-                                linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{ propriedadeRelacao.Name}); " +
+                                linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{propriedadeRelacao.Name}); " +
                                                             $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
-                                                       
+
                             }
                             else
                             {
@@ -323,9 +322,7 @@ namespace Snebur.VisualStudio
                 }
             }
         }
-
-       
-
+         
         private string RetornarNomeMetodoRetornarValorPropriedade(bool isImplementarIAtivo,
                                                                   PropertyInfo propriedadeChavaEtrangeira,
                                                                   PropertyInfo propriedadeCampo)
@@ -348,11 +345,11 @@ namespace Snebur.VisualStudio
             return NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA;
         }
 
-        private void NormalizarLinhas(List<string> linhas)
+        private void NormalizarLinhas(Type tipoBaseDominio, List<string> linhas)
         {
             foreach (var (linha, index) in linhas.ToTupleItemIndex())
             {
-                var linhaNormalizada = this.NormalizarNameOf(linha);
+                var linhaNormalizada = this.NormalizarNameOf(tipoBaseDominio, linha);
                 if (linhaNormalizada != linha)
                 {
                     linhas[index] = linhaNormalizada;
@@ -360,26 +357,27 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private string NormalizarNameOf(string linha)
+        private string NormalizarNameOf(Type tipoBaseDominio, string linha)
         {
             if ((linha.TrimStart().StartsWith("[Tabela") ||
                 linha.TrimStart().StartsWith("[ChaveEstrangeira")) &&
                 !linha.Contains("nameof("))
             {
+                var isChaveEstrangeira = linha.TrimStart().StartsWith("[ChaveEstrangeira");
                 var conteudo = ExpressaoUtil.RetornarExpressaoAbreFecha(linha, true);
+                if (isChaveEstrangeira || conteudo.Equals(tipoBaseDominio.Name))
+                {
+                    var posicaoInicio = linha.IndexOf("(");
+                    var posicaoFim = linha.LastIndexOf(")");
 
-                var posicaoInicio = linha.IndexOf("(");
-                var posicaoFim = linha.LastIndexOf(")");
+                    var inicio = linha.Substring(0, posicaoInicio + 1);
+                    var fim = linha.Substring(posicaoFim);
+                    var conteudoSemAspa = conteudo.Substring(1, conteudo.Length - 2);
 
-                var inicio = linha.Substring(0, posicaoInicio + 1);
-                var fim = linha.Substring(posicaoFim);
-                var conteudoSemAspa = conteudo.Substring(1, conteudo.Length - 2);
-
-                var retorno = $"{inicio}nameof({conteudoSemAspa}){fim}";
-                return retorno;
+                    return $"{inicio}nameof({conteudoSemAspa}){fim}";
+                }
             }
             return linha;
-
         }
 
         private string RetornarValorString(object valorPadraoConvertido)
