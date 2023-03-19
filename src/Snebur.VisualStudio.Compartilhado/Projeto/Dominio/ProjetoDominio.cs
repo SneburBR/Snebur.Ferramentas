@@ -120,7 +120,7 @@ namespace Snebur.VisualStudio
                     {
                         return e.Types.Where(x => x != null && x.IsPublic).ToList();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         throw;
                     }

@@ -40,7 +40,10 @@ namespace Snebur.VisualStudio
 
         public List<string> Linhas { get; }
 
-        public BaseArquivoTypeScript(FileInfo arquivo, int prioridadeProjeto, bool isAceitarTipoDesconhecido = false)
+        public string CaminhoArquivo { get; }
+
+        public BaseArquivoTypeScript(FileInfo arquivo, 
+                                    int prioridadeProjeto  )
         {
             //LogUtils.Log("Analisando arquivo {0} - {1} ", arquivo.Name, arquivo.FullName);
             if (!arquivo.Exists)
@@ -49,9 +52,10 @@ namespace Snebur.VisualStudio
             }
 
             this.Arquivo = arquivo;
+            this.CaminhoArquivo = ArquivoUtil.NormalizarCaminhoArquivo(arquivo.FullName).ToLower();
             this.SubExtensao = ArquivoUtil.RetornarSubExtenmsao(arquivo.Name).ToLower();
             this.Linhas = File.ReadAllLines(this.Arquivo.FullName, System.Text.UTF8Encoding.UTF8).ToList();
-            this.TipoArquivoTypeScript = this.RetornarTipoArquivoTypeScript(isAceitarTipoDesconhecido);
+            this.TipoArquivoTypeScript = this.RetornarTipoArquivoTypeScript();
 
             this.Namespace = this.RetornarNamespace();
             this.NomeTipo = this.RetornarNomeTipo();
@@ -75,7 +79,7 @@ namespace Snebur.VisualStudio
              }
         }
 
-        protected abstract EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript(bool isAceitarTipoDesconhecido);
+        protected abstract EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript();
 
         protected abstract string RetornarNamespace();
 
@@ -90,6 +94,28 @@ namespace Snebur.VisualStudio
         {
             return $"{this.Arquivo.Name}-{this.TipoArquivoTypeScript.ToString()}-{this.GetType().Name}";
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null)
+            {
+                if (this == obj) return true;
+                if (obj is BaseArquivoTypeScript arquivo &&
+                    this.GetType() == obj.GetType()  )
+                {
+                    return this.CaminhoArquivo.Equals(arquivo.CaminhoArquivo);
+                        ArquivoUtil.CaminhoIgual(this.CaminhoArquivo, 
+                                                    arquivo.Arquivo.FullName);
+                }
+            }
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            return this.CaminhoArquivo.GetHashCode();
+        }
+         
+
         #region IDisposable
 
         public void Dispose()

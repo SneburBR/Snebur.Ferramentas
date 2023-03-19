@@ -21,7 +21,7 @@ namespace Snebur.VisualStudio
         private static T _instance;
         protected BaseOptionModel() { }
 
-        public static T Instance => ThreadUtil.RetornarValorComBloqueio(ref _instance, RetornarInstance);
+        public static T Instance => LazyUtil.RetornarValorLazyComBloqueio(ref _instance, RetornarInstance);
 
 
         public static T RetornarInstance()

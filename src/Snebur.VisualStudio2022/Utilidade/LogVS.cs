@@ -11,7 +11,6 @@ namespace Snebur.VisualStudio
 
     public class LogVS : ILogVS
     {
-
         private static Guid OUTPUT => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
         private static Guid DEBUG => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.DebugPane_guid;
         private static Guid BUILD => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.BuildOutputPane_guid;
@@ -98,7 +97,7 @@ namespace Snebur.VisualStudio
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.Logs?.Add(new LogMensagemViewModel(mensagem, tipoLog, acao));
-            OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
+            OutputWindow.Instance?.ScrollLog?.ScrollToBottom();
         }
 
         public void Clear()
@@ -109,7 +108,7 @@ namespace Snebur.VisualStudio
         private async Task ClearAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            OutputWindowControl.Instancia?.ScrollLog?.ScrollToBottom();
+            OutputWindow.Instance?.ScrollLog?.ScrollToBottom();
             this.Logs.Clear();
         }
 

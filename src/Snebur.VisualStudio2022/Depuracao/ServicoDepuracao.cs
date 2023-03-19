@@ -36,7 +36,7 @@ namespace Snebur.VisualStudio
         {
             try
             {
-                await OutputWindow.Instance.OcuparAsync();
+                await OutputWindow.Instance?.OcuparAsync();
                 if (ConfiguracaoGeral.Instance.IsUtilizarPortaDepuradaRandomica)
                 {
                     this.Porta = (ushort)(new Random().Next(1, UInt16.MaxValue));
@@ -65,7 +65,7 @@ namespace Snebur.VisualStudio
                 await this.SalvarPortaAsync();
                 LogVSUtil.Sucesso($"Serviço de depuração inicializado: Porta {this.Porta}", null);
 
-                await OutputWindow.Instance.AtualizarEstadoServicoDepuracaoAsync();
+                await OutputWindow.Instance?.AtualizarEstadoServicoDepuracaoAsync();
             }
             catch (Exception ex)
             {
@@ -79,7 +79,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                await OutputWindow.Instance.DesocuparAsync();
+                await OutputWindow.Instance?.DesocuparAsync();
             }
         }
 

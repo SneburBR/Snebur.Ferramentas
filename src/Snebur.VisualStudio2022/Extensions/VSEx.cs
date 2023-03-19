@@ -1,6 +1,7 @@
 ﻿using Community.VisualStudio.Toolkit;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,28 +67,30 @@ namespace Snebur.VisualStudio
             //return propriedadesViewModel;
         }
 
-        public static string TryGetName(this Property property)
-        {
-            try
-            {
-                return property.Name;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        public static object TryGetValue(this Property property)
-        {
-            try
-            {
-                return property.Value;
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        //public static string TryGetName(this Property property)
+        //{
+        //    try
+        //    {
+        //        ThreadHelper.ThrowIfNotOnUIThread();
+        //        return property.Name;
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
+        //public static object TryGetValue(this Property property)
+        //{
+        //    try
+        //    {
+        //        ThreadHelper.ThrowIfNotOnUIThread();
+        //        return property.Value;
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
 
     }
 }

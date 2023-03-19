@@ -376,3 +376,4 @@ bin/
 *.js
 *.css
 
+/.bkp

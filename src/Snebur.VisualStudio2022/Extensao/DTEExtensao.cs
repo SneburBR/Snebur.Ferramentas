@@ -8,18 +8,13 @@ namespace Snebur.VisualStudio
 {
     internal static class DTEExtensao
     {
-        internal static void AbrirArquivo(this DTE2 dte, string caminhoArquivo)
+        internal static Document AbrirArquivo(this DTE2 dte, string caminhoArquivo)
         {
             //ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                if (dte.get_IsOpenFile(Constants.vsViewKindCode, caminhoArquivo) ||
-                    dte.get_IsOpenFile(Constants.vsViewKindTextView, caminhoArquivo))
-                {
-                    var documento = dte.Documents.Item(caminhoArquivo);
-                    documento.Activate();
-                }
-                else
+                if (!dte.get_IsOpenFile(Constants.vsViewKindCode, caminhoArquivo) &&
+                    !dte.get_IsOpenFile(Constants.vsViewKindTextView, caminhoArquivo))
                 {
                     try
                     {
@@ -34,13 +29,16 @@ namespace Snebur.VisualStudio
                         janela.Visible = true;
                         janela.SetFocus();
                     }
-                    //var janela = dte.OpenFile(EnvDTE.Constants.vsViewKindCode, caminhoArquivo);
-
                 }
+                var documento = dte.Documents.Item(caminhoArquivo);
+                documento?.Activate();
+                return documento;
+                 
             }
-            catch
+            catch(Exception ex)
             {
-
+                LogVSUtil.LogErro($"Falha ao abrir documento {caminhoArquivo}", ex);
+                return null;
             }
 
         }

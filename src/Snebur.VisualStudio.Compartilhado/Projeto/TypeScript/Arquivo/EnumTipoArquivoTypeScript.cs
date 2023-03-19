@@ -1,4 +1,6 @@
-﻿namespace Snebur.VisualStudio
+﻿using System;
+
+namespace Snebur.VisualStudio
 {
     public enum EnumTipoArquivoTypeScript
     {
@@ -70,9 +72,9 @@
 
         Vazio = 999,
 
-        Desconhecido = -1,
-
         Teste = 1050,
-        
+
+        Desconhecido = int.MaxValue,
+
     }
 }

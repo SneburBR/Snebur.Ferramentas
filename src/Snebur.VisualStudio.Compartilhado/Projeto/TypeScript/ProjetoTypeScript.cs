@@ -3,6 +3,7 @@ using Snebur.Publicacao;
 using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,7 @@ namespace Snebur.VisualStudio
             this.CaminhoAplicacaoConfig = Path.Combine(this.CaminhosDiretorioTypeScripts, NOME_ARQUIVO_APLICACAO_CONFIG);
             this.CaminhoSaidaPadrao = Path.Combine(this.CaminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD, this.NomeArquivoSaida);
             this.CaminhoHtmlReferencias = Path.Combine(this.CaminhosDiretorioTypeScripts, NOME_ARQUIVO_HTML_REFERENCIA);
-            this.CriarArquivoReferencia();
+          
             this.LogCaminhoSaida();
         }
 
@@ -76,10 +77,12 @@ namespace Snebur.VisualStudio
 
         protected override void AtualizarInterno()
         {
+            var t = Stopwatch.StartNew();
             if (this.ConfiguracaoProjeto.IsIgnorar)
             {
                 return;
             }
+            this.CriarArquivoReferencia();
             this.PopularArquivosTS();
             this.ArquivosTypeScript.Clear();
             this.ArquivosTypeScriptOrdenados.Clear();
@@ -90,14 +93,28 @@ namespace Snebur.VisualStudio
             this.ArquivosTypeScript.AddRange(TipoArquivoTypeScriptUtil.RetornarArquivosTypeScript(this.ConfiguracaoProjeto,
                                                                                                   this.CaminhoProjeto,
                                                                                                   this.ArquivosTS,
-                                                                                                  this.RetornarPrioridadeProjeto,
-                                                                                                  false));
+                                                                                                  this.RetornarPrioridadeProjeto ));
 
-            foreach (var arquivoTypescript in this.ArquivosTypeScript.OfType<ArquivoTypeScript>().Where(x => x.IsExisteTipo))
+            foreach (var arquivoTypescript in this.ArquivosTypeScript.OfType<ArquivoTypeScript>().Where(x => x.IsExisteTipo).ToList())
             {
-                if (this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypescript.CaminhoTipo))
+                if (this.DicionariosArquivosTypeScript.TryGetValue(arquivoTypescript.CaminhoTipo, 
+                                                                  out var arquivoTSAtual))
                 {
-                    throw new Exception($"O tipo '{arquivoTypescript.CaminhoTipo}' já existe  no dicionario");
+                    if (!arquivoTSAtual.Equals(arquivoTypescript))
+                    {
+                        LogVSUtil.LogErro($"O tipo já existe  no dicionario. " +
+                                                $"' atual: {arquivoTypescript.CaminhoTipo} -- {arquivoTypescript.CaminhoArquivo}" +
+                                                $"  novo: {arquivoTSAtual.CaminhoTipo} -- {arquivoTSAtual.CaminhoArquivo}");
+                    }
+                    else
+                    {
+                        LogVSUtil.Alerta($"O tipo duplicado no dicionario . " +
+                                                $"' atual: {arquivoTypescript.CaminhoTipo} -- {arquivoTypescript.CaminhoArquivo}" +
+                                                $"  duplicado: {arquivoTSAtual.CaminhoTipo} -- {arquivoTSAtual.CaminhoArquivo}");
+                    }
+                    
+
+                    this.DicionariosArquivosTypeScript.AddOrUpdate(arquivoTypescript.CaminhoTipo, arquivoTypescript);
                 }
                 this.DicionariosArquivosTypeScript.Add(arquivoTypescript.CaminhoTipo, arquivoTypescript);
             }
@@ -112,6 +129,9 @@ namespace Snebur.VisualStudio
 
             this.AtualizarTSConfig();
             this.ConfigurarHtmlRerefencias();
+
+            BaseGerenciadoProjetos.TryIntancia?.AtualizarProjetoTS(this);
+            LogVSUtil.Sucesso($"Projeto TS {this.NomeProjeto} normalizado em {t.Elapsed.TotalSeconds}s", t);
         }
 
         private void AtualizarTSConfig()
@@ -614,6 +634,7 @@ namespace Snebur.VisualStudio
 
         protected override void DispensarInerno()
         {
+           
             this.ArquivosTS?.Clear();
             this.NomesTipoClassBase?.Clear();
             this.ArquivosTypeScript?.Clear();
@@ -625,12 +646,8 @@ namespace Snebur.VisualStudio
             this.ArquivosTypeScript = null;
             this.ArquivosTypeScriptOrdenados = null;
             this.TodosArquivos = null;
-
         }
-
-
-
-
+         
         public override void InscrementarVersao()
         {
             base.InscrementarVersao();
@@ -695,7 +712,7 @@ namespace Snebur.VisualStudio
                         var caminhoProjetoAtual = this.RetornarCaminhoSaidaProjetoAtual();
                         if (!CaminhoUtil.CaminhoIgual(caminhoProjetoAtual, caminhoSaidaConfigurado))
                         {
-                            LogVSUtil.LogErro("Caminho da saída JS compilado é diferente do padrão ." +
+                            LogVSUtil.Alerta("Caminho da saída JS compilado é diferente do padrão ." +
                                              $"\r\nConfigurado: {caminhoSaidaConfigurado}" +
                                              $"\r\nPadrão: {caminhoProjetoAtual}," +
                                              $"\r\nNormalize os projetos e se problema persistir e reinicie o visual studio; ");

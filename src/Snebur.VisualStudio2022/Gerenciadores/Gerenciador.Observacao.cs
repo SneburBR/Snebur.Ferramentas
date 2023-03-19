@@ -1,13 +1,4 @@
-﻿using EnvDTE;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur.VisualStudio.Utilidade;
-
-namespace Snebur.VisualStudio
+﻿namespace Snebur.VisualStudio
 {
     public partial class GerenciadorProjetos
     {
@@ -80,138 +71,138 @@ namespace Snebur.VisualStudio
         //    }
         //}
 
-        public static FileSystemWatcher Obsevador1 { get; private set; }
-        public static FileSystemWatcher Obsevador2 { get; private set; }
-        public static FileSystemWatcher Obsevador3 { get; private set; }
-        public static FileSystemWatcher Obsevador4 { get; private set; }
-        public static FileSystemWatcher Obsevador5 { get; private set; }
-        public static FileSystemWatcher Obsevador6 { get; private set; }
-        public static FileSystemWatcher Obsevador7 { get; private set; }
-        public static FileSystemWatcher Obsevador8 { get; private set; }
-        public static FileSystemWatcher Obsevador9 { get; private set; }
-        public static FileSystemWatcher Obsevador10 { get; private set; }
-        public static FileSystemWatcher Obsevador11 { get; private set; }
-        public static FileSystemWatcher Obsevador12 { get; private set; }
-        public static FileSystemWatcher Obsevador13 { get; private set; }
-        public static FileSystemWatcher Obsevador14 { get; private set; }
-        public static FileSystemWatcher Obsevador15 { get; private set; }
-        public static FileSystemWatcher Obsevador16 { get; private set; }
-        public static FileSystemWatcher Obsevador17 { get; private set; }
-        public static FileSystemWatcher Obsevador18 { get; private set; }
-        public static FileSystemWatcher Obsevador19 { get; private set; }
-        public static FileSystemWatcher Obsevador20 { get; private set; }
+        //public static FileSystemWatcher Obsevador1 { get; private set; }
+        //public static FileSystemWatcher Obsevador2 { get; private set; }
+        //public static FileSystemWatcher Obsevador3 { get; private set; }
+        //public static FileSystemWatcher Obsevador4 { get; private set; }
+        //public static FileSystemWatcher Obsevador5 { get; private set; }
+        //public static FileSystemWatcher Obsevador6 { get; private set; }
+        //public static FileSystemWatcher Obsevador7 { get; private set; }
+        //public static FileSystemWatcher Obsevador8 { get; private set; }
+        //public static FileSystemWatcher Obsevador9 { get; private set; }
+        //public static FileSystemWatcher Obsevador10 { get; private set; }
+        //public static FileSystemWatcher Obsevador11 { get; private set; }
+        //public static FileSystemWatcher Obsevador12 { get; private set; }
+        //public static FileSystemWatcher Obsevador13 { get; private set; }
+        //public static FileSystemWatcher Obsevador14 { get; private set; }
+        //public static FileSystemWatcher Obsevador15 { get; private set; }
+        //public static FileSystemWatcher Obsevador16 { get; private set; }
+        //public static FileSystemWatcher Obsevador17 { get; private set; }
+        //public static FileSystemWatcher Obsevador18 { get; private set; }
+        //public static FileSystemWatcher Obsevador19 { get; private set; }
+        //public static FileSystemWatcher Obsevador20 { get; private set; }
 
-        private static void EvitarGarbaCollection(FileSystemWatcher observador)
-        {
-            if (GerenciadorProjetos.Obsevador1 == null)
-            {
-                GerenciadorProjetos.Obsevador1 = observador;
-                return;
-            }
+        //private static void EvitarGarbaCollection(FileSystemWatcher observador)
+        //{
+        //    if (GerenciadorProjetos.Obsevador1 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador1 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador2 == null)
-            {
-                GerenciadorProjetos.Obsevador2 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador2 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador2 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador3 == null)
-            {
-                GerenciadorProjetos.Obsevador3 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador3 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador3 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador4 == null)
-            {
-                GerenciadorProjetos.Obsevador4 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador5 == null)
-            {
-                GerenciadorProjetos.Obsevador5 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador6 == null)
-            {
-                GerenciadorProjetos.Obsevador6 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador7 == null)
-            {
-                GerenciadorProjetos.Obsevador7 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador8 == null)
-            {
-                GerenciadorProjetos.Obsevador8 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador9 == null)
-            {
-                GerenciadorProjetos.Obsevador9 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador10 == null)
-            {
-                GerenciadorProjetos.Obsevador10 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador11 == null)
-            {
-                GerenciadorProjetos.Obsevador11 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador12 == null)
-            {
-                GerenciadorProjetos.Obsevador12 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador13 == null)
-            {
-                GerenciadorProjetos.Obsevador13 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador14 == null)
-            {
-                GerenciadorProjetos.Obsevador14 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador15 == null)
-            {
-                GerenciadorProjetos.Obsevador15 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador16 == null)
-            {
-                GerenciadorProjetos.Obsevador16 = observador;
-                return;
-            }
-            if (GerenciadorProjetos.Obsevador17 == null)
-            {
-                GerenciadorProjetos.Obsevador17 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador4 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador4 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador5 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador5 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador6 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador6 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador7 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador7 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador8 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador8 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador9 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador9 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador10 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador10 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador11 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador11 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador12 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador12 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador13 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador13 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador14 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador14 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador15 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador15 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador16 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador16 = observador;
+        //        return;
+        //    }
+        //    if (GerenciadorProjetos.Obsevador17 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador17 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador18 == null)
-            {
-                GerenciadorProjetos.Obsevador18 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador18 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador18 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador19 == null)
-            {
-                GerenciadorProjetos.Obsevador19 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador19 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador19 = observador;
+        //        return;
+        //    }
 
-            if (GerenciadorProjetos.Obsevador20 == null)
-            {
-                GerenciadorProjetos.Obsevador20 = observador;
-                return;
-            }
+        //    if (GerenciadorProjetos.Obsevador20 == null)
+        //    {
+        //        GerenciadorProjetos.Obsevador20 = observador;
+        //        return;
+        //    }
 
 
-            LogVSUtil.LogErro("Nao existe local statico para observador");
-        }
+        //    LogVSUtil.LogErro("Nao existe local statico para observador");
+        //}
     }
 }

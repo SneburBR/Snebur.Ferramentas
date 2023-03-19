@@ -84,9 +84,10 @@
     <Compile Include="Extensao\ProjectItemExtensao.cs" />
     <Compile Include="Extensions\VSEx.cs" />
     <Compile Include="Gerenciadores\CompilarTypescriptRuntime.cs" />
-    <Compile Include="Gerenciadores\Expressao.cs" />
     <Compile Include="Gerenciadores\Gerenciador.Observacao.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.EventosVS.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.EnventosDTE.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.NovoArquivo.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.Static.cs" />
     <Compile Include="Gerenciadores\RenomearDocumento.cs" />
@@ -257,9 +258,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Community.VisualStudio.VSCT" Version="16.0.29.6" PrivateAssets="all" />
     <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.492" ExcludeAssets="Runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Community.VisualStudio.VSCT">
+      <Version>16.0.29.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="EntityFramework">
       <Version>6.4.4</Version>

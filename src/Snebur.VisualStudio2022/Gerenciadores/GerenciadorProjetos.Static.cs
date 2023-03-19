@@ -58,16 +58,14 @@ namespace Snebur.VisualStudio
 
         public static bool IsLimparLogCompilando { get; set; } = true;
 
-        public static Dictionary<string, ObservadorArquivoProjeto> DicionarioObservadoresArquivo { get; } = new Dictionary<string, ObservadorArquivoProjeto>();
+        //public static Dictionary<string, ObservadorArquivoProjeto> DicionarioObservadoresArquivo { get; } = new Dictionary<string, ObservadorArquivoProjeto>();
         public static event EventHandler SoluacaoAberta;
 
 
         public static EnumEstadoServicoDepuracao EstadoServicoDepuracao => GerenciadorProjetos.Instancia?.ServicoDepuracao?.Estado ?? EnumEstadoServicoDepuracao.Parado;
 
 
-        private static readonly object _bloqueio = new();
-        public static GerenciadorProjetos _instancia;
-        public static GerenciadorProjetos Instancia => ThreadUtil.RetornarValorComBloqueio(ref _instancia, () => new GerenciadorProjetos());
+        
         //public static void Inicializar(SneburVisualStudio2022Package package)
         //{
         //    if (Instancia == null)

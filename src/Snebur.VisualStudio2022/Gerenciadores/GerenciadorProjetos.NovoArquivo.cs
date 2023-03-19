@@ -7,74 +7,55 @@ using System.Text;
 using System.Threading.Tasks;
 using Snebur.Utilidade;
 using static Snebur.VisualStudio.ConstantesProjeto;
+using System.Web.UI.Design;
 
 namespace Snebur.VisualStudio
 {
     public partial class GerenciadorProjetos
     {
-        //private bool _isBloqueioDocumentoAberto = false;
-        //private bool _isBloqueioDocumentoSalvo = false;
-        //private bool _isBloqueioMensagemArquivoAlterado = false;
-
-        private void DocumentEvents_DocumentOpened(Document documento)
-        {
-            _ = this.ExecutarAsync(this.DocumentoAbertoAsync, documento);
-        }
-
-        private void DocumentEvents_DocumentSaved(Document documento)
-        {
-            _ = DocumentSavedAsync(documento);
-        }
-
-        private async Task DocumentSavedAsync(Document documento)
-        {
-            await this.ExecutarAsync(this.DocumentoSalvoAsync, documento);
-            await this.ExecutarAsync(this.MensagemArquivoAlteradoAsync, documento);
-        }
-
-        #region Talvez Renomear
-
-        private async Task DocumentoSalvoAsync(Document documento)
+   
+        
+         
+        private async Task<ProjetoTypeScript> ArquivoRenomeadoAsync(FileInfo arquivo)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            this.InicializarGerenciadorSeNecessario();
-            var nome = documento.Name;
-            if (!String.IsNullOrWhiteSpace(nome))
+
+            if (!this.Extensoes.Contains(arquivo.Extension.ToLower()))
             {
+                return null;
+            }
+            var projetoTS = await this.RetornarProjetoTSAsync(arquivo);
+            if (projetoTS == null)
+            {
+                return null;
+            }
 
-                var arquivo = new FileInfo(documento.FullName);
-                if (arquivo.Extension == ".shtml")
+            if (arquivo.Extension == ".shtml")
+            {
+                (projetoTS.ProjetoVS as Project)?.Save();
+
+                var projetItem = DTE_GLOBAL.Solution.FindProjectItem(arquivo.FullName);
+                if (projetItem != null)
                 {
-                    var projetItem = DTE_GLOBAL.Solution.FindProjectItem(arquivo.FullName);
-                    if (projetItem != null)
-                    {
-                        var projectItensArquivo = ProjetoUtil.RetornarProjectItemsArquivo(projetItem.ProjectItems, true);
-                        var diretorio = arquivo.Directory.FullName.ToLower();
-                        var projetosTS = this.ProjetosTS.Values.Where(x => diretorio.Contains(x.CaminhoProjetoCaixaBaixa)).ToList();
-                        var projetoTS = (projetosTS.Count == 1) ? projetosTS.Single() : null;
+                    var projectItensArquivo = ProjetoUtil.RetornarProjectItemsArquivo(projetItem.ProjectItems, true);
+                    this.AnalisarArquivoRenomeadoEmbutido(projetoTS,
+                                                                             projetItem,
+                                                                             arquivo, projectItensArquivo,
+                                                                             EXTENSAO_CONTROLE_SHTML_ESTILO);
 
-                        var isExisteAlteracao = this.AnalisarArquivoRenomeadoEmbutido(projetoTS,
-                                                               projetItem,
-                                                               arquivo, projectItensArquivo,
-                                                               EXTENSAO_CONTROLE_SHTML_ESTILO);
+                    this.AnalisarArquivoRenomeadoEmbutido(projetoTS,
+                                                          projetItem,
+                                                          arquivo,
+                                                          projectItensArquivo,
+                                                          EXTENSAO_CONTROLE_SHTML_TYPESCRIPT);
 
-                        isExisteAlteracao = this.AnalisarArquivoRenomeadoEmbutido(projetoTS,
-                                                                                  projetItem,
-                                                                                  arquivo,
-                                                                                  projectItensArquivo,
-                                                                                  EXTENSAO_CONTROLE_SHTML_TYPESCRIPT) ||
-                                                                                  isExisteAlteracao;
 
-                        if (isExisteAlteracao && projetoTS != null)
-                        {
-                            (projetoTS.ProjetoVS as Project)?.Save();
-                            await projetoTS.NormalizarReferenciasAsync(false);
 
-                        }
-                    }
                 }
             }
+            return projetoTS;
         }
+
 
         private bool AnalisarArquivoRenomeadoEmbutido(ProjetoTypeScript projetoTS,
                                                       ProjectItem projecItemMestre,
@@ -109,14 +90,18 @@ namespace Snebur.VisualStudio
                             ArquivoUtil.MoverArquivo(caminhoArquivoEmbutido,
                                                      caminhoDestino);
 
-                            projectItemEmbutido.Remove();
-                            projecItemMestre.ProjectItems.AddFromFile(caminhoDestino);
+                            //caminhoArquivoEmbutido = caminhoArquivoEmbutido.ToLower();
+                            //caminhoDestino = caminhoDestino.ToLower();
 
-                            projetoTS.TodosArquivos.Remove(caminhoArquivoEmbutido);
-                            projetoTS.ArquivosTS.Remove(caminhoArquivoEmbutido);
+                            this.RemoverArquivo(projectItemEmbutido);
+                            this.AdicionaarArquivo(projecItemMestre.ProjectItems, caminhoDestino);
+
+
+                            projetoTS.TodosArquivos.Remove(caminhoArquivoEmbutido.ToLower());
+                            projetoTS.ArquivosTS.Remove(caminhoArquivoEmbutido.ToLower());
 
                             projetoTS.TodosArquivos.Add(caminhoDestino);
-                            if (Path.GetExtension(caminhoDestino) == EXTENSAO_TYPESCRIPT)
+                            if (Path.GetExtension(caminhoDestino.ToLower()) == EXTENSAO_TYPESCRIPT)
                             {
                                 projetoTS.ArquivosTS.Add(caminhoDestino);
                             }
@@ -128,8 +113,25 @@ namespace Snebur.VisualStudio
             return false;
 
         }
-        #endregion
 
+        private bool _isAdicionarArquivo = false;
+        private void AdicionaarArquivo(ProjectItems projectItems, string caminhoDestino)
+        {
+            this._isAdicionarArquivo = true;
+            projectItems.AddFromFile(caminhoDestino);
+            this._isAdicionarArquivo = false;
+
+        }
+
+        private bool _isRemovendoArquivo = false;
+        private void RemoverArquivo(ProjectItem projectItemEmbutido)
+        {
+            this._isRemovendoArquivo = true;
+            projectItemEmbutido?.Remove();
+            this._isRemovendoArquivo = false;
+        }
+        #region Talvez Renomear
+        #endregion
 
         #region Talvez novo arquivo 
         private async Task DocumentoAbertoAsync(Document documento)
@@ -144,132 +146,146 @@ namespace Snebur.VisualStudio
             }
 
         }
+
         private async Task AgruparDocumentoAsync(Document documento)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var isForcar = !this._isInicializado;
             this.InicializarGerenciadorSeNecessario();
             var nome = documento.Name;
             if (!String.IsNullOrWhiteSpace(nome))
             {
-                var arquivo = new FileInfo(documento.FullName);
-                var projectItem = documento?.ProjectItem;
-                if (projectItem != null)
+                var fileInfo = new FileInfo(documento.FullName);
+                if (fileInfo.Exists)
                 {
-                    if (this.Extensoes.Contains(arquivo.Extension))
-                    {
-                        var diretorio = arquivo.Directory.FullName.ToLower();
-                        var projetosTS = this.ProjetosTS.Values.Where(x => diretorio.Contains(x.CaminhoProjetoCaixaBaixa)).ToList();
-                        if (projetosTS.Count == 0)
-                        {
-                            LogVSUtil.Alerta($"Nenhum gerenciador de projeto foi inicializado ainda, arquivo {arquivo.Name} ignorado, aguarde a solução carregada por completo");
-                            return;
-                        }
-                        if (projetosTS.Count > 1)
-                        {
-                            projetosTS = projetosTS.Where(x => DiretorioUtil.IsDiretorioFilho(arquivo.Directory, x.DiretorioProjeto)).ToList();
-                        }
-                        if (projetosTS.Count > 1)
-                        {
-                            LogVSUtil.LogErro($"Mais de um gerenciador de projeto foi encontrado para o arquivo, arquivo {arquivo.Name}");
-                            return;
-                        }
-
-                        var projetoTS = projetosTS.Single();
-                        if (projetoTS.TodosArquivos != null)
-                        {
-                            var caminhoarArquivo = arquivo.FullName;
-
-                            if (!projetoTS.TodosArquivos.Contains(caminhoarArquivo.ToLower()) || isForcar)
-                            {
-                                LogVSUtil.Log($"Novo arquivo {arquivo.Name}");
-
-                                var projetItem = DTE_GLOBAL.Solution.FindProjectItem(caminhoarArquivo);
-                                if (projetItem == null)
-                                {
-                                    LogVSUtil.Alerta($"O project item do arquivo não foi {arquivo.Name}, o arquivo pode não está no projeto");
-                                    return;
-                                }
-                                var isAtualizarProjetoTS = false;
-                                if (arquivo.Extension == EXTENSAO_CONTROLE_SHTML)
-                                {
-                                    var caminhoCodigo = caminhoarArquivo + EXTENSAO_TYPESCRIPT;
-                                    var caminhoEstilo = caminhoarArquivo + EXTENSAO_SASS;
-
-                                    var projectItemLayout = projetItem;
-
-                                    if (projectItemLayout != null)
-                                    {
-                                        projetoTS.TodosArquivos.Add(caminhoarArquivo.ToLower());
-                                        projetoTS.ArquivosTS.Add(caminhoarArquivo.ToLower());
-
-                                        LogVSUtil.Log($"Arquivo de layout encontrado {arquivo.Name}");
-
-                                        var projectItemCodigo = DTE_GLOBAL.Solution.FindProjectItem(caminhoCodigo);
-
-                                        if (projectItemCodigo == null)
-                                        {
-                                            LogVSUtil.LogErro($"Project item de código de {arquivo.Name} não foi encontrado");
-                                        }
-                                        else
-                                        {
-                                            projetoTS.TodosArquivos.Add(caminhoCodigo.ToLower());
-                                            projetoTS.ArquivosTS.Add(caminhoCodigo);
-                                            this.NormalizarNamespaceTS(projetoTS, caminhoCodigo);
-                                            isAtualizarProjetoTS = true;
-
-                                            LogVSUtil.Log($"Normalizando o arquivo do código {arquivo.Name}{EXTENSAO_TYPESCRIPT}");
-                                        }
-
-                                        var projetoItemEstilo = DTE_GLOBAL.Solution.FindProjectItem(caminhoEstilo);
-                                        if (projetoItemEstilo != null)
-                                        {
-                                            projetoTS.TodosArquivos.Add(caminhoEstilo.ToLower());
-                                            LogVSUtil.Log($"Normalizando o arquivo do estilo {arquivo.Name}{EXTENSAO_SASS}");
-                                        }
-                                        
-
-                                        var isAgrupar = (projectItemLayout != null) &&
-                                                        (projectItemCodigo != null);
-                                        if (isAgrupar)
-                                        {
-                                            LogVSUtil.Log($"Agrupando arquivo {arquivo.Name}, {arquivo.Name}.ts, {arquivo.Name}{EXTENSAO_SASS}");
-
-                                            this.AgruparArquivos(projectItemLayout,
-                                                                 projectItemCodigo,
-                                                                 projetoItemEstilo,
-                                                                 caminhoarArquivo,
-                                                                 caminhoCodigo,
-                                                                 caminhoEstilo);
-                                        }
-                                    }
-
-                                }
-
-                                if (arquivo.Extension == EXTENSAO_TYPESCRIPT)
-                                {
-                                    var projectItemCodigo = projetItem;
-                                    if (projectItemCodigo != null)
-                                    {
-                                        LogVSUtil.Log($"Normalizando arquivo typescript {arquivo.Name}");
-
-                                        projetoTS.TodosArquivos.Add(arquivo.FullName.ToLower());
-                                        projetoTS.ArquivosTS.Add(arquivo.FullName);
-                                        isAtualizarProjetoTS = true;
-                                        this.InserirTemplateArquivoNovo(projetoTS, arquivo);
-
-                                    }
-                                }
-                                if (isAtualizarProjetoTS)
-                                {
-                                    (projetoTS.ProjetoVS as Project)?.Save();
-                                   await projetoTS.NormalizarReferenciasAsync(false);
-                                }
-                            }
-                        }
-                    }
+                    await this.AgruparArquivoAsync(fileInfo);
                 }
             }
+        }
+
+        private async Task<ProjetoTypeScript> AgruparArquivoAsync(FileInfo arquivo)
+        {
+            if (!this.Extensoes.Contains(arquivo.Extension.ToLower()))
+            {
+                return null;
+            }
+            var projetoTS = await this.RetornarProjetoTSAsync(arquivo);
+            if (projetoTS != null)
+            {
+                await this.AgruparArquivoAsync(projetoTS, arquivo);
+            }
+            return projetoTS;
+        }
+
+        private async Task AgruparArquivoAsync(ProjetoTypeScript projetoTS, FileInfo arquivo)
+        {
+            if (projetoTS.TodosArquivos != null)
+            {
+                if (!projetoTS.IsNormalizado)
+                {
+                    await projetoTS.NormalizarReferenciasAsync();
+                }
+
+                var caminhoarArquivo = arquivo.FullName;
+                LogVSUtil.Log($"Novo arquivo {arquivo.Name}");
+
+                var projetItem = DTE_GLOBAL.Solution.FindProjectItem(caminhoarArquivo);
+                if (projetItem == null)
+                {
+                    LogVSUtil.Alerta($"O project item do arquivo não foi {arquivo.Name}, o arquivo pode não está no projeto");
+                    return;
+                }
+                var isAtualizarProjetoTS = false;
+                if (arquivo.Extension == EXTENSAO_CONTROLE_SHTML)
+                {
+                    var caminhoCodigo = caminhoarArquivo + EXTENSAO_TYPESCRIPT;
+                    var caminhoEstilo = caminhoarArquivo + EXTENSAO_SASS;
+
+                    var projectItemLayout = projetItem;
+
+                    if (projectItemLayout != null)
+                    {
+                        projetoTS.TodosArquivos.Add(caminhoarArquivo.ToLower());
+                        projetoTS.ArquivosTS.Add(caminhoarArquivo.ToLower());
+
+                        LogVSUtil.Log($"Arquivo de layout encontrado {arquivo.Name}");
+
+                        var projectItemCodigo = DTE_GLOBAL.Solution.FindProjectItem(caminhoCodigo);
+
+                        if (projectItemCodigo == null)
+                        {
+                            LogVSUtil.LogErro($"Project item de código de {arquivo.Name} não foi encontrado");
+                        }
+                        else
+                        {
+                            projetoTS.TodosArquivos.Add(caminhoCodigo.ToLower());
+                            projetoTS.ArquivosTS.Add(caminhoCodigo);
+                            this.NormalizarNamespaceTS(projetoTS, caminhoCodigo);
+                            isAtualizarProjetoTS = true;
+
+                            LogVSUtil.Log($"Normalizando o arquivo do código {arquivo.Name}{EXTENSAO_TYPESCRIPT}");
+                        }
+
+                        var projetoItemEstilo = DTE_GLOBAL.Solution.FindProjectItem(caminhoEstilo);
+                        if (projetoItemEstilo != null)
+                        {
+                            projetoTS.TodosArquivos.Add(caminhoEstilo.ToLower());
+                            LogVSUtil.Log($"Normalizando o arquivo do estilo {arquivo.Name}{EXTENSAO_SASS}");
+                        }
+
+
+                        var isAgrupar = (projectItemLayout != null) &&
+                                        (projectItemCodigo != null);
+                        if (isAgrupar)
+                        {
+                            LogVSUtil.Log($"Agrupando arquivo {arquivo.Name}, {arquivo.Name}.ts, {arquivo.Name}{EXTENSAO_SASS}");
+
+                            this.AgruparArquivos(projectItemLayout,
+                                                 projectItemCodigo,
+                                                 projetoItemEstilo,
+                                                 caminhoarArquivo,
+                                                 caminhoCodigo,
+                                                 caminhoEstilo);
+                        }
+                    }
+
+                }
+
+
+                //if (isAtualizarProjetoTS)
+                //{
+                //    (projetoTS.ProjetoVS as Project)?.Save();
+                //    await projetoTS.NormalizarReferenciasAsync();
+                //}
+            }
+        }
+
+        private async Task<ProjetoTypeScript> RetornarProjetoTSAsync(FileInfo arquivo)
+        {
+            if (this.ProjetosTS.Count == 0)
+            {
+                await this.AtualizarProjetosAsync(true);
+            }
+
+            var diretorio = arquivo.Directory.FullName.ToLower();
+            var projetosTS = this.ProjetosTS.Values.Where(x => diretorio.Contains(x.CaminhoProjetoCaixaBaixa)).ToList();
+
+            if (projetosTS.Count > 1)
+            {
+                projetosTS = projetosTS.Where(x => DiretorioUtil.IsDiretorioFilho(arquivo.Directory, x.DiretorioProjeto)).ToList();
+            }
+
+            if (projetosTS.Count == 1)
+            {
+                return projetosTS.Single();
+            }
+
+            if (projetosTS.Count > 1)
+            {
+                LogVSUtil.LogErro($"Mais de um gerenciador de projeto foi encontrado para o arquivo, arquivo {arquivo.Name}");
+                return projetosTS.First();
+            }
+            LogVSUtil.Alerta($"Nenhum gerenciador de projeto foi inicializado ainda, arquivo {arquivo.Name} ignorado, aguarde a solução carregada por completo");
+            return null;
         }
 
         private void AgruparArquivos(ProjectItem projectItemLayout,
@@ -286,19 +302,17 @@ namespace Snebur.VisualStudio
                 return;
             }
 
-            projectItemCodigo.Remove();
-            projetoItemEstilo?.Remove();
+            this.RemoverArquivo(projectItemCodigo);
+            this.RemoverArquivo(projetoItemEstilo);
 
-            if(projetoItemEstilo!= null)
+            if (projetoItemEstilo != null)
             {
-                projectItemLayout.ProjectItems.AddFromFile(caminhoEstilo);
+                this.AdicionaarArquivo(projectItemLayout.ProjectItems, caminhoEstilo);
             }
-            
-            projectItemLayout.ProjectItems.AddFromFile(caminhoCodigo);
+            this.AdicionaarArquivo(projectItemLayout.ProjectItems, caminhoCodigo);
 
         }
-
-
+         
         private void NormalizarNamespaceTS(ProjetoTypeScript projetoTS, string caminhoArquivo)
         {
             var arquivo = new FileInfo(caminhoArquivo);
@@ -337,6 +351,28 @@ namespace Snebur.VisualStudio
             }
         }
 
+        private async Task<ProjetoTypeScript> InserirTemplateAsync(FileInfo arquivo)
+        {
+            var projetoTS = await this.RetornarProjetoTSAsync(arquivo);
+            if(projetoTS!= null)
+            {
+                if (arquivo.Extension == EXTENSAO_TYPESCRIPT)
+                {
+                    
+                    var projectItemCodigo = DTE.Solution.FindProjectItem(arquivo.FullName);
+                    if (projectItemCodigo != null)
+                    {
+                        LogVSUtil.Log($"Normalizando arquivo typescript {arquivo.Name}");
+
+                        projetoTS.TodosArquivos.Add(arquivo.FullName.ToLower());
+                        projetoTS.ArquivosTS.Add(arquivo.FullName);
+                        this.InserirTemplateArquivoNovo(projetoTS, arquivo);
+                    }
+                }
+            }
+            return projetoTS;
+        }
+
         private void InserirTemplateArquivoNovo(ProjetoTypeScript projetoTS, FileInfo arquivo)
         {
             if (arquivo.Exists)
@@ -363,12 +399,11 @@ namespace Snebur.VisualStudio
 
         #endregion
 
-
         private void InicializarGerenciadorSeNecessario()
         {
             if (!this._isProjetosAtualizados)
             {
-                _ = this.ExecutarAsync(this.AtualizarProjetosAsync);
+                _ = this.AtualizarProjetosAsync();
             }
         }
     }

@@ -37,8 +37,8 @@ namespace Snebur.VisualStudio
         public ArquivoTypeScript(ConfiguracaoProjetoTypeScript configuracaoProjetoTypeScript,
                                  string caminhoProjeto,
                                  FileInfo arquivo,
-                                 int prioridadeProjeto,
-                                 bool isAceitarTipoDesconhecido) : base(arquivo, prioridadeProjeto, isAceitarTipoDesconhecido)
+                                 int prioridadeProjeto ) : 
+                                    base(arquivo, prioridadeProjeto)
         {
             this.CaminhoProjeto = caminhoProjeto;
             this.ConfiguracaoProjetoTypeScript = configuracaoProjetoTypeScript;
@@ -52,7 +52,7 @@ namespace Snebur.VisualStudio
 
 
 
-        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript(bool isAceitarTipoDesconhecido)
+        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript()
         {
             if (this.Linhas.All(x => String.IsNullOrWhiteSpace(x) || x.Trim().StartsWith("//")))
             {
@@ -106,12 +106,10 @@ namespace Snebur.VisualStudio
             if (tiposEncontrados.Count == 0)
             {
                 var erro = new Exception("Nenhum tipo foi encontrado no arquivo, verificar export " + this.Arquivo.FullName);
-                if (isAceitarTipoDesconhecido)
-                {
-                    LogUtil.ErroAsync(erro);
-                    return EnumTipoArquivoTypeScript.Desconhecido;
-                }
-                throw erro;
+
+                LogVSUtil.LogErro(erro);
+                return EnumTipoArquivoTypeScript.Desconhecido;
+
             }
 
             var tipoArquivo = tiposEncontrados.OrderBy(x => x.Value).First().Key;

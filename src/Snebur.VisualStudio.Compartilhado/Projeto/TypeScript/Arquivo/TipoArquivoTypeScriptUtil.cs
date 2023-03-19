@@ -145,8 +145,7 @@ namespace Snebur.VisualStudio
         internal static List<BaseArquivoTypeScript> RetornarArquivosTypeScript(ConfiguracaoProjetoTypeScript configuracao,
             string caminhoProjeto,
             HashSet<string> arquivos,
-            Func<FileInfo, int> funcaoRetornarPrioridade,
-            bool isAceitarTiposDesconhecido)
+            Func<FileInfo, int> funcaoRetornarPrioridade)
         {
             //var caminhoScriptps = Path.GetDirectoryName(Path.Combine(caminhoProjeto, configuracao.compilerOptions.outFile));
             var caminhoScripts = Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD);
@@ -190,7 +189,7 @@ namespace Snebur.VisualStudio
                 else
                 {
 
-                    arquivosTS.Add(new ArquivoTypeScript(configuracao,  caminhoProjeto, arquivo, prioridadeProjeto, isAceitarTiposDesconhecido));
+                    arquivosTS.Add(new ArquivoTypeScript(configuracao,  caminhoProjeto, arquivo, prioridadeProjeto));
                 }
             }
 

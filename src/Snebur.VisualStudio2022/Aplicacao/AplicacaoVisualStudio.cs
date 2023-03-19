@@ -45,7 +45,7 @@ namespace Snebur.VisualStudio
 
         protected override IEnumerable<string> RetornarTodosArquivosProjeto(object projetoVS, string caminhoProjeto, bool isLowerCase)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
 
             if (projetoVS is Project project)
             {

@@ -161,11 +161,8 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                this.Dispatcher.Invoke(() =>
-                {
-                    this.IsEnabled = true;
-                    this.Cursor = Cursors.Arrow;
-                });
+                _ = this.DesocuparAsync();
+
             }
         }
 

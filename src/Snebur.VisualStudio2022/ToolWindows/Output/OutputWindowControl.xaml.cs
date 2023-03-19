@@ -30,7 +30,7 @@ namespace Snebur.VisualStudio
         public ObservableCollection<ILogMensagemViewModel> Logs => LogVSUtil.Logs;
         public int PortaDepuracao => ConfiguracaoVSUtil.PortaDepuracao;
 
-        public static OutputWindowControl Instancia { get; private set; }
+        //public static OutputWindowControl Instancia { get; private set; }
 
         //public static DTE2 DTE { get; private set; }
 
@@ -47,8 +47,7 @@ namespace Snebur.VisualStudio
             //JanelaSneburControl.DTE.Events.SolutionEvents.Opened += this.SolutionEvents_Opened;
             //JanelaSneburControl.DTE.Events.SolutionItemsEvents.ItemAdded += SolutionItemsEvents_ItemAdded;
 
-            Instancia = this;
-
+         
             //this.Foreground = Repositorio.BrushWindowText;
             //this.Background = Repositorio.BrushBackground;
         }
@@ -177,7 +176,7 @@ namespace Snebur.VisualStudio
                         await projeto.NormalizarReferenciasAsync(compilar);
                     }
 
-                    var projetosSass = projetos.OfType<ProjetoEstilo>().ToList();
+                    var projetosSass = projetos.OfType<ProjetoSass>().ToList();
                     foreach (var projeto in projetosSass)
                     {
                         await projeto.NormalizarReferenciasAsync(compilar);

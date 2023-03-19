@@ -24,11 +24,11 @@ namespace Snebur.VisualStudio
             this.NomeProjeto = nomeProjeto;
             this.CaminhoDepedencia = caminhoDepedencia;
             this.CaminhoRepositoriosArquivosTypescript = this.RetornarCaminhoRepositoriosArquivosTypescript();
-            this.CaminhoProjeto =  Path.GetDirectoryName(this.CaminhoRepositoriosArquivosTypescript);
+            this.CaminhoProjeto = Path.GetDirectoryName(this.CaminhoRepositoriosArquivosTypescript);
             this.CaminhoProjetoApresentacao = Path.Combine(this.CaminhoProjeto, "Apresentacao");
             this.CaminhoConfiguracao = this.RetornarCaminhoConfiguracaoTypescript();
 
-         
+
 
             this.Configuracao = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(this.CaminhoConfiguracao);
             this.Arquivos = this.RetornarArquivos();
@@ -53,7 +53,11 @@ namespace Snebur.VisualStudio
 
         private List<ArquivoTypeScript> RetornarCaminhosArquivoTypescript()
         {
-            return TipoArquivoTypeScriptUtil.RetornarArquivosTypeScript(this.Configuracao, this.CaminhoProjeto, this.Arquivos, null, true).OfType<ArquivoTypeScript>().ToList();
+            return TipoArquivoTypeScriptUtil.RetornarArquivosTypeScript(this.Configuracao,
+                                                                        this.CaminhoProjeto, 
+                                                                        this.Arquivos, null).
+                                                                        OfType<ArquivoTypeScript>().
+                                                                        ToList();
         }
 
         private string RetornarCaminhoConfiguracaoTypescript()
@@ -78,7 +82,7 @@ namespace Snebur.VisualStudio
                 }
                 di = di.Parent;
             }
-            var caminho =  Path.Combine(di.FullName, NOME_REPOSITORIO);
+            var caminho = Path.Combine(di.FullName, NOME_REPOSITORIO);
             //var caminho = di.FullName;
             if (!Directory.Exists(caminho))
             {

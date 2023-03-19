@@ -46,6 +46,9 @@ namespace Snebur.VisualStudio
     {
         string DiretorioProjetoTypescriptInicializacao { get; }
         ConfiguracaoProjetoTypeScript ConfiguracaoProjetoTypesriptInicializacao { get; }
+
+        void AtualizarProjetoTS(ProjetoTypeScript projetoTypeScript);
+        void AtualizarProjetoSass(ProjetoSass projetoEstilo);
     }
 
     public interface IConfiguracaoGeral

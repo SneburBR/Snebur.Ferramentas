@@ -34,6 +34,7 @@ namespace Snebur.VisualStudio.Commands
         private async Task ExecuteInternalAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             var dte = await VSEx.GetDTEAsync();
             var documento = dte.ActiveDocument;
             if (documento != null)
@@ -66,7 +67,6 @@ namespace Snebur.VisualStudio.Commands
                         {
                             break;
                         }
-
                     }
 
                     var divisorFinal = selecao.Text.Contains("'") ? "'" : "\"";
@@ -93,7 +93,6 @@ namespace Snebur.VisualStudio.Commands
                     {
                         conteudo = conteudo.Split(' ').Last();
                     }
-
 
                     conteudo = conteudo.Replace(">", String.Empty).
                                         Replace(" ", String.Empty).

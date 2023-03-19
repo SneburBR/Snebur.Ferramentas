@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Snebur.VisualStudio
 {
-    public class ConfiguracaoProjetoEstilo : ConfiguracaoProjeto
+    public class ConfiguracaoProjetoSass : ConfiguracaoProjeto
     {
         public string outputFile { get; set; }
 

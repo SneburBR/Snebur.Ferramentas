@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Snebur.VisualStudio
 {
-    public class ProjetoEstilo : BaseProjeto<ConfiguracaoProjetoEstilo>
+    public class ProjetoSass : BaseProjeto<ConfiguracaoProjetoSass>
     {
         private const string INICIO_SHTML = "/*#region shtml*/";
         private const string FIM_SHTML = "/*#endregion shtml*/";
@@ -32,8 +32,8 @@ namespace Snebur.VisualStudio
 
         private HashSet<string> PrefixosReservado { get; } = new HashSet<string> { PREFIXO_SEM_IMPORTACAO, PREFIXO_SEM_IMPORTACAO };
          
-        public ProjetoEstilo(ProjetoViewModel projetoVM, 
-                             ConfiguracaoProjetoEstilo configuracaoProjeto,
+        public ProjetoSass(ProjetoViewModel projetoVM, 
+                             ConfiguracaoProjetoSass configuracaoProjeto,
                              FileInfo arquivoProjeto, string caminhoConfiguracao) :
                              base(projetoVM, 
                                   configuracaoProjeto,
@@ -65,6 +65,8 @@ namespace Snebur.VisualStudio
             this.AtualizarInterno(this.ArquivoMixins, INICIO_ARQUIVOS, FIM_ARQUIVOS, false, this.IsArquivoSassMixins);
 
             this.AtualizarLinkEstiloProjeto();
+
+            BaseGerenciadoProjetos.TryIntancia?.AtualizarProjetoSass(this);
         }
 
         public override void InscrementarVersao()
@@ -339,10 +341,10 @@ namespace Snebur.VisualStudio
             return arquivo.Name.EndsWith(NOME_ARQUIVO_VARIAVEIS); // && arquivo.Name != NOME_ARQUIVO_VARIAVEIS;
         }
 
-        public static ConfiguracaoProjetoEstilo RetornarConfiguracao(string caminhoConfiguracao)
+        public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
-            var configuracoes = JsonUtil.Deserializar<List<ConfiguracaoProjetoEstilo>>(json).
+            var configuracoes = JsonUtil.Deserializar<List<ConfiguracaoProjetoSass>>(json).
                                  Where(x => Path.GetExtension(x.inputFile) == ".scss").ToList();
 
             if (configuracoes.Count == 0)
@@ -355,7 +357,7 @@ namespace Snebur.VisualStudio
             if (configuracoes.Count == 0)
             {
                 LogVSUtil.LogErro("--------------  compilerconfig.json----------------------");
-                LogVSUtil.Alerta(($"Nenhuma configuração encontrada, Precisa de um projeto definido como {nameof(ConfiguracaoProjetoEstilo.IsIgnorar)} = false"));
+                LogVSUtil.Alerta(($"Nenhuma configuração encontrada, Precisa de um projeto definido como {nameof(ConfiguracaoProjetoSass.IsIgnorar)} = false"));
             }
 
             if (configuracoes.Count > 1)

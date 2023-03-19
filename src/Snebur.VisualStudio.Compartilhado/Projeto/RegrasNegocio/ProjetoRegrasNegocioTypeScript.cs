@@ -299,7 +299,7 @@ namespace Snebur.VisualStudio
             {
                 return e.Types.Where(x => x != null && !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

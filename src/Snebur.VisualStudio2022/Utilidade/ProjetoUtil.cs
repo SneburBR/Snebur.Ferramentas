@@ -139,10 +139,10 @@ namespace Snebur.VisualStudio
                             if (File.Exists(caminhoConfiguracaoSass))
                             {
                                 LogVSUtil.Log(String.Format("Projeto sass encontrado : {0} ", projetoVS.Name));
-                                var configuracaoSass = ProjetoEstilo.RetornarConfiguracao(caminhoConfiguracaoSass);
+                                var configuracaoSass = ProjetoSass.RetornarConfiguracao(caminhoConfiguracaoSass);
                                 if (configuracaoSass != null && !configuracaoSass.IsIgnorar)
                                 {
-                                    projetos.Add(new ProjetoEstilo(projetoVM,
+                                    projetos.Add(new ProjetoSass(projetoVM,
                                                                    configuracaoSass,
                                                                    arquivoProjeto,
                                                                    caminhoConfiguracaoSass));
@@ -219,7 +219,7 @@ namespace Snebur.VisualStudio
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            GerenciadorProjetos.Instancia.DiretorioProjetoTypescriptInicializacao = null;
+            GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(null);
 
             var sb = dte.Solution.SolutionBuild;
             //var sc = sb.ActiveConfiguration;
@@ -251,10 +251,10 @@ namespace Snebur.VisualStudio
                         {
 
                             var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(caminhoTS));
-                            GerenciadorProjetos.Instancia.ConfiguracaoProjetoTypesriptInicializacao = configuracaoTypescript;
+                            GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(configuracaoTypescript);
                             if (configuracaoTypescript.IsDebugScriptsDepedentes)
                             {
-                                GerenciadorProjetos.Instancia.DiretorioProjetoTypescriptInicializacao = diretorioProjeto;
+                                GerenciadorProjetos.Instancia.SetDiretorioProjetoTypescriptInicializacao(diretorioProjeto);
                                 return;
                             }
                         }
@@ -384,14 +384,14 @@ namespace Snebur.VisualStudio
 
         public static HashSet<string> RetornarTodosArquivos(Project projetoVS, bool isLowerCase)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+           // ThreadHelper.ThrowIfNotOnUIThread();
 
             return ProjetoUtil.RetornarTodosArquivos(projetoVS.ProjectItems, isLowerCase);
         }
 
         public static HashSet<string> RetornarTodosArquivos(ProjectItems items, bool isLowerCase)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
             var arquivos = new HashSet<string>();
             if (items != null)
             {

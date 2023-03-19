@@ -61,7 +61,7 @@ namespace Snebur.VisualStudio
             return NAMESPACE;
         }
 
-        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript(bool isAceitarTipoDesconhecido)
+        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript()
         {
             var nomeArquivo = this.Arquivo.Name.ToLower();
             if (ArquivoTSSistema.DicionarioNomeArquivoTipoArquivo.ContainsKey(nomeArquivo))

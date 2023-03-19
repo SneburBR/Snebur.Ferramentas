@@ -17,7 +17,7 @@ namespace Snebur.VisualStudio
             this.PrioridadeDominio = this.RetornarPrioridadeDominio();
         }
          
-        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript(bool isAceitarTipoDesconhecido)
+        protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript()
         {
              if (this.Arquivo.Name.EndsWith(".Atributos.ts"))
             {

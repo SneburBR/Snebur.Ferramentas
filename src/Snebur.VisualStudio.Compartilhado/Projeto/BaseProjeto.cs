@@ -1,4 +1,6 @@
-﻿using Snebur.Dominio;
+﻿using Microsoft.Identity.Client;
+using Snebur.Dominio;
+using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,8 +9,12 @@ using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
-    public abstract class BaseProjeto : BaseViewModel, IDisposable
+
+
+
+    public abstract class BaseProjeto : BaseViewModel
     {
+        private bool _isNormalizando;
         private List<string> SufixosProtegidos { get; } = new List<string> { ".Completo", ".Debug", ".Temp", ".Teste" };
 
         public string NomeProjeto { get; private set; }
@@ -54,6 +60,10 @@ namespace Snebur.VisualStudio
         internal ProjetoViewModel ProjetoViewModel { get; }
 
         public object ProjetoVS => this.ProjetoViewModel.ProjetoVS;
+
+        public string Chave { get; }
+
+        public bool IsNormalizado { get; private set; }
         public BaseProjeto(ProjetoViewModel projetoVM,
                            FileInfo arquivoProjeto,
                            string caminhoConfiguracao)
@@ -64,12 +74,13 @@ namespace Snebur.VisualStudio
             this.CaminhoConfiguracao = caminhoConfiguracao;
             this.CaminhoProjetoCaixaBaixa = this.CaminhoProjeto.ToLower();
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
-            this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
             this.NomeProjeto = this.NormalizarNomeProjeto(Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name));
             this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(this.ProjetoViewModel.TipoCsProj,
                                                                             this.DiretorioProjeto.FullName,
                                                                             this.NomeAssembly,
                                                                             true);
+
+            this.Chave = BaseProjeto.RetornarChave(this.CaminhoProjeto);
         }
 
         private string NormalizarNomeProjeto(string nomeProjeto)
@@ -102,7 +113,7 @@ namespace Snebur.VisualStudio
                 nomeProjeto = nomeProjeto.Substring(0, nomeProjeto.Length - ".TS".Length);
             }
 
-            if(this.ProjetoViewModel.TipoCsProj == EnumTipoCsProj.MicrosoftSdk &&
+            if (this.ProjetoViewModel.TipoCsProj == EnumTipoCsProj.MicrosoftSdk &&
                 nomeProjeto.EndsWith(".Net"))
             {
                 return nomeProjeto.Substring(0, nomeProjeto.Length - 4); ;
@@ -112,20 +123,35 @@ namespace Snebur.VisualStudio
         }
 
         #region Abstratos
-        public async Task NormalizarReferenciasAsync(bool compilar)
+        public async Task NormalizarReferenciasAsync(bool compilar =false)
         {
             try
             {
+                if (this._isNormalizando)
+                {
+                    return;
+                }
                 if (compilar)
                 {
                     await this.CompilarAsync();
                 }
+                this._isNormalizando = true;
 
-                this.AtualizarInterno();
+                await Task.Factory.StartNew(() =>
+                {
+                    this.AtualizarInterno();
+                });
+                //this.AtualizarInterno();
+             
+                this.IsNormalizado = true;
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro(new Exception($"Não foi possível atualizar o projeto {this.NomeProjeto}", ex));
+                LogVSUtil.LogErro(new Exception($"Não foi possível normalizar o projeto {this.NomeProjeto}", ex));
+            }
+            finally
+            {
+                this._isNormalizando = false;
             }
         }
 
@@ -181,11 +207,19 @@ namespace Snebur.VisualStudio
             //this.NotificarPropriedadeAlterada(nameof(this.VersaoProjeto));
         }
 
-        public void Dispose()
+        private void Dispose()
         {
             //this.ProjetoVS = null;
             this.DispensarInerno();
+        }
 
+        public static string RetornarChave(string caminhoProjeto)
+        {
+            if(Path.GetExtension(caminhoProjeto).Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
+            {
+                caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
+            }
+            return ArquivoUtil.NormalizarCaminhoArquivo(caminhoProjeto).ToLower();
         }
     }
 
