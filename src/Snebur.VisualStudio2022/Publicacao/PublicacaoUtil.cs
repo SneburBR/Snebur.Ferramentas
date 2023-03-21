@@ -31,8 +31,8 @@ namespace Snebur.VisualStudio
             return Task.Factory.StartNew(() =>
             {
                 PublicarVersao(tipoProjeto, caminhoProjeto, tempo);
-            }, CancellationToken.None, 
-               TaskCreationOptions.None, 
+            }, CancellationToken.None,
+               TaskCreationOptions.None,
                TaskScheduler.Default);
 
         }
@@ -48,7 +48,7 @@ namespace Snebur.VisualStudio
         }
 
         private static string PublicarVersaoInterno(EnumTipoProjeto tipoProjeto,
-                                                    string caminhoProjeto )
+                                                    string caminhoProjeto)
         {
             var infoPublicacao = RetornarInfoPulicacao(caminhoProjeto);
             if (infoPublicacao != null)
@@ -64,6 +64,11 @@ namespace Snebur.VisualStudio
                 }
 
                 var versao = AssemblyInfoUtil.RetornarVersaoProjeto(caminhoProjeto);
+                if (versao == null)
+                {
+                    LogVSUtil.LogErro($"Não foi possível encontrada versão do projeto{caminhoProjeto}");
+                    return null;
+                }
                 if (infoPublicacao.IsCriarPastaVersao)
                 {
                     caminhoPublicacao = Path.Combine(caminhoPublicacao, versao.ToString());
@@ -72,7 +77,7 @@ namespace Snebur.VisualStudio
 
 
                 var infosPastas = RetornarCaminhoPastas(tipoProjeto,
-                                                        caminhoProjeto );
+                                                        caminhoProjeto);
                 foreach (var infoPasta in infosPastas)
                 {
                     if (Directory.Exists(infoPasta.Caminho))
@@ -249,23 +254,52 @@ namespace Snebur.VisualStudio
             }
         }
 
-        internal static void AtribuirVersaoExtensaoVisualStudio(Version versao, string caminhoProjeto)
+        internal static void IncrementarVersaoExtensaoVisualStudio(string caminhoProjeto)
         {
-            var caminhoXML = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
+            var caminhoVsix = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
             try
             {
                 var xml = new System.Xml.XmlDocument();
-                xml.Load(caminhoXML);
+                xml.Load(caminhoVsix);
 
                 var IdentityTag = xml.GetElementsByTagName("Identity")[0];
-                IdentityTag.Attributes["Version"].Value = versao.ToString();
-                xml.Save(caminhoXML);
+                var versaoString = IdentityTag.Attributes["Version"].Value;
+                if (Version.TryParse(versaoString, out var versao))
+                {
+                    var agora = DateTime.Now;
+
+                    //var versaoMinor = Int32.Parse(DateTime.Now.Year.ToString().Substring(2, 2));
+                    //var versaoData = Convert.ToInt32($"{DateTime.Now.Month:00}{DateTime.Now.Day:00}");
+                    var novaVersao = new Version(agora.Year, agora.Month, agora.Day, versao.Revision + 1);
+                    IdentityTag.Attributes["Version"].Value = novaVersao.ToString();
+                    xml.Save(caminhoVsix);
+                }
+
             }
             catch (Exception erro)
             {
                 LogVSUtil.LogErro(erro);
             }
+
         }
+
+        //internal static void AtribuirVersaoExtensaoVisualStudio(Version versao, string caminhoProjeto)
+        //{
+        //    var caminhoXML = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
+        //    try
+        //    {
+        //        var xml = new System.Xml.XmlDocument();
+        //        xml.Load(caminhoXML);
+
+        //        var IdentityTag = xml.GetElementsByTagName("Identity")[0];
+        //        IdentityTag.Attributes["Version"].Value = versao.ToString();
+        //        xml.Save(caminhoXML);
+        //    }
+        //    catch (Exception erro)
+        //    {
+        //        LogVSUtil.LogErro(erro);
+        //    }
+        //}
 
         private static void CopiarDiretorio(PublicacaoConfig publicacaoConfig,
                                             string diretorioOrigem,
@@ -318,6 +352,7 @@ namespace Snebur.VisualStudio
         private static PublicacaoConfig RetornarInfoPulicacao(string caminhoProjeto)
         {
             var caminhoInfoPulicacao = Path.Combine(caminhoProjeto, "publicacao.json");
+
             if (!File.Exists(caminhoInfoPulicacao))
             {
                 LogVSUtil.LogErro($"O arquivo publicacao.json não foi encontrado no projeto {Path.GetDirectoryName(caminhoProjeto)}");
@@ -329,13 +364,13 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro("falha ao deserializar publicacao.json ", ex);
+                LogVSUtil.LogErro("falha ao desserializar publicacao.json ", ex);
                 return null;
             }
         }
 
         private static InfoPasta[] RetornarCaminhoPastas(EnumTipoProjeto tipoProjeto,
-                                                         string caminhoProjeto )
+                                                         string caminhoProjeto)
         {
             var isDebug = true;
             var caminhoBin = Path.Combine(caminhoProjeto, "bin");

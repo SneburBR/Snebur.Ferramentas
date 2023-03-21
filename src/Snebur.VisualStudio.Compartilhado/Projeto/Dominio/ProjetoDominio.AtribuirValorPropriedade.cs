@@ -20,6 +20,7 @@ namespace Snebur.VisualStudio
         public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA = "NotificarValorPropriedadeAlterada";
         public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_IS_ATIVO = "NotificarValorPropriedadeAlteradaIsAtivo";
         public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_RELACAO = "NotificarValorPropriedadeAlteradaRelacao";
+        public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA = "NotificarValorPropriedadeAlteradaChaveEstrangeiraAlterada";
         public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_TIPO_COMPLEXO = "NotificarValorPropriedadeAlteradaTipoCompleto";
         public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE = "RetornarValorPropriedade";
         public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_IS_ATIVO = "RetornarValorPropriedadeIsAtivo";
@@ -139,7 +140,7 @@ namespace Snebur.VisualStudio
                         var (propriedadeRelacao, propriedadeChavaEtrangeira) = proproriedadesChaveEstrangeiras.Where(x => x.propriedadeChavaEtrangeira == propriedadeCampo).SingleOrDefault();
 
                         var nomeMetodoRetornarValorPropriedade = this.RetornarNomeMetodoRetornarValorPropriedade(isImplementarIAtivo, propriedadeChavaEtrangeira, propriedadeCampo);
-                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementarIAtivo, propriedadeCampo);
+                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementarIAtivo, propriedadeCampo, propriedadeChavaEtrangeira);
                         // campo comum
                         if (!linhaPropriedadePesquisa.Contains(NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA) ||
                             !linhaPropriedadePesquisa.Contains(nomeMetodoRetornarValorPropriedade))
@@ -151,15 +152,13 @@ namespace Snebur.VisualStudio
                             var fim = linhaPropriedadePesquisa.IndexOf("get");
                             var inicioPropriedade = linhaPropriedadePesquisa.Substring(0, fim).TrimEnd();
 
-
-
                             string linhaPropriedadeAtribuir;
 
                             if (propriedadeChavaEtrangeira != null)
                             {
 
                                 linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{propriedadeRelacao.Name}); " +
-                                                            $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
+                                                            $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
 
                             }
                             else
@@ -322,7 +321,7 @@ namespace Snebur.VisualStudio
                 }
             }
         }
-         
+
         private string RetornarNomeMetodoRetornarValorPropriedade(bool isImplementarIAtivo,
                                                                   PropertyInfo propriedadeChavaEtrangeira,
                                                                   PropertyInfo propriedadeCampo)
@@ -336,8 +335,15 @@ namespace Snebur.VisualStudio
                                                           NOME_METODO_RETORNAR_VALOR_PROPRIEDADE;
         }
 
-        private string RetornarNomeMetodoNotificarValorPropriedadeAlterada(bool isImplementarIAtivo, PropertyInfo propriedadeCampo)
+        private string RetornarNomeMetodoNotificarValorPropriedadeAlterada(
+            bool isImplementarIAtivo,
+            PropertyInfo propriedadeCampo,
+            PropertyInfo propriedadeChavaEtrangeira)
         {
+            if (propriedadeChavaEtrangeira != null)
+            {
+                return NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA;
+            }
             if (isImplementarIAtivo && propriedadeCampo.Name == nameof(IAtivo.IsAtivo))
             {
                 return NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_IS_ATIVO;

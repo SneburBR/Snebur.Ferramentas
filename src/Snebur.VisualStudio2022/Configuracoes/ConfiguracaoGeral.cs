@@ -4,6 +4,8 @@ namespace Snebur.VisualStudio
 {
     public class ConfiguracaoGeral : BaseOptionModel<ConfiguracaoGeral>, IConfiguracaoGeral
     {
+        private bool _isMostrarHoraLogOutput = false;
+
         [Category("Geral")]
         [DisplayName("Caminho VS")]
         [Description("Caminho da instalação do Visual Studio 2022")]
@@ -33,9 +35,25 @@ namespace Snebur.VisualStudio
         [Description("Porta de depuração de 1 até 65535")]
         public ushort PortaDepuracao { get; set; } = 43812;
 
+        [Category("Depuração")]
+        [DisplayName("Mostrar hora")]
+        [Description("Mostrar na hora do logs na janela do output da extensão")]
+        public bool IsMostrarHoraLogOutput
+        {
+            get => this._isMostrarHoraLogOutput ;
+            set
+            {
+                if (this._isMostrarHoraLogOutput != value)
+                {
+                    LogVSUtil.IsMostrarHoraLogOutput = value;
+                    this._isMostrarHoraLogOutput = value;
+                }
+            }
+        }
+
         //[Category("Depuração")]
         //[DisplayName("Copiar binários")]
-        //[Description("Copiar os arquivos binários após compliar incrementar versão")]
+        //[Description("Copiar os arquivos binários após compilar incrementar versão")]
         //[DefaultValue(false)]
         //public bool IsCopiarArquivosBinarios { get; set; } = false;
 
@@ -44,7 +62,7 @@ namespace Snebur.VisualStudio
         //[Description("Caminho do diretorio destino para copiar os binários da versão ")]
         //[DefaultValue("")]
         //public string DiretorioDestinoBinarios { get; set; } = "";
-         
+
         public ConfiguracaoGeral() : base()
         {
 

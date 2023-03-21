@@ -34,7 +34,8 @@ namespace Snebur.VisualStudio
 
         //public DTE2 DTE { get; }
 
-        public Version VersaoProjeto => AssemblyInfoUtil.RetornarVersaoAssemblyInfo(this.CaminhoAssemblyInfo);
+        public Version VersaoProjeto => AssemblyInfoUtil.RetornarVersaoAssemblyInfo(this.CaminhoProjeto,
+                                                                                   this.CaminhoAssemblyInfo);
 
         public string CaminhoAssemblyInfo { get; }
         public string CaminhoAssembly { get; }
@@ -180,7 +181,9 @@ namespace Snebur.VisualStudio
 
         public virtual void InscrementarVersao()
         {
-            AssemblyInfoUtil.InscrementarVersao(this.CaminhoAssemblyInfo);
+            AssemblyInfoUtil.InscrementarVersao(this.CaminhoProjeto,    
+                                                this.CaminhoAssemblyInfo);
+
             this.NotificarPropriedadeAlterada(nameof(this.VersaoProjeto));
             //var versao = this.VersaoProjeto;
             //var novaVersao = new Version(versao.Major, versao.Minor, versao.Build, versao.Revision + 1);

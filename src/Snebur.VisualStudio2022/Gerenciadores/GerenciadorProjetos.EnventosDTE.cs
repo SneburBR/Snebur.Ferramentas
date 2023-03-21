@@ -26,13 +26,16 @@ namespace Snebur.VisualStudio
 
         private void BuildEvents_OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
         {
-            _ = this.ExecutarAsync(this.CompilacaoIniciandoAsync);
+            //_ = this.ExecutarAsync(this.CompilacaoIniciandoAsync);
         }
 
         private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
         {
-            LogVSUtil.Log("Executando tarefas depois da compilação");
-            _ = this.BuildDoneAsync();
+            if (this._isEventoBuildAtivo)
+            {
+                LogVSUtil.Log("Executando tarefas depois da compilação");
+                _ = this.BuildDoneAsync();
+            }
         }
 
         private void DocumentEvents_DocumentOpened(Document documento)
@@ -42,7 +45,7 @@ namespace Snebur.VisualStudio
 
         private void DocumentEvents_DocumentSaved(Document documento)
         {
-            _ = DocumentSavedAsync(documento);
+            _ = DocumentSavedAsync(documento) ;
         }
 
         private async Task DocumentSavedAsync(Document documento)
@@ -104,7 +107,7 @@ namespace Snebur.VisualStudio
             this.SoluacaoAbertaInterno?.Invoke(this, EventArgs.Empty);
         }
 
-        private async Task CompilacaoIniciandoAsync()
+        private async Task CompilacaoIniciandoAsync(Stopwatch tempoAntesBuild)
         {
             if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
             {
@@ -113,8 +116,7 @@ namespace Snebur.VisualStudio
 
             this.IsCompilando = true;
 
-            if (this.TempoCompilacao != null) this.TempoCompilacao.Stop();
-            this.TempoCompilacao = Stopwatch.StartNew();
+            
 
             if (this.IsLimparLogCompilandoInterno)
             {
@@ -123,25 +125,16 @@ namespace Snebur.VisualStudio
 
             try
             {
-                var tempoGeral = Stopwatch.StartNew();
-                var tempoGerenciador = Stopwatch.StartNew();
-
-                await this.AtualizarProjetosAsync();
-                tempoGerenciador.Stop();
-                LogVSUtil.Sucesso("Gerenciador atualizado", tempoGerenciador);
-
-                //var solutionsBuild = (SolutionBuild2)this.DTE.Solution.SolutionBuild;
-                //(Array)solutionsBuild.StartupProjects
-
+           
                 await this.ServicoDepuracao.SalvarPortaAsync();
 
-                tempoGeral.Stop();
-                LogVSUtil.Sucesso($"Processos antes de compilar", tempoGeral);
+                tempoAntesBuild.Stop();
+                LogVSUtil.Sucesso($"Processos antes de compilar", tempoAntesBuild);
             }
             catch (FileNotFoundException ex)
             {
                 LogVSUtil.LogErro(ex);
-                await this.ReiniciarInternoAsync();
+                await this.ReiniciarAsync();
             }
             catch (Exception ex)
             {

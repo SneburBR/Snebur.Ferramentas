@@ -10,11 +10,8 @@ namespace Snebur.VisualStudio
 {
     public abstract class BaseEstruturaClasse : BaseEstrutura
     {
-
         public string CaminhoTipoBase { get; set; }
-
         public string ImplentacaoInterfaces { get; set; }
-
         public string Abastrada { get; set; }
 
         public EstruturaConstrutor EstruturaConstrutor { get; }
@@ -31,7 +28,6 @@ namespace Snebur.VisualStudio
             this.EstruturaConstrutor = this.RetornarEstruturaConstrutor();
             this.Abastrada = (tipo.IsAbstract) ? " abstract" : String.Empty;
             this.ImplentacaoInterfaces = this.RetornarImplentacaoInterfaces();
-
         }
 
         private Dictionary<string, PropertyInfo> RetornarPropriedadesRelacaoChaveEstrangeiras()
@@ -125,7 +121,9 @@ namespace Snebur.VisualStudio
             {
                 PropertyInfo propriedadeRelacaoChaveEstrangeira;
                 this.PropriedadesRelacaoChaveEstrangeira.TryGetValue(propriedade.Name, out propriedadeRelacaoChaveEstrangeira);
-                estruturasPropriedade.Add(new EstruturaPropriedadePublica(propriedade, propriedadeRelacaoChaveEstrangeira));
+              
+                estruturasPropriedade.Add(new EstruturaPropriedadePublica(propriedade, 
+                                                                          propriedadeRelacaoChaveEstrangeira));
             }
 
             var propriedadesInterface = AjudantePropriedades.RetornarPropriedadesInterface(this.Tipo);

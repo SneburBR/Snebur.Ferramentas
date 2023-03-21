@@ -36,7 +36,7 @@ namespace Snebur.VisualStudio
         {
             try
             {
-                await OutputWindow.Instance?.OcuparAsync();
+                await OutputWindow.OcuparAsync();
                 if (ConfiguracaoGeral.Instance.IsUtilizarPortaDepuradaRandomica)
                 {
                     this.Porta = (ushort)(new Random().Next(1, UInt16.MaxValue));
@@ -65,7 +65,7 @@ namespace Snebur.VisualStudio
                 await this.SalvarPortaAsync();
                 LogVSUtil.Sucesso($"Serviço de depuração inicializado: Porta {this.Porta}", null);
 
-                await OutputWindow.Instance?.AtualizarEstadoServicoDepuracaoAsync();
+                await OutputWindow.AtualizarEstadoServicoDepuracaoAsync();
             }
             catch (Exception ex)
             {
@@ -75,11 +75,11 @@ namespace Snebur.VisualStudio
                 LogVSUtil.LogErro($"Erro: {ex.Message}");
                 this.Estado = EnumEstadoServicoDepuracao.Parado;
                 this.Porta += 1;
-                
+
             }
             finally
             {
-                await OutputWindow.Instance?.DesocuparAsync();
+                await OutputWindow.DesocuparAsync();
             }
         }
 
@@ -136,6 +136,7 @@ namespace Snebur.VisualStudio
             }
         }
 
+        #region Salvar porta para os projetos
         public async Task SalvarPortaAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -149,6 +150,12 @@ namespace Snebur.VisualStudio
         }
         private Task SalvarPortaAsync(string caminhoProjeto)
         {
+            var porta = this.Porta;
+            if (!this.IsPrecisaSalvarPorta(caminhoProjeto, porta))
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Factory.StartNew(() =>
             {
                 if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
@@ -159,8 +166,18 @@ namespace Snebur.VisualStudio
                         var caminhoArquivo = Path.Combine(caminhoProjeto, NOME_ARQUIVO_ÎNFO_PORTA);
                         try
                         {
+
                             ArquivoUtil.DeletarArquivo(caminhoArquivo, false, true);
-                            File.WriteAllText(caminhoArquivo, this.Porta.ToString(), Encoding.UTF8);
+                            File.WriteAllText(caminhoArquivo, porta.ToString(), Encoding.UTF8);
+                           
+                            if (this._projetosPorta.TryGetValue(caminhoProjeto, out ushort portaAtua))
+                            {
+                                this._projetosPorta.TryUpdate(caminhoArquivo, porta, portaAtua);
+
+                                return;
+                            }
+                            this._projetosPorta.TryAdd(caminhoProjeto, porta);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -172,8 +189,21 @@ namespace Snebur.VisualStudio
             CancellationToken.None,
             TaskCreationOptions.None,
             TaskScheduler.Default);
-            
+
         }
+
+        private readonly ConcurrentDictionary<string, ushort> _projetosPorta = new ConcurrentDictionary<string, ushort>();
+        private bool IsPrecisaSalvarPorta(string caminhoProjeto, ushort porta)
+        {
+            if (this._projetosPorta.TryGetValue(caminhoProjeto, out ushort portaAtual))
+            {
+                return portaAtual != porta;
+            }
+            return true;
+
+        }
+
+        #endregion
 
         internal void EnviarMensagemParaTodos(Mensagem mensagem)
         {

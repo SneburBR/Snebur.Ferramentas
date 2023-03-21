@@ -716,6 +716,8 @@ namespace Snebur.VisualStudio
                                              $"\r\nConfigurado: {caminhoSaidaConfigurado}" +
                                              $"\r\nPadrão: {caminhoProjetoAtual}," +
                                              $"\r\nNormalize os projetos e se problema persistir e reinicie o visual studio; ");
+
+                            BaseGerenciadoProjetos.TryIntancia.SetReiniciarGerenciadorPendente(true);
                         }
                     }
                 }

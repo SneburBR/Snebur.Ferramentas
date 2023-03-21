@@ -11,11 +11,29 @@ namespace Snebur.VisualStudio
 
     public class LogVS : ILogVS
     {
+        private bool? _isMostrarHoraLogOutput;
         private static Guid OUTPUT => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
         private static Guid DEBUG => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.DebugPane_guid;
         private static Guid BUILD => Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.BuildOutputPane_guid;
 
         public ObservableCollection<ILogMensagemViewModel> Logs { get; } = new ObservableCollection<ILogMensagemViewModel>();
+
+        public bool IsMostrarHoraLogOutput
+        {
+            get
+            {
+                if (this._isMostrarHoraLogOutput == null)
+                {
+                    this._isMostrarHoraLogOutput = ConfiguracaoGeral.Instance.IsMostrarHoraLogOutput;
+                }
+                return this._isMostrarHoraLogOutput.Value;
+            }
+            set
+            {
+                this._isMostrarHoraLogOutput = value;
+            }
+        }
+
 
         private LogVS()
         {
@@ -96,6 +114,7 @@ namespace Snebur.VisualStudio
         private async Task LogInternoAsync(string mensagem, EnumTipoLog tipoLog, Action acao)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            mensagem = this.IsMostrarHoraLogOutput ? $"{DateTime.Now:HH:mm:ss:fff} {mensagem}" : mensagem;
             this.Logs?.Add(new LogMensagemViewModel(mensagem, tipoLog, acao));
             OutputWindow.Instance?.ScrollLog?.ScrollToBottom();
         }

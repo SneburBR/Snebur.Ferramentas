@@ -47,7 +47,7 @@ namespace Snebur.VisualStudio
             //JanelaSneburControl.DTE.Events.SolutionEvents.Opened += this.SolutionEvents_Opened;
             //JanelaSneburControl.DTE.Events.SolutionItemsEvents.ItemAdded += SolutionItemsEvents_ItemAdded;
 
-         
+
             //this.Foreground = Repositorio.BrushWindowText;
             //this.Background = Repositorio.BrushBackground;
         }
@@ -58,8 +58,8 @@ namespace Snebur.VisualStudio
             if (!this._isInicializado)
             {
                 this._isInicializado = true;
+                _ = this.InicializarAsync();
             }
-            _ = this.InicializarAsync();
             //LogVSUtil.Logs = this.Logs;
         }
 
@@ -82,7 +82,7 @@ namespace Snebur.VisualStudio
 
         public async Task NormalizarProjetosReferenciasAsync()
         {
-            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos || 
+            if (ConfiguracaoVSUtil.IsNormalizandoTodosProjetos ||
                 this.IsOcupado)
             {
                 return;
@@ -106,8 +106,7 @@ namespace Snebur.VisualStudio
             }
         }
 
-
-        private async Task NormalizarInternoAsync(bool compilar = false)
+        private async Task NormalizarInternoAsync(bool isCompilar = false)
         {
             AjudanteAssembly.Clear();
 
@@ -115,6 +114,11 @@ namespace Snebur.VisualStudio
             var tempo = System.Diagnostics.Stopwatch.StartNew();
             try
             {
+                if (isCompilar)
+                {
+                    GerenciadorProjetos.Instancia.DesativarEventosBuild();
+                }
+
                 LogVSUtil.Clear();
 
                 LogVSUtil.Log("Normalizando");
@@ -125,7 +129,6 @@ namespace Snebur.VisualStudio
                 dte.ExecuteCommand("File.SaveAll");
 
                 ProjetoUtil.DefinirProjetosInicializacao();
-
 
                 var projetos = await ProjetoUtil.RetornarProjetosAsync();
                 if (projetos.Count > 0)
@@ -138,48 +141,48 @@ namespace Snebur.VisualStudio
                     var projetosDominio = projetos.OfType<ProjetoDominio>().OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio).ToList();
                     foreach (var projeto in projetosDominio)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
                     foreach (var projeto in projetosContextoDados)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
                     foreach (var projeto in projetosRegrasNegocioTS)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
                     foreach (var projeto in projetosRegrasNegocioCSharp)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosServicosTS = projetos.OfType<ProjetoServicosTypescript>().ToList();
                     foreach (var projeto in projetosServicosTS)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosServicosDotNet = projetos.OfType<ProjetoServicosDotNet>().ToList();
                     foreach (var projeto in projetosServicosDotNet)
                     {
-                        await projeto.NormalizarReferenciasAsync(true);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     foreach (var projeto in projetosTypeScript)
                     {
-                        await projeto.NormalizarReferenciasAsync(compilar);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     var projetosSass = projetos.OfType<ProjetoSass>().ToList();
                     foreach (var projeto in projetosSass)
                     {
-                        await projeto.NormalizarReferenciasAsync(compilar);
+                        await projeto.NormalizarReferenciasAsync(isCompilar);
                     }
 
                     //GerenciadorProjetos.Reiniciar();
@@ -187,10 +190,16 @@ namespace Snebur.VisualStudio
                     {
                         //projeto.Dispose();
                     }
+
+                    if (GerenciadorProjetos.Instancia.IsReiniciarGerenciadorPendente)
+                    {
+                        LogVSUtil.Alerta("Reiniciando gerenciador");
+                        await GerenciadorProjetos.Instancia.ReiniciarAsync();
+                        return;
+                    }
                     isSucesso = true;
                     ProjetoTypeScriptUtil.AtualizarScriptsDebug(projetos.OfType<ProjetoTypeScript>().ToList());
                 }
-
             }
             catch (Exception ex)
             {
@@ -206,16 +215,18 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-                    if (!compilar)
+                    if (!isCompilar)
                     {
-                        await this.NormalizarInternoAsync(true);
+                        _ = this.NormalizarInternoAsync(true);
                     }
                 }
+                GerenciadorProjetos.Instancia.AtivarEventosBuild();
             }
         }
 
         private void BtnReiniciarGerenciadorProjetosTS_Click(object sender, RoutedEventArgs e)
         {
+            GerenciadorProjetos.Reiniciar();
             GerenciadorProjetos.Reiniciar();
         }
 

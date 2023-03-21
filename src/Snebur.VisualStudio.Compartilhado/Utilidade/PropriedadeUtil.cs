@@ -1,4 +1,5 @@
-﻿using Snebur.Dominio.Atributos;
+﻿using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,5 +82,6 @@ namespace Snebur.VisualStudio.Reflexao
                 return propriedade.GetCustomAttributes(false).Cast<Attribute>().Where(x => x.GetType().Name == tipoAtributo.Name).ToList();
             }
         }
+ 
     }
 }

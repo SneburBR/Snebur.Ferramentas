@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Snebur.BancoDados;
 using Snebur.Depuracao;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;

@@ -8,7 +8,7 @@ namespace Snebur.VisualStudio.Commands
     {
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            await OutputWindow.Instance?.NormalizarProjetosReferenciasAsync();
+            await OutputWindow.NormalizarProjetosReferenciasAsync();
         }
     }
 }

@@ -44,39 +44,51 @@ namespace Snebur.VisualStudio.MenuSnebur
                         }
 
                         var tempo = Stopwatch.StartNew();
-
-                        AssemblyInfoUtil.InscrementarVersao(caminhoAssemblyInfo);
-                        var versao = AssemblyInfoUtil.RetornarVersaoAssemblyInfo(caminhoAssemblyInfo);
-                        var nomeProjeto = Path.GetFileNameWithoutExtension(project.FullPath);
-                        LogVSUtil.OutputGeral($"Versão do projeto {nomeProjeto} incrementada {versao}");
-
                         var tipoProjeto = PublicacaoUtil.RetornarTipoProjeto(caminhoProjeto);
 
                         if (tipoProjeto == EnumTipoProjeto.ExtensaoVisualStudio)
                         {
-                            PublicacaoUtil.AtribuirVersaoExtensaoVisualStudio(versao, caminhoProjeto);
+                            PublicacaoUtil.IncrementarVersaoExtensaoVisualStudio(caminhoProjeto);
                         }
+                        else
+                        {
+                            AssemblyInfoUtil.InscrementarVersao(caminhoProjeto,
+                                                                caminhoAssemblyInfo);
+                        }
+
+
+                        //var versao = AssemblyInfoUtil.RetornarVersaoAssemblyInfo(caminhoProjeto, 
+                        //                                                         caminhoAssemblyInfo);
+
+                        var nomeProjeto = Path.GetFileNameWithoutExtension(project.FullPath);
 
                         if (ProjetoUtil.IsProjetoTypescript(caminhoProjeto))
                         {
-                            await OutputWindow.Instance?.NormalizarProjetosReferenciasAsync();
+                            await OutputWindow.NormalizarProjetosReferenciasAsync();
                         }
 
+                        GerenciadorProjetos.Instancia.DesativarEventosBuild();
                         if (await VS.Build.BuildProjectAsync(project, BuildAction.Build))
                         {
                             await PublicacaoUtil.PublicarVersaoAsync(tipoProjeto,
                                                                      caminhoProjeto,
-                                                                     tempo) ;
+                                                                     tempo);
                         }
 
                     }
                     catch (Exception ex)
                     {
                         LogVSUtil.LogErro(ex);
+                        GerenciadorProjetos.Instancia.AtivarEventosBuild();
                     }
                 }
             }
 
+        }
+
+        private Task NormalizarProjetosReferenciasAsync()
+        {
+            throw new NotImplementedException();
         }
 
         //protected override IReadOnlyList<ProjectTK> GetItems()

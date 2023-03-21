@@ -1,6 +1,7 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Snebur.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using static Snebur.VisualStudio.ConstantesProjeto;
@@ -9,12 +10,44 @@ namespace Snebur.VisualStudio
 {
     public partial class GerenciadorProjetos
     {
+        private bool _isEventoBuildAtivo = true;
+
         private void InicializarEventosVsCommunity()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             VS.Events.ProjectItemsEvents.AfterRenameProjectItems += this.ProjectItemsEvents_AfterRenameProjectItems;
             VS.Events.ProjectItemsEvents.AfterRemoveProjectItems += this.ProjectItemsEvents_AfterRemoveProjectItems;
             VS.Events.ProjectItemsEvents.AfterAddProjectItems += this.ProjectItemsEvents_AfterAddProjectItems;
+            VS.Events.BuildEvents.ProjectBuildStarted += this.BuildEvents_ProjectBuildStarted;
+        }
+
+        public void AtivarEventosBuild()
+        {
+            this._isEventoBuildAtivo = true;
+        }
+        public void DesativarEventosBuild()
+        {
+            this._isEventoBuildAtivo = true;
+        }
+        private void BuildEvents_ProjectBuildStarted(ProjectTK obj)
+        {
+            if (this._isEventoBuildAtivo)
+            {
+                _ = this.CompilacaoIniciandoAsync(obj);
+            }
+        }
+
+        private async Task CompilacaoIniciandoAsync(ProjectTK obj)
+        {
+            var tempoGeral = Stopwatch.StartNew();
+            this.TempoCompilacao?.Stop();
+            this.TempoCompilacao = Stopwatch.StartNew();
+            var projetoTS = await this.RetornarProjetoTSAsync(new FileInfo(obj.FullPath));
+            if(projetoTS!= null)
+            {
+                await projetoTS?.NormalizarReferenciasAsync();
+            }
+            await this.CompilacaoIniciandoAsync(tempoGeral);
         }
 
         private void ProjectItemsEvents_AfterRenameProjectItems(AfterRenameProjectItemEventArgs obj)
@@ -123,12 +156,12 @@ namespace Snebur.VisualStudio
         {
             if (projetosTS.Count > 0)
             {
-                await OutputWindow.Instance?.OcuparAsync();
+                await OutputWindow.OcuparAsync();
                 foreach (var projetoTS in projetosTS)
                 {
                     await projetoTS.NormalizarReferenciasAsync();
                 }
-                await OutputWindow.Instance?.DesocuparAsync();
+                await OutputWindow.DesocuparAsync();
             }
         }
 

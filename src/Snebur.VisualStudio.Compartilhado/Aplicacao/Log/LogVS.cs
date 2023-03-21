@@ -12,6 +12,13 @@ namespace Snebur.VisualStudio
 
         public static ObservableCollection<ILogMensagemViewModel> Logs => LogVS.Logs;
 
+        public static bool IsMostrarHoraLogOutput
+        {
+            set
+            {
+                BaseAplicacaoVisualStudio.Instancia.LogVS.IsMostrarHoraLogOutput = value;
+            }
+        }
 
         public static void Log(string mensagem)
         {
@@ -60,6 +67,7 @@ namespace Snebur.VisualStudio
     public interface ILogVS
     {
         ObservableCollection<ILogMensagemViewModel> Logs { get; }
+        bool IsMostrarHoraLogOutput { get; set; }
 
         void Log(string mensagem);
         void Log(string mensagem, EnumTipoLog tipoLog);

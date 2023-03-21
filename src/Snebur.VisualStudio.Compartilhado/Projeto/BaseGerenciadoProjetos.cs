@@ -18,6 +18,7 @@ namespace Snebur.VisualStudio
 
         public string DiretorioProjetoTypescriptInicializacao { get; private set; }
         public ConfiguracaoProjetoTypeScript ConfiguracaoProjetoTypesriptInicializacao { get; private set; }
+        public bool IsReiniciarGerenciadorPendente { get; private set; }
 
         public abstract void AtualizarProjetoTS(ProjetoTypeScript projetoTypeScript);
         public abstract void AtualizarProjetoSass(ProjetoSass projetoEstilo);
@@ -31,6 +32,11 @@ namespace Snebur.VisualStudio
         public void SetConfiguracaoProjetoTypesriptInicializacao(ConfiguracaoProjetoTypeScript configuracaoProjetoTypeScript)
         {
             this.ConfiguracaoProjetoTypesriptInicializacao = configuracaoProjetoTypeScript;
+        }
+
+        internal void SetReiniciarGerenciadorPendente(bool value)
+        {
+            this.IsReiniciarGerenciadorPendente = value;
         }
     }
 

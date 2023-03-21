@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Snebur.Utilidade;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Snebur.VisualStudio
 {
@@ -24,6 +25,8 @@ namespace Snebur.VisualStudio
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.NoSolution_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.EmptySolution_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionOpening_string)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.guidSneburVisualStudio2022String)]
     public sealed class SneburVisualStudio2022Package : ToolkitPackage

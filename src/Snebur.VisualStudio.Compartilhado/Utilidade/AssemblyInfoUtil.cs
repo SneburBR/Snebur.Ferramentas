@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
@@ -14,10 +16,11 @@ namespace Snebur.VisualStudio
         public static Version RetornarVersaoProjeto(string caminhoProjeto)
         {
             var caminhoAssemblyInfo = RetornarCaminhoAssemblyInfo(caminhoProjeto);
-            return RetornarVersaoAssemblyInfo(caminhoAssemblyInfo);
+            return RetornarVersaoAssemblyInfo(caminhoProjeto, caminhoAssemblyInfo);
         }
 
-        public static Version RetornarVersaoAssemblyInfo(string caminhoAssemblyInfo)
+        public static Version RetornarVersaoAssemblyInfo(string caminhoProjeto,
+                                                         string caminhoAssemblyInfo)
         {
             if (!File.Exists(caminhoAssemblyInfo))
             {
@@ -28,8 +31,19 @@ namespace Snebur.VisualStudio
             var linhaVersao = linhas.Where(x => x.Trim().StartsWith(PROCURAR_LINHA_VERSAO)).FirstOrDefault();
             var linhaVersaoArquivo = linhas.Where(x => x.Trim().StartsWith(PROCURAR_LINHA_VERSAO_ARQUIVO)).FirstOrDefault();
 
-            var versao = RetornarVersaoDataLinha(linhaVersao);
-            var versaoArquivo = RetornarVersaoDataLinha(linhaVersaoArquivo);
+
+            var versao = RetornarVersaoDataLinha(caminhoProjeto, linhaVersao);
+            if (versao == null)
+            {
+                return null;
+            }
+
+            var versaoArquivo = RetornarVersaoDataLinha(caminhoProjeto, linhaVersaoArquivo);
+            if (versaoArquivo == null)
+            {
+                return versao;
+            }
+
             if (versao != versaoArquivo)
             {
                 if (versao > versaoArquivo)
@@ -41,22 +55,86 @@ namespace Snebur.VisualStudio
             return versao;
         }
 
-        private static Version RetornarVersaoDataLinha(string linhaVersao)
+        private static Version RetornarVersaoDataLinha(string caminhoProjeto, string linhaVersao)
         {
             var versaoString = ExpressaoUtil.RetornarExpressaoAbreFecha(linhaVersao, true);
             versaoString = versaoString.Replace("\"", String.Empty);
-            var versao = new Version(versaoString);
-            var novaVersao = new Version(versao.Major, versao.Minor, versao.Build, versao.Revision);
-            return novaVersao;
+            if (versaoString == "Vsix.Version")
+            {
+                return RetornarVersaoVisx(caminhoProjeto);
+            }
+
+            if (Version.TryParse(versaoString, out var versao))
+            {
+                return new Version(versao.Major, versao.Minor, versao.Build, versao.Revision);
+            }
+            return null;
         }
 
-        public static void InscrementarVersao(string caminhoAssemblyInfo)
+        private static Version RetornarVersaoVisx(string caminhoProjeto)
         {
-            var versao = RetornarVersaoAssemblyInfo(caminhoAssemblyInfo);
-            var versaoMinor = Int32.Parse(DateTime.Now.Year.ToString().Substring(2, 2));
-            var versaoData = Convert.ToInt32($"{DateTime.Now.Month:00}{DateTime.Now.Day:00}");
-            var novaVersao = new Version(versao.Major, versaoMinor, versaoData, versao.Revision + 1);
+            var caminhoVisk = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
+            if (File.Exists(caminhoVisk))
+            {
+                using (var fs = StreamUtil.OpenRead(caminhoVisk))
+                {
+                    var xml = XDocument.Load(fs);
 
+                    var metaElement = xml.Root.Elements().Select(x => x).Where(x => x.Name.LocalName == "Metadata").First();
+                    var idenElement = metaElement.Elements().Where(x => x.Name.LocalName == "Identity").First();
+                    var versionAttribute = idenElement.Attributes().Where(x => x.Name.LocalName == "Version").First();
+                    var versaoString = versionAttribute.Value;
+                    
+                    if (Version.TryParse(versaoString, out var versao))
+                    {
+                        return versao;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static void IncrementarVersaoVisk(string caminhoVisk, Version novaVersao)
+        {
+            if (File.Exists(caminhoVisk))
+            {
+                XDocument xml;
+                using (var fs = StreamUtil.OpenRead(caminhoVisk))
+                {
+                    xml = XDocument.Load(fs);
+                    var metaElement = xml.Root.Elements().Select(x => x).Where(x => x.Name.LocalName == "Metadata").First();
+                    var idenElement = metaElement.Elements().Where(x => x.Name.LocalName == "Identity").First();
+                    var versionAttribute = idenElement.Attributes().Where(x => x.Name.LocalName == "Version").First();
+                    var versaoString = versionAttribute.Value;
+
+                    if (Version.TryParse(versaoString, out var versao))
+                    {
+                        versionAttribute.Value = novaVersao.ToString();
+                    }
+                }
+                using(var fw = StreamUtil.OpenWrite(caminhoVisk))
+                {
+                    xml.Save(fw);
+                }
+            }
+        }
+
+        public static void InscrementarVersao(string caminhoProjeto,
+                                              string caminhoAssemblyInfo)
+        {
+            var versao = RetornarVersaoAssemblyInfo(caminhoProjeto, caminhoAssemblyInfo);
+            var agora = DateTime.Now;
+
+            //var versaoMinor = Int32.Parse(DateTime.Now.Year.ToString().Substring(2, 2));
+            //var versaoData = Convert.ToInt32($"{DateTime.Now.Month:00}{DateTime.Now.Day:00}");
+            var novaVersao = new Version(agora.Year, agora.Month, agora.Day, versao.Revision + 1);
+
+            var caminhoVisk = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
+            if (File.Exists(caminhoVisk))
+            {
+                IncrementarVersaoVisk(caminhoVisk, novaVersao);
+                return;
+            }
             if (File.Exists(caminhoAssemblyInfo))
             {
                 var linhas = File.ReadAllLines(caminhoAssemblyInfo, Encoding.UTF8);
@@ -78,6 +156,8 @@ namespace Snebur.VisualStudio
             }
         }
 
+     
+
         public static string RetornarCaminhoAssemblyInfo(string caminhoProjeto)
         {
             var caminhoAssembly = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
@@ -97,5 +177,5 @@ namespace Snebur.VisualStudio
         }
     }
 
-  
+
 }

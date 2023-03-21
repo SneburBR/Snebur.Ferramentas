@@ -240,9 +240,9 @@ namespace Snebur.VisualStudio
 
         #endregion
 
-        private void ReiniciarServidorReiniciarInterno()
+        private void ReiniciarInterno()
         {
-            _ = this.ReiniciarInternoAsync();
+            _ = this.ReiniciarAsync();
         }
 
 
@@ -256,7 +256,8 @@ namespace Snebur.VisualStudio
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                await OutputWindow.Instance?.OcuparAsync();
+               
+                await OutputWindow.OcuparAsync();
 
 
                 if (this._isAtualizando)
@@ -324,7 +325,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                await OutputWindow.Instance?.DesocuparAsync();
+                await OutputWindow.DesocuparAsync();
                 this._isAtualizando = false;
             }
         }
@@ -472,7 +473,7 @@ namespace Snebur.VisualStudio
 
         public static void Reiniciar()
         {
-            GerenciadorProjetos.Instancia.ReiniciarServidorReiniciarInterno();
+            GerenciadorProjetos.Instancia.ReiniciarInterno();
         }
 
         #region Dispensar
@@ -484,7 +485,7 @@ namespace Snebur.VisualStudio
             this.DispensarProjetos();
         }
 
-        private async Task ReiniciarInternoAsync()
+        public async Task ReiniciarAsync()
         {
             this.DispensarProjetos();
             await this.AtualizarProjetosAsync();
