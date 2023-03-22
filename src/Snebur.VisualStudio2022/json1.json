@@ -1,0 +1,110 @@
+{
+  "Servidores": [
+    {
+      "Ip": "177.128.3.115",
+      "Localizacao": "Chapecó",
+      "Nome": "Servidor 07",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control e consultas de WebService.",
+      "Url": "https:\/\/servidor07.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor07.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor07.sigi.com.br\/"
+    },
+    {
+      "Ip": "187.45.107.25",
+      "Localizacao": "Chapecó",
+      "Nome": "Servidor 10",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control e consultas de WebService.",
+      "Url": "https:\/\/servidor10.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor10.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor10.sigi.com.br\/"
+    },
+    {
+      "Ip": "200.140.198.230",
+      "Localizacao": "Curitiba",
+      "Nome": "Servidor 05",
+      "SistemasAfetadosFalha": "Diagramação de fotoprodutos e download de fotoprodutos pelo SIGI Control.",
+      "Url": "https:\/\/servidor05.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor05.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor05.sigi.com.br\/"
+    },
+    {
+      "Ip": "187.45.107.25",
+      "Localizacao": "Chapecó",
+      "Nome": "Servidor Sites-2",
+      "SistemasAfetadosFalha": " Servidor de sites de clientes - Cha-sites-2",
+      "Url": "https:\/\/perfildigital.com.br\/000-monitoramentoservidores"
+    },
+    {
+      "Ip": "54.94.71.66",
+      "Localizacao": "São Paulo-AWS",
+      "Nome": "Servidor 11",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control e consultas de WebService.",
+      "Url": "https:\/\/servidor11.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor11.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor11.sigi.com.br\/"
+    },
+    {
+      "Ip": "189.1.173.153",
+      "Localizacao": "São Paulo",
+      "Nome": "Servidor 09",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control e consultas de Webservice.",
+      "Url": "https:\/\/servidor09.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor09.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor09.sigi.com.br\/"
+    },
+    {
+      "Ip": "177.54.150.30",
+      "Localizacao": "São Paulo",
+      "Nome": "Servidor 08",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control, sistema de envio de mala direta e consultas de Webservice.",
+      "Url": "https:\/\/servidor08.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor08.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor08.sigi.com.br\/"
+    },
+    {
+      "Ip": "200.140.198.228",
+      "Localizacao": "Curitiba",
+      "Nome": "Servidor 06",
+      "SistemasAfetadosFalha": "Envio de imagens, recebimento de imagens pelo SIGI Control e consultas de Webservice.",
+      "Url": "https:\/\/servidor06.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor06.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor06.sigi.com.br\/"
+    },
+    {
+      "Ip": "200.140.198.224",
+      "Localizacao": "Curitiba",
+      "Nome": "Servidor 01",
+      "SistemasAfetadosFalha": "WebAdmin, SIGI Online, Consultas de servidor inicial, Consultas de Webservice, ZyonAdmin, Area do Cliente.",
+      "Url": "https:\/\/servidor01.sigi.com.br",
+      "UrlWs": "https:\/\/wsservidor01.sigi.com.br\/",
+      "UrlWsInicial": "https:\/\/wsinicialservidor01.sigi.com.br\/"
+    },
+    {
+      "Ip": "200.140.198.223",
+      "Localizacao": "Curitiba",
+      "Nome": "Servidor Sites-1",
+      "SistemasAfetadosFalha": "Sites dos clientes hospedados conosco.",
+      "Url": "https:\/\/perfildigital.com.br\/000-monitoramentoservidores",
+      "UrlWs": "",
+      "UrlWsInicial": ""
+    },
+    {
+      "Ip": "200.140.198.226",
+      "Localizacao": "Curitiba",
+      "Nome": "Serv. Fotógrafo",
+      "SistemasAfetadosFalha": "SIGI Fotógrafo, consultas de WebService.",
+      "Url": "https:\/\/fotografo.sigi.com.br",
+      "UrlWs": "",
+      "UrlWsInicial": ""
+    },
+    {
+      "Ip": "200.140.198.227",
+      "Localizacao": "Curitiba",
+      "Nome": "WebMail",
+      "SistemasAfetadosFalha": "Sistema de envio de e-mails (WebMail).",
+      "Url": "https:\/\/webmail.sigi.com.br",
+      "UrlWs": "",
+      "UrlWsInicial": ""
+    }
+  ]
+}

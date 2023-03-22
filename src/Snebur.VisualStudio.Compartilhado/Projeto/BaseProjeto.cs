@@ -57,10 +57,10 @@ namespace Snebur.VisualStudio
                 return this.NomeProjeto;
             }
         }
-        public string UniqueName { get; set; }
-        internal ProjetoViewModel ProjetoViewModel { get; }
+        //public string UniqueName { get; set; }
+        public ProjetoViewModel ProjetoViewModel { get; }
 
-        public object ProjetoVS => this.ProjetoViewModel.ProjetoVS;
+        //public object ProjetoVS => this.ProjetoViewModel.ProjetoVS;
 
         public string Chave { get; }
 
@@ -138,12 +138,11 @@ namespace Snebur.VisualStudio
                 }
                 this._isNormalizando = true;
 
-                await Task.Factory.StartNew(() =>
-                {
-                    this.AtualizarInterno();
-                });
-                //this.AtualizarInterno();
-             
+                
+                await WorkThreadUtil.SwitchToWorkerThreadAsync();
+              
+                this.AtualizarInterno();
+                 
                 this.IsNormalizado = true;
             }
             catch (Exception ex)

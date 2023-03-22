@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
@@ -16,13 +17,13 @@ namespace Snebur.VisualStudio
             return false;
         }
 
-        internal static IEnumerable<string> RetornarTodosArquivos(object projetoVS,
-                                                                  string caminhoProjeto, 
-                                                                  bool isLowerCase)
+        internal static async Task<IEnumerable<string>> RetornarTodosArquivosAsync(object projetoVS,
+                                                                                   string caminhoProjeto, 
+                                                                                   bool isLowerCase)
         {
-            return BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjeto(projetoVS,
-                                                                                    caminhoProjeto,
-                                                                                    isLowerCase);
+            return await  BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjetoAsync(projetoVS,
+                                                                                                caminhoProjeto,
+                                                                                                isLowerCase);
         }
     }
 }

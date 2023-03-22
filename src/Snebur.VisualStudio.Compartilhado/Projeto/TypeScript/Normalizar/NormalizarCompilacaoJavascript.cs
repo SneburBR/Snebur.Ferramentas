@@ -112,7 +112,7 @@ namespace Snebur.VisualStudio
             {
                 throw new Exception("Falha ao copiar arquivo original" + caminhoJavascriptOriginal);
             }
-            LogVSUtil.Sucesso($"Arquivo original: {File.Exists(caminhoJavascriptOriginal)}: {caminhoJavascriptOriginal}", tempo, false);
+            //LogVSUtil.Log($"Arquivo original: {File.Exists(caminhoJavascriptOriginal)}: {caminhoJavascriptOriginal}", tempo, false);
           
             this.NornalizarScriptInterno(caminhoJavascriptOriginal,
                                          caminhoJavascriptNormalizado);
@@ -123,10 +123,8 @@ namespace Snebur.VisualStudio
             }
 
             var caminhoRelativo = CaminhoUtil.RetornarCaminhoRelativo(caminhoSaida, this.ProjetoTS.DiretorioProjeto.FullName);
-            LogVSUtil.Sucesso($"Compilação javascript {this.ProjetoTS.NomeProjeto} '{this.ConfiguracaoTypescript.compilerOptions.target}' normalizada ", tempo);
             LogVSUtil.Log($"{caminhoRelativo}");
-
-
+            LogVSUtil.Sucesso($"Compilação javascript {this.ProjetoTS.NomeProjeto} '{this.ConfiguracaoTypescript.compilerOptions.target}' normalizada ", tempo);
         }
         private void NornalizarScriptInterno(string caminhoJavascriptOriginal,
                                              string caminhoJavascriptNormalizado,

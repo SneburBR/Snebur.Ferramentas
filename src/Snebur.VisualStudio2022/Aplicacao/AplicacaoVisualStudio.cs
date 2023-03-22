@@ -1,12 +1,15 @@
-﻿using Snebur.Dominio;
+﻿using Community.VisualStudio.Toolkit;
+using Snebur.Dominio;
 using System.Collections.Generic;
+using System.Drawing.Text;
+using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
     internal class AplicacaoVisualStudio : BaseAplicacaoVisualStudio
     {
         public override EnumTipoAplicacao TipoAplicacao => EnumTipoAplicacao.ExtensaoVisualStudio;
- 
+
         public AplicacaoVisualStudio()
         {
         }
@@ -29,13 +32,15 @@ namespace Snebur.VisualStudio
         protected override async Task CompilarProjetoAsync(BaseProjeto baseProjeto)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var projetos = new List<BaseProjeto>();
-            var dte = await VSEx.GetDTEAsync();
+
             try
             {
-                dte.Solution.SolutionBuild.BuildProject("Debug", 
-                                                        baseProjeto.UniqueName, 
-                                                        true);
+                var projeto = await baseProjeto.GetProjectAsync();
+                if (projeto != null)
+                {
+                    await VS.Build.BuildProjectAsync(projeto);
+                }
+
             }
             catch (Exception erro)
             {
@@ -43,15 +48,39 @@ namespace Snebur.VisualStudio
             }
         }
 
-        protected override IEnumerable<string> RetornarTodosArquivosProjeto(object projetoVS, string caminhoProjeto, bool isLowerCase)
+        protected override async Task<IEnumerable<string>> RetornarTodosArquivosProjetoAsync(object projetoVS,
+                                                                                             string caminhoProjeto,
+                                                                                             bool isLowerCase)
         {
-            //ThreadHelper.ThrowIfNotOnUIThread();
-
-            if (projetoVS is Project project)
+            if (projetoVS is null)
             {
-                return ProjetoUtil.RetornarTodosArquivos(project, isLowerCase);
+                throw new ArgumentNullException(nameof(projetoVS));
             }
-            throw new NotSupportedException();
+
+            if (caminhoProjeto is null)
+            {
+                throw new ArgumentNullException(nameof(caminhoProjeto));
+            }
+             
+            if(projetoVS is Project projeto)
+            {
+                return await SolutionUtil.RetornarTodosArquivosAsync(projeto, isLowerCase);
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (projetoVS is EnvDTE.Project project)
+            {
+                throw new Exception("Tipo do projeto não suportado EnvDTE.Project");
+                //return ProjetoUtil.RetornarTodosArquivos(project, isLowerCase);
+            }
+             
+            throw new NotSupportedException($"{projetoVS.GetType()} não suportado");
+        }
+        
+
+        public override bool CheckAccess()
+        {
+            return ThreadHelper.CheckAccess();
         }
     }
 }

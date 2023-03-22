@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
@@ -62,17 +63,19 @@ namespace Snebur.VisualStudio
             this.LogCaminhoSaida();
         }
 
-        private void PopularArquivosTS()
+        private async Task PopularArquivosTypescriptAsync()
         {
-            var todosArquivos = LocalProjetoUtil.RetornarTodosArquivos(this.ProjetoViewModel.ProjetoVS, 
-                                                                       this.CaminhoProjeto, 
-                                                                       false);
+            var todosArquivos = await LocalProjetoUtil.RetornarTodosArquivosAsync
+                ( this.ProjetoViewModel.ProjetoVS, 
+                  this.CaminhoProjeto, 
+                  false);
 
             var arquivosTypeScript = todosArquivos.Where(X => Path.GetExtension(X) == ConstantesProjeto.EXTENSAO_TYPESCRIPT).ToHashSet();
 
                 //ProjetoTypeScriptUtil.RetornarArquivosTypeScript(this.CaminhoProjeto);
             LogVSUtil.Log($"Total de arquivos typescript {arquivosTypeScript.Count}");
             this.ArquivosTS = arquivosTypeScript;
+            var xxxx= this.ArquivosTS.Where(x => x.Contains("partial", System.Globalization.CompareOptions.IgnoreCase)).ToList();
         }
 
         protected override void AtualizarInterno()
@@ -83,7 +86,7 @@ namespace Snebur.VisualStudio
                 return;
             }
             this.CriarArquivoReferencia();
-            this.PopularArquivosTS();
+            this.PopularArquivosTypescriptAsync().Wait();
             this.ArquivosTypeScript.Clear();
             this.ArquivosTypeScriptOrdenados.Clear();
             this.CaminhosTipoClassBase.Clear();
@@ -146,7 +149,9 @@ namespace Snebur.VisualStudio
             var caminhoJavasriptSaida = CaminhoUtil.RetornarCaminhoRelativo(new FileInfo(this.CaminhoSaidaPadrao), this.CaminhoProjeto);
             var configuracaoProjetoAtual = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(this.CaminhoConfiguracao);
 
-            caminhoJavasriptSaida = this.NormalizarCaminhos(caminhoJavasriptSaida, configuracaoProjetoAtual, arquivosTypescript);
+            caminhoJavasriptSaida = this.NormalizarCaminhos(caminhoJavasriptSaida, 
+                                                           configuracaoProjetoAtual,
+                                                           arquivosTypescript);
 
             //if (this.ConfiguracaoProjeto.IsEditarApresentacao)
             //{
@@ -158,10 +163,10 @@ namespace Snebur.VisualStudio
             //}
 
             return new ConfiguracaoProjetoTypeScriptFramework(configuracaoProjetoAtual,
-                                                             arquivosTypescript,
-                                                             this.CaminhoProjeto,
-                                                             caminhoJavasriptSaida,
-                                                             this.IsProjetoDebug);
+                                                              arquivosTypescript,
+                                                              this.CaminhoProjeto,
+                                                              caminhoJavasriptSaida,
+                                                              this.IsProjetoDebug);
         }
 
         private string NormalizarCaminhos(string caminhoJavasriptSaida,

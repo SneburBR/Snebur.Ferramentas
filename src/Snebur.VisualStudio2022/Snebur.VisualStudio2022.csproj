@@ -79,15 +79,19 @@
     <Compile Include="Configuracoes\DialogPageProvider.cs" />
     <Compile Include="Depuracao\MensagemEventArgs.cs" />
     <Compile Include="Depuracao\ServicoDepuracao.cs" />
+    <Compile Include="Extensao\BaseProjetoExtensao.cs" />
     <Compile Include="Extensao\Dispatcher.cs" />
     <Compile Include="Extensao\DTEExtensao.cs" />
     <Compile Include="Extensao\ProjectItemExtensao.cs" />
-    <Compile Include="Extensions\VSEx.cs" />
+    <Compile Include="Extensao\SolutionsExtension.cs" />
+    <Compile Include="Extensao\SolutionUtil.cs" />
+    <Compile Include="Extensao\VSEx.cs" />
     <Compile Include="Gerenciadores\CompilarTypescriptRuntime.cs" />
     <Compile Include="Gerenciadores\Gerenciador.Observacao.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.EventosVS.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.EnventosDTE.cs" />
+    <Compile Include="Gerenciadores\GerenciadorProjetos.DteNovoArquivo.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.NovoArquivo.cs" />
     <Compile Include="Gerenciadores\GerenciadorProjetos.Static.cs" />
     <Compile Include="Gerenciadores\RenomearDocumento.cs" />
@@ -113,17 +117,20 @@
     <Compile Include="ToolWindows\Migracao\MigrationWindow.cs" />
     <Compile Include="ToolWindows\Migracao\ScriptNovoBancoDados.cs" />
     <Compile Include="ToolWindows\Migracao\ScriptUtil.cs" />
+    <Compile Include="ToolWindows\Output\AjudanteNormalizarProjetos.cs" />
     <Compile Include="ToolWindows\Output\OutputWindowControl.xaml.cs">
       <DependentUpon>OutputWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilidade\Ex\AjudanteAssemblyEx.cs" />
     <Compile Include="Utilidade\LogVS.cs" />
+    <Compile Include="Utilidade\ProjetoDteUtil.cs" />
     <Compile Include="Utilidade\Repositorio.cs" />
     <Compile Include="Utilidade\CorUtil.cs" />
     <Compile Include="Utilidade\LogVSUtil.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtilEx.cs" />
     <Compile Include="Utilidade\ProjetoUtil.cs" />
     <Compile Include="Publicacao\PublicacaoUtil.cs" />
+    <Compile Include="Utilidade\VsThreadUtil.cs" />
     <Compile Include="ViewModels\LogMensagemViewModel.cs" />
     <Compile Include="VisualStudio2022Package.cs" />
     <Compile Include="source.extension.cs">
@@ -183,6 +190,7 @@
     <Content Include="Json\publicacao-schema.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="json1.json" />
     <None Include="Json\publicacao.json" />
     <Content Include="Json\versions-schema.json">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -309,6 +317,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="Projeto\Dominio\Reflexao\Ajudante\" />
   </ItemGroup>
   <ItemGroup>

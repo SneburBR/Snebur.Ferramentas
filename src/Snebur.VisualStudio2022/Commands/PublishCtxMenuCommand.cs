@@ -20,12 +20,12 @@ namespace Snebur.VisualStudio.MenuSnebur
         protected override void BeforeQueryStatus(OleMenuCommand menuItem, EventArgs e, SolutionItem project)
         {
             menuItem.Visible = true;
-            menuItem.Enabled = project != null && project is ProjectTK && this.IsProjetoCsCharp(project.FullPath);
+            menuItem.Enabled = project != null && project is Project && this.IsProjetoCsCharp(project.FullPath);
         }
 
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e, SolutionItem item)
         {
-            if (item is ProjectTK project)
+            if (item is Project project)
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

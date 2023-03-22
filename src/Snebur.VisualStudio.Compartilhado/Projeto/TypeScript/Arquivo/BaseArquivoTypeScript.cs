@@ -104,8 +104,8 @@ namespace Snebur.VisualStudio
                     this.GetType() == obj.GetType()  )
                 {
                     return this.CaminhoArquivo.Equals(arquivo.CaminhoArquivo);
-                        ArquivoUtil.CaminhoIgual(this.CaminhoArquivo, 
-                                                    arquivo.Arquivo.FullName);
+                        //ArquivoUtil.CaminhoIgual(this.CaminhoArquivo, 
+                        //                            arquivo.Arquivo.FullName);
                 }
             }
             return false;
@@ -114,8 +114,7 @@ namespace Snebur.VisualStudio
         {
             return this.CaminhoArquivo.GetHashCode();
         }
-         
-
+          
         #region IDisposable
 
         public void Dispose()

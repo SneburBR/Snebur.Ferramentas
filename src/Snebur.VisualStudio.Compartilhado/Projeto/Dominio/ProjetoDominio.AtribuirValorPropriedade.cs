@@ -157,15 +157,17 @@ namespace Snebur.VisualStudio
                             if (propriedadeChavaEtrangeira != null)
                             {
 
-                                linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{propriedadeRelacao.Name}); " +
-                                                            $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
+                                linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}" +
+                                                                                        $"(this.{nomeCampoPrivado}, this.{propriedadeRelacao.Name}); " +
+                                                                                        $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA}" +
+                                                                                         $"(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value, \"{propriedadeRelacao.Name}\", this.{propriedadeRelacao.Name}); }}";
 
                             }
                             else
                             {
 
                                 linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{nomeMetodoRetornarValorPropriedade}(this.{nomeCampoPrivado}); " +
-                                                          $"set => this.{nomeMetodoNotificarValorPropriedadeAlterada}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
+                                                                                 $"set => this.{nomeMetodoNotificarValorPropriedadeAlterada}(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value); }}";
                             }
 
                             linhas[posicaoLinha] = linhaPropriedadeAtribuir;

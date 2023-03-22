@@ -24,6 +24,10 @@ namespace Snebur.VisualStudio
         {
             LogVS.Log(mensagem);
         }
+        public static void Log(string mensagem, Stopwatch tempo)
+        {
+            LogVS.Log(mensagem, tempo);
+        }
         public static void Log(string mensagem, EnumTipoLog tipoLog)
         {
             LogVS.Log(mensagem, tipoLog);
@@ -45,7 +49,9 @@ namespace Snebur.VisualStudio
             LogVS.LogErro(erro);
         }
 
-        public static void Sucesso(string mensagem, Stopwatch tempo, bool isPararTempo = true)
+        public static void Sucesso(string mensagem,
+                                   Stopwatch tempo,
+                                   bool isPararTempo = true)
         {
             LogVS.Sucesso(mensagem, tempo, isPararTempo);
         }
@@ -70,8 +76,10 @@ namespace Snebur.VisualStudio
         bool IsMostrarHoraLogOutput { get; set; }
 
         void Log(string mensagem);
+        void Log(string mensagem, Stopwatch tempo);
         void Log(string mensagem, EnumTipoLog tipoLog);
         void Alerta(string mensagem);
+        void Alerta(string mensagem, Stopwatch tempo);
         void LogErro(string mensagem);
         void LogErro(string mensagem, Exception erroInterno);
         void LogErro(Exception erro);

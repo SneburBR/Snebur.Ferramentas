@@ -11,29 +11,16 @@ namespace Snebur.VisualStudio
 {
     internal static class PublicacaoUtil
     {
-        //internal static Task<string> PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
-        //                                                 string caminhoProjeto,
-        //                                                 bool isDebug)
-        //{
-
-        //   return Task.Factory.StartNew(() => PublicacaoUtil.PublicarVersao(tipoProjeto,
-        //                                                                    caminhoProjeto,
-        //                                                                    isDebug),
-        //                                                                    CancellationToken.None,
-        //                                                                    TaskCreationOptions.None,
-        //                                                                    TaskScheduler.Default);
-        //}
+       
 
         public static Task PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
                                                string caminhoProjeto,
                                                Stopwatch tempo)
         {
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 PublicarVersao(tipoProjeto, caminhoProjeto, tempo);
-            }, CancellationToken.None,
-               TaskCreationOptions.None,
-               TaskScheduler.Default);
+            });
 
         }
         private static void PublicarVersao(EnumTipoProjeto tipoProjeto,

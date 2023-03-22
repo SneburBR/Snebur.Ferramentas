@@ -35,7 +35,7 @@ namespace Snebur.VisualStudio.Commands
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var dte = await VSEx.GetDTEAsync();
+            var dte = await DteEx.GetDTEAsync();
             var documento = dte.ActiveDocument;
             if (documento != null)
             {
@@ -560,7 +560,7 @@ namespace Snebur.VisualStudio.Commands
 
         private async Task ProcurarControleAsync(DTE2 dte, string nomeControle)
         {
-            var projetos = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
+            var projetos = await ProjetoDteUtil.RetornarProjetosVisualStudioAsync();
             var projetoAtivo = dte.RetornarProjetoAtivo();
             if (projetoAtivo != null)
             {
@@ -569,9 +569,9 @@ namespace Snebur.VisualStudio.Commands
             }
             foreach (var projeto in projetos)
             {
-                var caminhosArquivos = ProjetoUtil.RetornarTodosArquivos(projetoAtivo, false);
+                var caminhosArquivos = ProjetoDteUtil.RetornarTodosArquivos(projetoAtivo, false);
                 var nomesCaminhoArquivo = caminhosArquivos.Select(x => new FileInfo(x)).Where(x => x.Extension == ".ts").
-                    Select(x => new NomeCaminhoArquivo(x));
+                                                                     Select(x => new NomeCaminhoArquivo(x));
 
                 var nomeCaminhoArquivo = nomesCaminhoArquivo.Where(x => x.NomeArquivo == nomeControle).FirstOrDefault();
                 if (nomeCaminhoArquivo != null)

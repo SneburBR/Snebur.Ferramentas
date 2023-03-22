@@ -33,9 +33,9 @@ namespace Snebur.VisualStudio
                 var documento = dte.Documents.Item(caminhoArquivo);
                 documento?.Activate();
                 return documento;
-                 
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogVSUtil.LogErro($"Falha ao abrir documento {caminhoArquivo}", ex);
                 return null;
@@ -102,6 +102,63 @@ namespace Snebur.VisualStudio
             }
 
             return false;
+        }
+
+        public static ProjectItem RetornarProjectItemPai(this ProjectItem projectItem)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var encontrarPai = new EncontrarPai(projectItem);
+            return encontrarPai.RetornarProjectItemPai();
+        }
+
+        private class EncontrarPai
+        {
+            private ProjectItem ProjectItem;
+
+            public Project Projecto { get; }
+
+            public EncontrarPai(ProjectItem projectItem)
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                this.ProjectItem = projectItem;
+                this.Projecto = projectItem.ContainingProject;
+            }
+
+            public ProjectItem RetornarProjectItemPai()
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                foreach (ProjectItem item in this.Projecto.ProjectItems)
+                {
+                    var projectItem = this.VarrerProjectItens(item);
+                    if (projectItem != null)
+                    {
+                        return projectItem;
+                    }
+
+                }
+                throw new Exception("O project item pai não foi encontrado ");
+            }
+
+            private ProjectItem VarrerProjectItens(ProjectItem projectItem)
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                foreach (ProjectItem item in projectItem.ProjectItems)
+                {
+                    var nome = item.Name;
+                    if (item == this.ProjectItem)
+                    {
+                        return projectItem;
+                    }
+                    var projectItemFilho = this.VarrerProjectItens(item);
+                    if (projectItemFilho != null)
+                    {
+                        return projectItemFilho;
+                    }
+                }
+                return null;
+
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using EnvDTE;
-using EnvDTE80;
+﻿using Community.VisualStudio.Toolkit;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.Linq;
@@ -8,34 +7,47 @@ using Snebur.VisualStudio.Reflexao;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Input;
 
 namespace Snebur.VisualStudio
 {
     public partial class MigrationWindowControl
     {
-        private void IniciarValidacao(Project projetoMigracao,
-                                      Project projetoEntidades,
-                                      bool isAdicionarMigracao,
-                                      bool isCompilar)
+        public async Task CompilarAsync(Project projetoEntidades,
+                                        Project projetoMigracao)
+        {
+
+            
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+           
+            this.Log($"Limpando a solução");
+            this.Log($"Compilando a solução");
+            //dte.Solution.SolutionBuild.Build(true);
+
+            this.Log($"Compilando o projeto {projetoEntidades.Name}");
+            await VS.Build.BuildProjectAsync(projetoEntidades);
+            this.Log($"Compilando o projeto {projetoMigracao.Name}");
+            await VS.Build.BuildProjectAsync(projetoMigracao);
+
+            System.Threading.Thread.Sleep(1500);
+        }
+
+        private async Task IniciarValidacaoAsync(Project projetoMigracao,
+                                                 Project projetoEntidades,
+                                                 bool isAdicionarMigracao,
+                                                 bool isCompliar)
         {
             try
             {
-                var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-                if (isCompilar)
+                if(await this.AtualizandoConnectionStringEmTempoExecucaoAsync())
                 {
-                    this.Log($"Limpando a solução");
-                    dte.Solution.SolutionBuild.Clean(true);
-                    this.Log($"Compilando a solução");
-                    dte.Solution.SolutionBuild.Build(true);
-
-                    this.Log($"Compilando o projeto {projetoEntidades.Name}");
-                    ProjetoUtil.CompilarProjeto(dte, projetoEntidades);
-                    this.Log($"Compilando o projeto {projetoMigracao.Name}");
-                    ProjetoUtil.CompilarProjeto(dte, projetoMigracao);
-
-                    System.Threading.Thread.Sleep(1500);
+                    return;
                 }
+
+                await this.CompilarAsync(projetoEntidades, 
+                                         projetoMigracao);
+
+                await WorkThreadUtil.SwitchToWorkerThreadAsync();
+
 
                 var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
                 var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
@@ -146,12 +158,15 @@ namespace Snebur.VisualStudio
 
                     System.Threading.Thread.Sleep(2000);
 
-                    dte.ExecuteCommand("View.PackageManagerConsole");
+
+                    await VS.Commands.ExecuteAsync("View.PackageManagerConsole");
+
                     var comando = $"add-migration {proximaMigracao} -Project {projetoMigracao.Name} -StartupProject {projetoMigracao.Name} ";
                     System.Threading.Thread.Sleep(600);
                     System.Windows.Forms.SendKeys.SendWait(comando);
                     System.Threading.Thread.Sleep(600);
                     System.Windows.Forms.SendKeys.SendWait("{ENTER}");
+
                 }
             }
             catch (Exception ex)

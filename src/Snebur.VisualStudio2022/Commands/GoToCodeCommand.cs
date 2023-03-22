@@ -1,10 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
-using System.IO;
 using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.ComponentModel.Design;
+using System.IO;
 
 namespace Snebur.VisualStudio.Commands
 {
@@ -16,7 +12,7 @@ namespace Snebur.VisualStudio.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                var dte = await VSEx.GetDTEAsync();
+                var dte = await DteEx.GetDTEAsync();
                 if (dte.ActiveDocument != null)
                 {
                     var nomeArquivo = dte.ActiveDocument.Name;

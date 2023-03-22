@@ -42,7 +42,11 @@ namespace Snebur.VisualStudio
         public void Log(string mensagem)
         {
             this.LogInterno(mensagem, EnumTipoLog.Normal);
-            //LogVSUtil.LogInterno(String.Format(mensagem, args), EnumTipoLog.Normal);
+        }
+
+        public void Log(string mensagem, Stopwatch tempo)
+        {
+            this.LogInterno(mensagem, EnumTipoLog.Normal, tempo);
         }
 
         public void Log(string mensagem, EnumTipoLog tipoLog)
@@ -58,19 +62,27 @@ namespace Snebur.VisualStudio
                 {
                     tempo.Stop();
                 }
-                var formatacao = tempo.ElapsedMilliseconds < 2 ? @"mm\:ss\.fffffff" : @"mm\:ss\.fff";
-                var tempoFormatado = TimeSpan.FromTicks(tempo.ElapsedTicks).ToString(formatacao);
-                mensagem = mensagem + " tempo: " + tempoFormatado;
-
             }
 
-            this.LogInterno(mensagem, EnumTipoLog.Sucesso);
+            this.LogInterno(mensagem, EnumTipoLog.Sucesso, tempo );
             this.OutputBuild("sucesso: " + mensagem);
+        }
+
+        private string FormatarTempo(string mensagem, Stopwatch tempo)
+        {
+            var formatacao = tempo.ElapsedMilliseconds < 2 ? @"mm\:ss\.fffffff" : @"mm\:ss\.fff";
+            var tempoFormatado = TimeSpan.FromTicks(tempo.ElapsedTicks).ToString(formatacao);
+            return  $"{mensagem}. tempo: { tempoFormatado} ";
         }
 
         public void Alerta(string mensagem)
         {
             this.LogInterno(mensagem, EnumTipoLog.Alerta);
+        }
+
+        public void Alerta(string mensagem, Stopwatch stopwatch)
+        {
+            this.LogInterno(mensagem, EnumTipoLog.Alerta, stopwatch);
         }
 
         public void LogErro(string mensagem)
@@ -106,10 +118,29 @@ namespace Snebur.VisualStudio
             this.OutputBuild("erro: " + sb.ToString());
         }
 
-        private void LogInterno(string mensagem, EnumTipoLog tipLog, Action acao = null)
+        private void LogInterno(string mensagem, EnumTipoLog tipLog)
         {
+            LogInterno(mensagem, tipLog, null, null);
+        }
+        private void LogInterno(string mensagem, EnumTipoLog tipLog, Stopwatch stopwatch)
+        {
+            LogInterno(mensagem, tipLog, stopwatch, null);
+        }
+
+        private void LogInterno(string mensagem, EnumTipoLog tipLog, Action acao)
+        {
+            LogInterno(mensagem, tipLog, null, acao);
+        }
+
+        private void LogInterno(string mensagem, EnumTipoLog tipLog, Stopwatch tempo, Action acao)
+        {
+            if(tempo!= null)
+            {
+                mensagem = this.FormatarTempo(mensagem, tempo);
+            }
             _ = this.LogInternoAsync(mensagem, tipLog, acao);
         }
+      
 
         private async Task LogInternoAsync(string mensagem, EnumTipoLog tipoLog, Action acao)
         {
@@ -176,6 +207,7 @@ namespace Snebur.VisualStudio
             hr = outputWindow.GetPane(guidPane, out outputWindowPane);
             try
             {
+           
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
                 if (outputWindowPane != null)
                 {

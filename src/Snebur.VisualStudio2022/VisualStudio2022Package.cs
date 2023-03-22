@@ -1,8 +1,10 @@
 ﻿global using Microsoft.VisualStudio.Shell;
 global using System;
-global using ProjectTK = Community.VisualStudio.Toolkit.Project;
-global using Project = EnvDTE.Project;
+ 
+//global using ProjectTK = Community.VisualStudio.Toolkit.Project;
+//global using Project = EnvDTE.Project;
 global using Task = System.Threading.Tasks.Task;
+
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
 using System.Runtime.InteropServices;
@@ -11,6 +13,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Snebur.Utilidade;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Collections.Generic;
 
 namespace Snebur.VisualStudio
 {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Community.VisualStudio.Toolkit;
 using Snebur.Comunicacao.WebSocket.Experimental;
 using Snebur.Comunicacao.WebSocket.Experimental.Classes;
 using Snebur.Depuracao;
@@ -141,10 +142,10 @@ namespace Snebur.VisualStudio
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
+            var projetosVS = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
             foreach (var projetoVS in projetosVS)
             {
-                var caminhoProjeto = Path.GetDirectoryName(projetoVS.FullName);
+                var caminhoProjeto = Path.GetDirectoryName(projetoVS.FullPath);
                 await this.SalvarPortaAsync(caminhoProjeto);
             }
         }
@@ -156,7 +157,7 @@ namespace Snebur.VisualStudio
                 return Task.CompletedTask;
             }
 
-            return Task.Factory.StartNew(() =>
+            return Task.Run(() =>
             {
                 if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
                 {
@@ -185,10 +186,7 @@ namespace Snebur.VisualStudio
                         }
                     }
                 }
-            },
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            TaskScheduler.Default);
+            } );
 
         }
 

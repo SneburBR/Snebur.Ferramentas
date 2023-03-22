@@ -51,18 +51,18 @@ namespace Snebur.VisualStudio
     }
     public partial class GerenciadorProjetos
     {
-        public static DTE2 DTE_GLOBAL { get; private set; }
-        public static SolutionEvents SolutionEvents { get; private set; }
-        public static DocumentEvents DocumentEvents { get; private set; }
-        public static BuildEvents BuildEvents { get; private set; }
+        //public static DTE2 DTE_GLOBAL { get; private set; }
+        //public static SolutionEvents SolutionEvents { get; private set; }
+        //public static DocumentEvents DocumentEvents { get; private set; }
+        //public static BuildEvents BuildEvents { get; private set; }
 
         public static bool IsLimparLogCompilando { get; set; } = true;
 
         //public static Dictionary<string, ObservadorArquivoProjeto> DicionarioObservadoresArquivo { get; } = new Dictionary<string, ObservadorArquivoProjeto>();
-        public static event EventHandler SoluacaoAberta;
+ 
 
 
-        public static EnumEstadoServicoDepuracao EstadoServicoDepuracao => GerenciadorProjetos.Instancia?.ServicoDepuracao?.Estado ?? EnumEstadoServicoDepuracao.Parado;
+        public static EnumEstadoServicoDepuracao EstadoServicoDepuracao => GerenciadorProjetos.Instancia?._servicoDepuracao?.Estado ?? EnumEstadoServicoDepuracao.Parado;
 
 
         

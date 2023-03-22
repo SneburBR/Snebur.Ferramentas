@@ -19,7 +19,7 @@ namespace Snebur.VisualStudio
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var dte = await VSEx.GetDTEAsync();
+            var dte = await DteEx.GetDTEAsync();
             if (dte.ActiveDocument != null)
             {
 

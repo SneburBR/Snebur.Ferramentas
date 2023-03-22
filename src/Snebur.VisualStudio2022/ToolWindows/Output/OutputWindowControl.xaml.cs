@@ -1,38 +1,18 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="JanelaSneburControl.xaml.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿using Snebur.Utilidade;
+using Snebur.VisualStudio.ToolWindows.Output;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Snebur.VisualStudio
 {
-    using EnvDTE;
-    using EnvDTE80;
-    using Microsoft.VisualStudio.Shell;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-    using Snebur.Publicacao;
-    using Snebur.Utilidade;
-    using Snebur.VisualStudio.Utilidade;
-    using System.Windows.Input;
 
-    /// <summary>
-    /// Interaction logic for JanelaSneburControl.
-    /// </summary>
     public partial class OutputWindowControl : UserControl
     {
         public ObservableCollection<ILogMensagemViewModel> Logs => LogVSUtil.Logs;
         public int PortaDepuracao => ConfiguracaoVSUtil.PortaDepuracao;
-
-        //public static OutputWindowControl Instancia { get; private set; }
-
-        //public static DTE2 DTE { get; private set; }
 
         public bool IsOcupado { get; private set; }
 
@@ -41,16 +21,7 @@ namespace Snebur.VisualStudio
             this.InitializeComponent();
             this.DataContext = this;
             this.Loaded += this.Janela_Loaded;
-
-            //JanelaSneburControl.DTE = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            //JanelaSneburControl.DTE.Events.DocumentEvents.DocumentOpened += this.DocumentEvents_DocumentOpened;
-            //JanelaSneburControl.DTE.Events.SolutionEvents.Opened += this.SolutionEvents_Opened;
-            //JanelaSneburControl.DTE.Events.SolutionItemsEvents.ItemAdded += SolutionItemsEvents_ItemAdded;
-
-
-            //this.Foreground = Repositorio.BrushWindowText;
-            //this.Background = Repositorio.BrushBackground;
-        }
+         }
 
         private bool _isInicializado;
         public void Janela_Loaded(object sender, RoutedEventArgs e)
@@ -93,7 +64,7 @@ namespace Snebur.VisualStudio
                 await this.OcuparAsync();
                 this.Logs.Clear();
                 ConfiguracaoVSUtil.IsNormalizandoTodosProjetos = true;
-                await this.NormalizarInternoAsync(false);
+                await AjudanteNormalizarProjetos.NormalizarInternoAsync(false);
             }
             catch (Exception ex)
             {
@@ -105,124 +76,7 @@ namespace Snebur.VisualStudio
                 await this.DesocuparAsync();
             }
         }
-
-        private async Task NormalizarInternoAsync(bool isCompilar = false)
-        {
-            AjudanteAssembly.Clear();
-
-            var isSucesso = false;
-            var tempo = System.Diagnostics.Stopwatch.StartNew();
-            try
-            {
-                if (isCompilar)
-                {
-                    GerenciadorProjetos.Instancia.DesativarEventosBuild();
-                }
-
-                LogVSUtil.Clear();
-
-                LogVSUtil.Log("Normalizando");
-                AjudanteAssembly.Inicializar(true);
-
-                //throw new Exception("Apenas Teste");
-                var dte = await VSEx.GetDTEAsync();
-                dte.ExecuteCommand("File.SaveAll");
-
-                ProjetoUtil.DefinirProjetosInicializacao();
-
-                var projetos = await ProjetoUtil.RetornarProjetosAsync();
-                if (projetos.Count > 0)
-                {
-                    LogVSUtil.Log($"Total de projetos encontrados {projetos.Count}");
-
-                    var projetosTypeScript = projetos.OfType<ProjetoTypeScript>().ToList();
-
-
-                    var projetosDominio = projetos.OfType<ProjetoDominio>().OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio).ToList();
-                    foreach (var projeto in projetosDominio)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
-                    foreach (var projeto in projetosContextoDados)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
-                    foreach (var projeto in projetosRegrasNegocioTS)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
-                    foreach (var projeto in projetosRegrasNegocioCSharp)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosServicosTS = projetos.OfType<ProjetoServicosTypescript>().ToList();
-                    foreach (var projeto in projetosServicosTS)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosServicosDotNet = projetos.OfType<ProjetoServicosDotNet>().ToList();
-                    foreach (var projeto in projetosServicosDotNet)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    foreach (var projeto in projetosTypeScript)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    var projetosSass = projetos.OfType<ProjetoSass>().ToList();
-                    foreach (var projeto in projetosSass)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
-
-                    //GerenciadorProjetos.Reiniciar();
-                    foreach (var projeto in projetos)
-                    {
-                        //projeto.Dispose();
-                    }
-
-                    if (GerenciadorProjetos.Instancia.IsReiniciarGerenciadorPendente)
-                    {
-                        LogVSUtil.Alerta("Reiniciando gerenciador");
-                        await GerenciadorProjetos.Instancia.ReiniciarAsync();
-                        return;
-                    }
-                    isSucesso = true;
-                    ProjetoTypeScriptUtil.AtualizarScriptsDebug(projetos.OfType<ProjetoTypeScript>().ToList());
-                }
-            }
-            catch (Exception ex)
-            {
-                LogVSUtil.LogErro(ex);
-            }
-            finally
-            {
-                GerenciadorProjetos.Instancia.TempoCompilacao?.Stop();
-                if (isSucesso)
-                {
-                    tempo.Stop();
-                    LogVSUtil.Sucesso("Normalização finalizada.", tempo);
-                }
-                else
-                {
-                    if (!isCompilar)
-                    {
-                        _ = this.NormalizarInternoAsync(true);
-                    }
-                }
-                GerenciadorProjetos.Instancia.AtivarEventosBuild();
-            }
-        }
+         
 
         private void BtnReiniciarGerenciadorProjetosTS_Click(object sender, RoutedEventArgs e)
         {
@@ -281,71 +135,71 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private void BtnFormatarStringFormat_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                LogVSUtil.Logs?.Clear();
-                this.FormatarNovoStringFormat();
-            }
-            catch (Exception erro)
-            {
-                LogVSUtil.LogErro(erro);
-            }
-            this.Dispatcher.VerifyAccess();
-        }
+        //private void BtnFormatarStringFormat_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        LogVSUtil.Logs?.Clear();
+        //        this.FormatarNovoStringFormat();
+        //    }
+        //    catch (Exception erro)
+        //    {
+        //        LogVSUtil.LogErro(erro);
+        //    }
+        //    this.Dispatcher.VerifyAccess();
+        //}
 
-        private void FormatarNovoStringFormat()
-        {
-            this.Dispatcher.VerifyAccess();
+        //private void FormatarNovoStringFormat()
+        //{
+        //    this.Dispatcher.VerifyAccess();
 
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            var documento = dte.ActiveDocument;
+        //    var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
+        //    var documento = dte.ActiveDocument;
 
-            if (documento != null)
-            {
-                var nomeArquivo = documento.Name;
-                var fi = new FileInfo(documento.FullName);
+        //    if (documento != null)
+        //    {
+        //        var nomeArquivo = documento.Name;
+        //        var fi = new FileInfo(documento.FullName);
 
-                if (FormatarDocumentoUtil.ExtensoesSuportadas.Contains(fi.Extension))
-                {
-                    if (documento.Selection is TextSelection selecao)
-                    {
-                        var posicao = selecao.TopPoint;
-                        var posicaoLinha = selecao.TopPoint.Line;
-                        var posicaoColuna = selecao.TopPoint.LineCharOffset;
+        //        if (FormatarDocumentoUtil.ExtensoesSuportadas.Contains(fi.Extension))
+        //        {
+        //            if (documento.Selection is TextSelection selecao)
+        //            {
+        //                var posicao = selecao.TopPoint;
+        //                var posicaoLinha = selecao.TopPoint.Line;
+        //                var posicaoColuna = selecao.TopPoint.LineCharOffset;
 
-                        selecao.SelectAll();
+        //                selecao.SelectAll();
 
-                        var conteudo = selecao.Text;
-                        var isCsharp = fi.Extension.ToLower() == ".cs";
+        //                var conteudo = selecao.Text;
+        //                var isCsharp = fi.Extension.ToLower() == ".cs";
 
-                        var objSubstituir = new SubstituicaoNovoStringFormatTS(conteudo, isCsharp);
-                        var conteudoFormatado = objSubstituir.RetornarConteudo();
+        //                var objSubstituir = new SubstituicaoNovoStringFormatTS(conteudo, isCsharp);
+        //                var conteudoFormatado = objSubstituir.RetornarConteudo();
 
-                        //selecao.SelectAll();
-                        var totalLinhas = conteudoFormatado.TotalLinhas();
-                        if ((totalLinhas - 1) < posicaoLinha)
-                        {
-                            posicaoLinha = totalLinhas - 1;
-                        }
-                        selecao.Delete();
-                        selecao.Insert(conteudoFormatado);
-                        selecao.Collapse();
+        //                //selecao.SelectAll();
+        //                var totalLinhas = conteudoFormatado.TotalLinhas();
+        //                if ((totalLinhas - 1) < posicaoLinha)
+        //                {
+        //                    posicaoLinha = totalLinhas - 1;
+        //                }
+        //                selecao.Delete();
+        //                selecao.Insert(conteudoFormatado);
+        //                selecao.Collapse();
 
-                        selecao.MoveToLineAndOffset(posicaoLinha, posicaoColuna, true);
-                        selecao.Collapse();
+        //                selecao.MoveToLineAndOffset(posicaoLinha, posicaoColuna, true);
+        //                selecao.Collapse();
 
 
-                        if (conteudoFormatado.Contains(SubstituicaoNovoStringFormatTS.PESQUISAR))
-                        {
-                            selecao.FindText(SubstituicaoNovoStringFormatTS.PESQUISAR);
-                            selecao.SelectLine();
-                        }
-                    }
-                }
-            }
-        }
+        //                if (conteudoFormatado.Contains(SubstituicaoNovoStringFormatTS.PESQUISAR))
+        //                {
+        //                    selecao.FindText(SubstituicaoNovoStringFormatTS.PESQUISAR);
+        //                    selecao.SelectLine();
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         private async void BtnHtmlIntellisense_Click(object sender, RoutedEventArgs e)
         {
@@ -379,7 +233,7 @@ namespace Snebur.VisualStudio
             try
             {
                 var stopwatch = Stopwatch.StartNew();
-                await ProjetoUtil.DeletarBinAndObjAsync();
+                await SolutionUtil.DeletarBinAndObjAsync();
                 LogVSUtil.Sucesso("Pastas bin e obj deletados com sucesso", stopwatch);
             }
             catch (Exception ex)

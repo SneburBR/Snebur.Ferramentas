@@ -298,10 +298,13 @@ namespace Snebur.VisualStudio
             var diretorioProjeto = new DirectoryInfo(this.CaminhoProjeto);
 
             //var arquivos =   diretorioProjeto.GetFiles("*.scss", SearchOption.AllDirectories);
-            var arquivos = LocalProjetoUtil.RetornarTodosArquivos( this.ProjetoViewModel.ProjetoVS,
-                                                                    this.CaminhoProjeto, true).
-                                            Select(x => new FileInfo(x)).
-                                            Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
+            var xxx = LocalProjetoUtil.RetornarTodosArquivosAsync(this.ProjetoViewModel.ProjetoVS,
+                                                                  this.CaminhoProjeto, true).
+                                                                  GetAwaiter().
+                                                                  GetResult();
+
+            var arquivos = xxx.Select(x => new FileInfo(x)).
+                                             Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
              
             if (arquivoDestino != null)
             {

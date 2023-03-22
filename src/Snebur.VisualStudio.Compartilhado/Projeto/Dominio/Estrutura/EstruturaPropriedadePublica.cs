@@ -19,10 +19,9 @@ namespace Snebur.VisualStudio
 
         //public string NomePropriedadeAtribuir { get; set; }
 
-        public EstruturaPropriedadePublica(
-                        PropertyInfo propriedade,
-                        PropertyInfo propriedadeRelacaoChaveEstrangeira) :
-                          base(propriedade)
+        public EstruturaPropriedadePublica( PropertyInfo propriedade,
+                                            PropertyInfo propriedadeRelacaoChaveEstrangeira) :
+                                           base(propriedade)
         {
             this.NomePriprieadePrivada = String.Format("_{0}", TextoUtil.RetornarInicioMinusculo(this.Propriedade.Name, 2));
             this.PropriedadeRelacaoChaveEstrangeira = propriedadeRelacaoChaveEstrangeira;
@@ -84,14 +83,21 @@ namespace Snebur.VisualStudio
 
             linhas.Add(String.Format("{0}}}", tabInicial));
 
-            linhas.Add(String.Format("{0}public set {1}(value: {2})  ", tabInicial, this.NomePropriedade, this.CaminhoTipo));
+            linhas.Add($"{tabInicial}public set {this.NomePropriedade}(value: { this.CaminhoTipo}) ");
             linhas.Add(String.Format("{0}{{", tabInicial));
 
             var metodoNotificarPropriedadeAlterada = this.RetornarMetodoNotificarPropriedadeAlterada();
             var valor = this.RetornarValor();
 
-
-            linhas.Add($"{tabInicial}{TAB}this.{metodoNotificarPropriedadeAlterada}(\"{this.NomePropriedade}\", this.{this.NomeVariavelPrivada}, this.{this.NomeVariavelPrivada} = {valor});");
+            if (this.PropriedadeRelacaoChaveEstrangeira != null)
+            {
+                linhas.Add($"{tabInicial}{TAB}this.{metodoNotificarPropriedadeAlterada}(\"{this.NomePropriedade}\", \"{this.PropriedadeRelacaoChaveEstrangeira.Name}\", this.{this.NomeVariavelPrivada}, this.{this.NomeVariavelPrivada} = {valor});");
+            }
+            else
+            {
+                linhas.Add($"{tabInicial}{TAB}this.{metodoNotificarPropriedadeAlterada}(\"{this.NomePropriedade}\", this.{this.NomeVariavelPrivada}, this.{this.NomeVariavelPrivada} = {valor});");
+            }
+            
             //linhas.Add(String.Format("{0}{1}this.NotificarPropriedadeAlterada(\"{2}\", this.{3}, this.{3} = value);", tabInicial, TAB, this.NomePropriedade, this.NomeVariavelPrivada));
 
 

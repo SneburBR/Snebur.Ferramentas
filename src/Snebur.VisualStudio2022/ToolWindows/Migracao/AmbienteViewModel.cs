@@ -5,7 +5,7 @@ namespace Snebur.VisualStudio
 {
     public class AmbienteViewModel
     {
-        public EnumAmbienteServidor AmbienteServidor { get; }
+        public EnumAmbienteServidor AmbienteServidor { get; }  
         public string Nome { get; }
 
         public AmbienteViewModel(EnumAmbienteServidor AmbienteServidor)
