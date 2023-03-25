@@ -433,13 +433,13 @@ namespace Snebur.VisualStudio
 
                     File.WriteAllText(caminhoScript, scriptFinal);
 
-                    var pastaMigrations = SolutionUtil.GetPhysicalFolder(projetoMigracao.Children, "Migrations");
-                    var pastaScripts = SolutionUtil.GetPhysicalFolder(pastaMigrations.Children, "Scripts");
+                    var pastaMigrations = await SolutionUtil.GetPhysicalFolderAsync(projetoMigracao.Children, "Migrations");
+                    var pastaScripts = await SolutionUtil.GetPhysicalFolderAsync(pastaMigrations.Children, "Scripts");
                     if (pastaScripts == null)
                     {
                         await pastaMigrations.AddExistingFilesAsync(caminhoPastaScripts);
                     }
-                    var item = SolutionUtil.GetPhysicalFolder(pastaScripts.Children, nomeArquivo);
+                    var item = await SolutionUtil.GetPhysicalFolderAsync(pastaScripts.Children, nomeArquivo);
                     if (item == null)
                     {
                         await pastaScripts.AddExistingFilesAsync(caminhoScript);
@@ -679,7 +679,6 @@ namespace Snebur.VisualStudio
             {
                 this.Log(linha, EnumTipoLog.Erro);
             }
-
         }
 
         private void LogAlerta(string mensagem)
@@ -694,13 +693,13 @@ namespace Snebur.VisualStudio
 
         private void Log(string mensagem, EnumTipoLog tipo)
         {
-            _ = this.Dispatcher.BeginInvoke((Action)(() =>
-            {
-                this.Logs.Add(new LogMensagemViewModel(mensagem, tipo));
-                this.ScrollLog.ScrollToBottom();
-            }));
+            _ = this.LogAsync(mensagem, tipo);
+        }
 
-            //this.Logs.Add(new LogMensagemViewModel(mensagem, tipo));
+        private async Task LogAsync(string mensagem, EnumTipoLog tipo)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            this.Logs.Add(new LogMensagemViewModel (mensagem, tipo));
         }
 
         #endregion
@@ -746,7 +745,6 @@ namespace Snebur.VisualStudio
         {
             this.Ocupar();
             _ = this.AtualizarAsync();
-
         }
 
         private async Task AtualizarAsync()
@@ -966,7 +964,7 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-
+                LogVSUtil.LogErro(ex);
             }
             finally
             {

@@ -115,6 +115,14 @@ namespace Snebur.VisualStudio
 
                 var propriedadesRelacao = ReflexaoUtil.RetornarPropriedades(tipoBaseDominio, true).
                                                              Where(x => TipoUtil.TipoSubTipo(x.PropertyType, (typeof(Entidade)))).
+                                                             Where(x => TipoUtil.TipoSubTipo(x.DeclaringType, (typeof(Entidade)))).
+                                                             Where(x => !PropriedadeUtil.PossuiAtributo(x, nameof(NaoMapearAttribute)) &&
+                                                                        !PropriedadeUtil.PossuiAtributo(x, nameof(IgnorarNormalizacaoAttribute)) &&
+                                                                        x.GetMethod.DeclaringType == x.GetMethod.GetBaseDefinition().DeclaringType).ToList();
+
+                var propriedadesRelacaoNaoEntidade = ReflexaoUtil.RetornarPropriedades(tipoBaseDominio, true).
+                                                             Where(x => TipoUtil.TipoSubTipo(x.PropertyType, (typeof(Entidade)))).
+                                                             Where(x => !TipoUtil.TipoSubTipo(x.DeclaringType, (typeof(Entidade)))).
                                                              Where(x => !PropriedadeUtil.PossuiAtributo(x, nameof(NaoMapearAttribute)) &&
                                                                         !PropriedadeUtil.PossuiAtributo(x, nameof(IgnorarNormalizacaoAttribute)) &&
                                                                         x.GetMethod.DeclaringType == x.GetMethod.GetBaseDefinition().DeclaringType).ToList();
@@ -127,20 +135,35 @@ namespace Snebur.VisualStudio
                 var isImplementarIAtivo = TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) &&
                                            TipoUtil.TipoImplementaInterface(tipoBaseDominio, typeof(IAtivo));
 
-                foreach (var propriedadeCampo in propriedadesCampos)
+                var propriedadesNormal = new List<PropertyInfo>();
+                propriedadesNormal.AddRange(propriedadesCampos);
+                propriedadesNormal.AddRange(propriedadesRelacaoNaoEntidade);
+
+                //normal, campos ou relacao entidade em classes não entidade
+                foreach (var propriedadeNormal in propriedadesNormal)
                 {
-                    var nomeCampoPrivado = this.RetornarNomeCampoPrivado(propriedadeCampo.Name);
-                    var linhaCampoAtual = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains("get")).SingleOrDefault();
+                    var nomeCampoPrivado = this.RetornarNomeCampoPrivado(propriedadeNormal.Name);
+                    var linhaNormalAtual = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains("get")).SingleOrDefault();
 
 
-                    var linhaPropriedadePesquisa = this.RetornarLinhaPropridade(linhasPropriedadePesquisa, propriedadeCampo);
+                    var linhaPropriedadePesquisa = this.RetornarLinhaPropridade(linhasPropriedadePesquisa, propriedadeNormal);
                     if (linhaPropriedadePesquisa != null)
                     {
 
-                        var (propriedadeRelacao, propriedadeChavaEtrangeira) = proproriedadesChaveEstrangeiras.Where(x => x.propriedadeChavaEtrangeira == propriedadeCampo).SingleOrDefault();
+                        var itens = proproriedadesChaveEstrangeiras.
+                            Where(x => x.propriedadeChavaEtrangeira == propriedadeNormal).ToList();
 
-                        var nomeMetodoRetornarValorPropriedade = this.RetornarNomeMetodoRetornarValorPropriedade(isImplementarIAtivo, propriedadeChavaEtrangeira, propriedadeCampo);
-                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementarIAtivo, propriedadeCampo, propriedadeChavaEtrangeira);
+                        if (itens.Count > 1)
+                        {
+                            throw new Exception($"Existe mais um propriedade  estrangeira para {propriedadeNormal.Name} em {propriedadeNormal.DeclaringType.Name}");
+                        }
+
+
+
+                        var (propriedadeRelacao, propriedadeChavaEtrangeira) = itens.SingleOrDefault();
+
+                        var nomeMetodoRetornarValorPropriedade = this.RetornarNomeMetodoRetornarValorPropriedade(isImplementarIAtivo, propriedadeChavaEtrangeira, propriedadeNormal);
+                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementarIAtivo, propriedadeNormal, propriedadeChavaEtrangeira);
                         // campo comum
                         if (!linhaPropriedadePesquisa.Contains(NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA) ||
                             !linhaPropriedadePesquisa.Contains(nomeMetodoRetornarValorPropriedade))
@@ -173,7 +196,7 @@ namespace Snebur.VisualStudio
                             linhas[posicaoLinha] = linhaPropriedadeAtribuir;
 
 
-                            var linhaCampo = linhaPropriedadePesquisa.Substring(0, linhaPropriedadePesquisa.LastIndexOf(" " + propriedadeCampo.Name + " "));
+                            var linhaCampo = linhaPropriedadePesquisa.Substring(0, linhaPropriedadePesquisa.LastIndexOf(" " + propriedadeNormal.Name + " "));
                             if (!linhaCampo.EndsWith(" "))
                             {
                                 linhaCampo += " ";
@@ -181,11 +204,11 @@ namespace Snebur.VisualStudio
                             linhaCampo += nomeCampoPrivado;
                             linhaCampo = linhaCampo.Replace("public", "private");
 
-                            if (PropriedadeUtil.PossuiAtributo(propriedadeCampo, typeof(ValorPadraoCampoPrivadoAttribute)))
+                            if (PropriedadeUtil.PossuiAtributo(propriedadeNormal, typeof(ValorPadraoCampoPrivadoAttribute)))
                             {
-                                var atributo = PropriedadeUtil.RetornarAtributo(propriedadeCampo, typeof(ValorPadraoCampoPrivadoAttribute), false);
+                                var atributo = PropriedadeUtil.RetornarAtributo(propriedadeNormal, typeof(ValorPadraoCampoPrivadoAttribute), false);
                                 var valorPadrao = ReflexaoUtil.RetornarValorPropriedade<ValorPadraoCampoPrivadoAttribute>(x => x.ValorPadrao, atributo);
-                                var valorPadraoConvertido = ConverterUtil.Converter(valorPadrao, propriedadeCampo.PropertyType);
+                                var valorPadraoConvertido = ConverterUtil.Converter(valorPadrao, propriedadeNormal.PropertyType);
 
                                 var tipoEnum = ReflexaoUtil.RetornarValorPropriedade<ValorPadraoCampoPrivadoAttribute>(x => x.TipoEnum, atributo) as Type;
                                 string valorString;
@@ -196,7 +219,7 @@ namespace Snebur.VisualStudio
                                         throw new Exception("O tipoEnum nao é suportado");
                                     }
                                     var valorEnum = Enum.Parse(tipoEnum, valorPadrao.ToString());
-                                    valorString = $"{tipoEnum.Name}.{valorEnum.ToString()}";
+                                    valorString = $"{tipoEnum.Name}.{valorEnum}";
                                 }
                                 else
                                 {
@@ -209,16 +232,18 @@ namespace Snebur.VisualStudio
                             }
                             linhaCampo += ";";
 
-                            if (linhaCampoAtual != linhaCampo)
+                            if (linhaNormalAtual != linhaCampo)
                             {
                                 linhasCampoPrivado.Add(linhaCampo);
 
-                                if (!String.IsNullOrEmpty(linhaCampoAtual))
+                                if (!String.IsNullOrEmpty(linhaNormalAtual))
                                 {
-                                    linhasCampoPrivadoRemover.Add(linhaCampoAtual);
+                                    linhasCampoPrivadoRemover.Add(linhaNormalAtual);
                                 }
                             }
                         }
+
+
                     }
                 }
 
@@ -393,6 +418,11 @@ namespace Snebur.VisualStudio
             if (valorPadraoConvertido is null)
             {
                 return "null";
+            }
+
+            if (valorPadraoConvertido.GetType().IsEnum)
+            {
+                return $"{valorPadraoConvertido.GetType().Name}.{valorPadraoConvertido}";
             }
 
             switch (valorPadraoConvertido)

@@ -38,13 +38,13 @@ namespace Snebur.VisualStudio.ToolWindows.Output
 
                 await VS.Solutions.SaveAllProjetsAsync();
 
-                var xxx = await VS.Solutions.GetStartupProjectsAsync();
-
-                await SolutionUtil.DefinirProjetosInicializacaoAsync();
+           
 
                 var projetos = await AjudanteNormalizarProjetos.RetornarProjetosAsync();
                 if (projetos.Count > 0)
                 {
+                    
+                    await SolutionUtil.DefinirProjetosInicializacaoAsync();
                     LogVSUtil.Log($"Total de projetos encontrados {projetos.Count}");
 
                     var projetosTypeScript = projetos.OfType<ProjetoTypeScript>().ToList();

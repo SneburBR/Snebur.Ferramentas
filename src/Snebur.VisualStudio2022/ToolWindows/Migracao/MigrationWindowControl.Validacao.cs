@@ -15,20 +15,12 @@ namespace Snebur.VisualStudio
         public async Task CompilarAsync(Project projetoEntidades,
                                         Project projetoMigracao)
         {
-
-            
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-           
-            this.Log($"Limpando a solução");
-            this.Log($"Compilando a solução");
-            //dte.Solution.SolutionBuild.Build(true);
-
-            this.Log($"Compilando o projeto {projetoEntidades.Name}");
-            await VS.Build.BuildProjectAsync(projetoEntidades);
-            this.Log($"Compilando o projeto {projetoMigracao.Name}");
-            await VS.Build.BuildProjectAsync(projetoMigracao);
-
-            System.Threading.Thread.Sleep(1500);
+            if (this.ChkIsCompilar.IsChecked == true)
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await VS.Build.TryBuildProjectAsync(projetoEntidades);
+                await VS.Build.TryBuildProjectAsync(projetoMigracao);
+            }
         }
 
         private async Task IniciarValidacaoAsync(Project projetoMigracao,
@@ -38,12 +30,13 @@ namespace Snebur.VisualStudio
         {
             try
             {
-                if(await this.AtualizandoConnectionStringEmTempoExecucaoAsync())
+
+                if (!(await this.AtualizandoConnectionStringEmTempoExecucaoAsync()))
                 {
                     return;
                 }
 
-                await this.CompilarAsync(projetoEntidades, 
+                await this.CompilarAsync(projetoEntidades,
                                          projetoMigracao);
 
                 await WorkThreadUtil.SwitchToWorkerThreadAsync();
@@ -97,7 +90,8 @@ namespace Snebur.VisualStudio
                 var alertas = new HashSet<string>();
                 foreach (var tipoEntidade in tiposEntidade)
                 {
-                    var instancia = tipoEntidade.IsAbstract ? null : Activator.CreateInstance(tipoEntidade);
+                    var instancia = tipoEntidade.IsAbstract ? null :
+                                     this.TryCreateEntidade(tipoEntidade);
                     var nomeEntidade = tipoEntidade.Name;
 
                     foreach (var propriedade in tipoEntidade.GetProperties())
@@ -179,6 +173,27 @@ namespace Snebur.VisualStudio
                 _ = this.DesocuparAsync();
 
             }
+        }
+
+        private object TryCreateEntidade(Type tipoEntidade)
+        {
+            try
+            {
+                object[] parametros = this.RetornarParametrosDoConstrutor(tipoEntidade);
+                return Activator.CreateInstance(tipoEntidade, parametros);
+            }
+            catch(Exception)
+            {
+                this.LogErro($"Falha ao criar instancia da entidade {tipoEntidade.Name}, verificar se a mesma possui um construtor em parâmetros");
+                throw;
+            }
+        }
+
+        private object[] RetornarParametrosDoConstrutor(Type tipoEntidade)
+        {
+            var construtor = tipoEntidade.GetConstructors().OrderBy(x => x.GetParameters().Length).First();
+            var parametros = construtor.GetParameters();
+            return new object[parametros.Length];
         }
 
         private void ValidarPropriedade(Type tipoEntidade,

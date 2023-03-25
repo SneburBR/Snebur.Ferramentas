@@ -255,9 +255,9 @@ namespace Snebur.VisualStudio
                 {
                     var agora = DateTime.Now;
 
-                    //var versaoMinor = Int32.Parse(DateTime.Now.Year.ToString().Substring(2, 2));
+                    var ano = Int32.Parse(DateTime.Now.Year.ToString().Substring(2, 2));
                     //var versaoData = Convert.ToInt32($"{DateTime.Now.Month:00}{DateTime.Now.Day:00}");
-                    var novaVersao = new Version(agora.Year, agora.Month, agora.Day, versao.Revision + 1);
+                    var novaVersao = new Version(ano, agora.Month, agora.Day, versao.Revision + 1);
                     IdentityTag.Attributes["Version"].Value = novaVersao.ToString();
                     xml.Save(caminhoVsix);
                 }

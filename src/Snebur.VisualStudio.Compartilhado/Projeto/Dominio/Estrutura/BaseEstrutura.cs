@@ -108,6 +108,9 @@ namespace Snebur.VisualStudio
                     throw new NotImplementedException("RetornarValorTipoPrimario.DateTime");
                 //return " new Date();";
                 case EnumTipoPrimario.Integer:
+
+                    return Convert.ToInt32(valor).ToString();
+
                 case EnumTipoPrimario.Long:
 
                     return Convert.ToInt64(valor).ToString();
@@ -126,6 +129,8 @@ namespace Snebur.VisualStudio
 
                     throw new NotImplementedException("RetornarValorTipoPrimario.TimeSpan");
 
+                case EnumTipoPrimario.EnumValor:
+                    return Convert.ToInt32(valor).ToString();
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }

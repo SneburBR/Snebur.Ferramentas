@@ -232,7 +232,7 @@ namespace Snebur.VisualStudio
         private void DocumentEvents_BeforeDocumentWindowShow(DocumentView documentoView)
         {
             var encoding = documentoView.Document?.Encoding;
-            if (encoding!= null &&
+            if (encoding != null &&
                 encoding.EncodingName != Encoding.UTF8.EncodingName)
             {
                 LogVSUtil.Alerta($"Alterando encoding do arquivo {Path.GetFileName(documentoView.FilePath)} de {encoding?.EncodingName} para UTF-8");

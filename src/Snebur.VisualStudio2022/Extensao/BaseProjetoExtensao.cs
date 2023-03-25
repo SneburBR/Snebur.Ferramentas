@@ -14,6 +14,12 @@ namespace Snebur.VisualStudio
             //}
             throw new Exception($"  baseProjeto.ProjetoViewModel.ProjetoVS '{baseProjeto.ProjetoViewModel.ProjetoVS}'  não suportado");
         }
+
+        public static async Task  SaveAsync(this BaseProjeto baseProjeto)
+        {
+            var project = await baseProjeto.GetProjectAsync();
+            await project.SaveAsync();
+        }
     }
 
 }

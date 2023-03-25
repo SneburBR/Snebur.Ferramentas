@@ -69,11 +69,6 @@ namespace Snebur.VisualStudio
                         case PhysicalFile physicalFile:
 
                             var nomeArquivo = Path.GetFileName(physicalFile.FullPath).ToLower();
-                            if(nomeArquivo == "CssClasses.Constantes.ts")
-                            {
-                                var xx = "";
-                            }
-
                             var isNonVisibleItem = physicalFile.IsNonVisibleItem;
                             if (!isNonVisibleItem)
                             {
@@ -84,7 +79,7 @@ namespace Snebur.VisualStudio
                                     VarrerTodosArquivos(arquivos, item.Children, isLowerCase);
                                 }
                             }
-                             
+
                             break;
                         case PhysicalFolder physicalFolder:
 
@@ -144,19 +139,28 @@ namespace Snebur.VisualStudio
             }
         }
 
-        internal static PhysicalFolder GetPhysicalFolder(IEnumerable<SolutionItem> children,
-                                                        string fullPath)
+        internal static Task<PhysicalFolder> GetPhysicalFolderAsync(IEnumerable<SolutionItem> children,
+                                                                    string fullPath)
         {
-            return SolutionUtil.GetSolutionItem<PhysicalFolder>(children, fullPath);
+            return SolutionUtil.GetSolutionItemAsync<PhysicalFolder>(children, fullPath);
         }
 
-        internal static PhysicalFile GetPhysicalFile(IEnumerable<SolutionItem> children, string fullPath)
+        internal static Task<PhysicalFile> GetPhysicalFileAsync(IEnumerable<SolutionItem> children, string fullPath)
         {
-            return SolutionUtil.GetSolutionItem<PhysicalFile>(children, fullPath);
+            return SolutionUtil.GetSolutionItemAsync<PhysicalFile>(children, fullPath);
         }
 
-        internal static TSolutionItem GetSolutionItem<TSolutionItem>(IEnumerable<SolutionItem> children,
-                                                                    string fullPath) where TSolutionItem : SolutionItem
+        internal static async Task<TSolutionItem> GetSolutionItemAsync<TSolutionItem>(IEnumerable<SolutionItem> children,
+                                                                    string fullPath,
+                                                                    bool isExcludeNonVisible = true) where TSolutionItem : SolutionItem
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            return await GetSolutionItemInternoAsync<TSolutionItem>(children, fullPath, isExcludeNonVisible);
+        }
+        private static async Task<TSolutionItem> GetSolutionItemInternoAsync<TSolutionItem>(IEnumerable<SolutionItem> children,
+                                                                                            string fullPath,
+                                                                                            bool isExcludeNonVisible) where TSolutionItem : SolutionItem
         {
             foreach (var item in children)
             {
@@ -164,13 +168,19 @@ namespace Snebur.VisualStudio
                 {
                     if (solutionItem.FullPath?.Equals(fullPath, StringComparison.InvariantCultureIgnoreCase) == true)
                     {
+                        if (isExcludeNonVisible && solutionItem.IsNonVisibleItem)
+                        {
+                            return null;
+                        }
                         return solutionItem;
                     }
                 }
 
                 if (item.Children?.Count() > 0)
                 {
-                    var child = GetSolutionItem<TSolutionItem>(item.Children, fullPath);
+                    var child = await GetSolutionItemInternoAsync<TSolutionItem>(item.Children,
+                                                                                 fullPath,
+                                                                                 isExcludeNonVisible);
                     if (child != null)
                     {
                         return child;

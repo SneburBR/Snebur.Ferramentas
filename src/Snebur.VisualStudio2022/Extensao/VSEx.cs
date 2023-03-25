@@ -1,6 +1,5 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
