@@ -52,7 +52,10 @@ namespace Snebur.VisualStudio
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var projectRecuperado = await VS.Solutions.FindProjectsAsync(project.Text);
             var arquivos = new HashSet<string>();
-            VarrerTodosArquivos(arquivos, projectRecuperado.Children, isLowerCase);
+
+            project = projectRecuperado ?? project;
+
+            VarrerTodosArquivos(arquivos, project.Children, isLowerCase);
             return arquivos;
 
         }
@@ -151,35 +154,44 @@ namespace Snebur.VisualStudio
         }
 
         internal static async Task<TSolutionItem> GetSolutionItemAsync<TSolutionItem>(IEnumerable<SolutionItem> children,
-                                                                    string fullPath,
+                                                                    string fullPathOrName,
                                                                     bool isExcludeNonVisible = true) where TSolutionItem : SolutionItem
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            return await GetSolutionItemInternoAsync<TSolutionItem>(children, fullPath, isExcludeNonVisible);
+            return await GetSolutionItemInternoAsync<TSolutionItem>(children, fullPathOrName, isExcludeNonVisible);
         }
         private static async Task<TSolutionItem> GetSolutionItemInternoAsync<TSolutionItem>(IEnumerable<SolutionItem> children,
-                                                                                            string fullPath,
+                                                                                            string fullPathOrName,
                                                                                             bool isExcludeNonVisible) where TSolutionItem : SolutionItem
         {
             foreach (var item in children)
             {
-                if (item is TSolutionItem solutionItem)
+                if (isExcludeNonVisible && item.IsNonVisibleItem)
                 {
-                    if (solutionItem.FullPath?.Equals(fullPath, StringComparison.InvariantCultureIgnoreCase) == true)
-                    {
-                        if (isExcludeNonVisible && solutionItem.IsNonVisibleItem)
-                        {
-                            return null;
-                        }
-                        return solutionItem;
-                    }
+                    continue;
                 }
 
-                if (item.Children?.Count() > 0)
+                if (item is TSolutionItem solutionItem)
+                {
+                    if (solutionItem.Text?.Equals(fullPathOrName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    {
+                        return solutionItem;
+                    }
+
+                    if (solutionItem.FullPath?.Equals(fullPathOrName, StringComparison.InvariantCultureIgnoreCase) == true)
+                    {
+                        return solutionItem;
+                    }
+
+                   
+                }
+
+                if (item.Type != SolutionItemType.VirtualFolder &&
+                    item.Children?.Count() > 0)
                 {
                     var child = await GetSolutionItemInternoAsync<TSolutionItem>(item.Children,
-                                                                                 fullPath,
+                                                                                 fullPathOrName,
                                                                                  isExcludeNonVisible);
                     if (child != null)
                     {

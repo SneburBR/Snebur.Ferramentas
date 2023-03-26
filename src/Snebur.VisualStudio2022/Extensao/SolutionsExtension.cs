@@ -90,6 +90,12 @@ namespace Snebur.VisualStudio
             LogVSUtil.LogErro($"Falha ao compilando o projeto {project.Name}. {erro.Message}");
             return false;
         }
+
+        public static Task<DocumentView> TryOpenAsync(this Documents documents, string file)
+        {
+            return documents.OpenAsync(file);
+        }
     }
 
+    
 }

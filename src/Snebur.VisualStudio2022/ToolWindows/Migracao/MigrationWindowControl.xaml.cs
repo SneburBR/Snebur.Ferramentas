@@ -99,11 +99,13 @@ namespace Snebur.VisualStudio
 
         private void GerenciadorProjeto_SolucaoAberta(object sender, EventArgs e)
         {
+            this.Ocupar();
             _ = this.AtualizarProjetosAsync();
         }
 
         private void BtnAtualizarProjeots_Click(object sender, RoutedEventArgs e)
         {
+            this.Ocupar();
             _ = this.AtualizarProjetosAsync();
         }
 
@@ -165,11 +167,11 @@ namespace Snebur.VisualStudio
             {
                 this.LogErro(ex.Message);
             }
-
         }
 
         private void BtnGerarScript_Click(object sender, RoutedEventArgs e)
         {
+            this.Ocupar();
             _ = this.GerarScriptAsync();
         }
 
@@ -423,7 +425,8 @@ namespace Snebur.VisualStudio
                     var script = scripter.ScriptUpdate(null, migracaoPendente);
 
                     var nomeArquivo = $"{migracaoPendente.Replace("_", ".")}.sql";
-                    var caminhoPastaScripts = Path.Combine(caminhoProjetoMigracao, "Migrations", "Scripts");
+                    var caminhoPastaMigrations = Path.Combine(caminhoProjetoMigracao, "Migrations");
+                    var caminhoPastaScripts = Path.Combine(caminhoPastaMigrations, "Scripts");
                     DiretorioUtil.CriarDiretorio(caminhoPastaScripts);
                     var caminhoScript = Path.Combine(caminhoPastaScripts, nomeArquivo);
 
@@ -433,24 +436,13 @@ namespace Snebur.VisualStudio
 
                     File.WriteAllText(caminhoScript, scriptFinal);
 
-                    var pastaMigrations = await SolutionUtil.GetPhysicalFolderAsync(projetoMigracao.Children, "Migrations");
-                    var pastaScripts = await SolutionUtil.GetPhysicalFolderAsync(pastaMigrations.Children, "Scripts");
-                    if (pastaScripts == null)
-                    {
-                        await pastaMigrations.AddExistingFilesAsync(caminhoPastaScripts);
-                    }
-                    var item = await SolutionUtil.GetPhysicalFolderAsync(pastaScripts.Children, nomeArquivo);
-                    if (item == null)
-                    {
-                        await pastaScripts.AddExistingFilesAsync(caminhoScript);
-                    }
-
-                    await VS.Documents.OpenAsync(caminhoScript);
+                    await this.AdicionarScriptAsync(projetoMigracao, caminhoScript);
 
                     var scriptsTransacao = this.RetornarSripts(scriptAtualizado.Script);
                     var scriptsAlterDatabase = scriptsTransacao.Where(x => x.ToUpper().Trim().StartsWith("ALTER DATABASE")).ToList();
                     scriptsTransacao.RemoveRange(scriptsAlterDatabase);
                     scriptsAlterDatabase.Reverse();
+
                     foreach (var s in scriptsAlterDatabase)
                     {
                         this.Scripts.Insert(0, s);
@@ -462,8 +454,10 @@ namespace Snebur.VisualStudio
 
                     this.Log(this.Scripts);
                     this.Log(this.ScriptsTransacao);
+                    
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-
+                    this.BtnExecutar.IsEnabled = true;
                 }
             }
             catch (Exception ex)
@@ -473,8 +467,27 @@ namespace Snebur.VisualStudio
             finally
             {
                 await this.DesocuparAsync();
-
             }
+        }
+
+        private async Task AdicionarScriptAsync(Project projetoMigracao, string caminhoScript)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var pastaMigrations = await SolutionUtil.GetPhysicalFolderAsync(projetoMigracao.Children, "migrations");
+            if (pastaMigrations != null)
+            {
+                var pastaScripts =   await SolutionUtil.GetPhysicalFolderAsync(pastaMigrations.Children, "scripts") ;
+                if(pastaScripts!= null)
+                {
+                    var item = await SolutionUtil.GetPhysicalFolderAsync(pastaScripts.Children, caminhoScript);
+                    if (item == null)
+                    {
+                        await pastaScripts.AddExistingFilesAsync(caminhoScript);
+                    }
+                }
+            }
+            await VS.Documents.TryOpenAsync(caminhoScript);
         }
 
         private string RetornarNomeMigracaoFormatado(string nomeMigracao)
@@ -699,7 +712,7 @@ namespace Snebur.VisualStudio
         private async Task LogAsync(string mensagem, EnumTipoLog tipo)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            this.Logs.Add(new LogMensagemViewModel (mensagem, tipo));
+            this.Logs.Add(new LogMensagemViewModel(mensagem, tipo));
         }
 
         #endregion
@@ -710,6 +723,7 @@ namespace Snebur.VisualStudio
                 this.CmbProjetosEntidades.SelectedItem is Project projetoEntidades)
             {
                 this.Ocupar();
+                this.BtnExecutar.IsEnabled = false;
                 _ = this.ExecutarAsync(projetoMigracao, projetoEntidades);
             }
         }

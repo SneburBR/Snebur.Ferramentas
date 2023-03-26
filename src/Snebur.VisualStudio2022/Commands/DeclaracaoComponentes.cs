@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Snebur.Utilidade;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Snebur.VisualStudio
 {
@@ -128,7 +129,7 @@ namespace Snebur.VisualStudio
 
         private void InserirRegionDeclaracao(TextSelection selecao)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var sb = new StringBuilder();
             sb.AppendLine("");
@@ -189,14 +190,22 @@ namespace Snebur.VisualStudio
             {
                 if (elemento.Attributes[TagElementoUtil.ATRIBUTO_CONTROLE] != null)
                 {
-                    var tipo = elemento.Attributes[TagElementoUtil.ATRIBUTO_CONTROLE].Value;
-                    if (!String.IsNullOrEmpty(tipo))
+                    var tipoControle = elemento.Attributes[TagElementoUtil.ATRIBUTO_CONTROLE].Value;
+                    if (!String.IsNullOrEmpty(tipoControle))
                     {
-                        return tipo;
+                        return tipoControle;
                     }
                 }
             }
-            return TagElementoUtil.RetornarTipo(tagName);
+           
+            var tipo = TagElementoUtil.RetornarTipo(tagName);
+            var tipoItemGenerico = elemento.GetAttributes().Where(x => x.Name == "sn-tipo-item").FirstOrDefault();
+
+            if (!String.IsNullOrWhiteSpace(tipoItemGenerico?.Value))
+            {
+                return $"{tipo}<{tipoItemGenerico.Value}>";
+            }
+            return tipo;
         }
 
         private Dictionary<string, HtmlNode> RetornarElementosComNome()
