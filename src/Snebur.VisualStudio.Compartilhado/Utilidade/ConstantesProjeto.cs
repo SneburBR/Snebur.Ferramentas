@@ -1,6 +1,10 @@
 ﻿//futuramente vamos normalizar os Error, passando um parametro da mapeamento do arquivo e linha
 //detalhes aqui https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+
 namespace Snebur.VisualStudio
 {
     public static class ConstantesProjeto
@@ -11,7 +15,7 @@ namespace Snebur.VisualStudio
         public const string EXTENSAO_ESTILO = ".css";
         public const string EXTENSAO_CONTROLE_SHTML = ".shtml";
         public const string EXTENSAO_CONTROLE_SHTML_TYPESCRIPT = ".shtml.ts";
-        public const string EXTENSAO_CONTROLE_SHTML_ESTILO = ".shtml.scss";
+        public const string EXTENSAO_CONTROLE_SHTML_SCSS = ".shtml.scss";
         public const string EXTENSAO_SCRIPT = ".js";
         public const string EXTENSAO_TYPESCRIPT = ".ts";
         public const string EXTENSAO_SASS = ".scss";
@@ -25,6 +29,8 @@ namespace Snebur.VisualStudio
         public const string CONFIGURACAO_WEB_CONFIG = "Web.config";
         public const string CONFIGURACAO_APP_SETTINGS = "appSettings.config";
 
+        public static HashSet<string> ExtensoesWeb { get; } = new HashSet<string> { EXTENSAO_TYPESCRIPT, EXTENSAO_SASS, EXTENSAO_CONTROLE_SHTML };
+        public static HashSet<string> ExtensoesControlesSnebur { get; } = new HashSet<string> { EXTENSAO_CONTROLE_SHTML, EXTENSAO_CONTROLE_SHTML_TYPESCRIPT, EXTENSAO_CONTROLE_SHTML_SCSS };
 
     }
 

@@ -47,10 +47,7 @@ namespace Snebur.VisualStudio
             this.IsLink = this.RetornarIsLink();
             this.ArquivoHtmlReferencia = this.RetornarArquivoHtmlReferencia();
             this.IsTipoHtmlReferencia = this.RetornarPossuiHtmlReferencia();
-
         }
-
-
 
         protected override EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript()
         {
@@ -167,8 +164,6 @@ namespace Snebur.VisualStudio
                 var _namespace = linhaNamespace.Substring(TipoArquivoTypeScriptUtil.PROCURAR_NAMESPACE.Length);
                 _namespace = FormatacaoVSUtil.RetornarNomeFormatado(_namespace, this.Arquivo);
                 return _namespace;
-
-
             }
             return null;
         }

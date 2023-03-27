@@ -17,7 +17,7 @@ namespace Snebur.VisualStudio.Commands
                 {
                     var nomeArquivo = dte.ActiveDocument.Name;
                     var isExtensaoShtml = nomeArquivo.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML);
-                    var isExtensaoScss = nomeArquivo.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_ESTILO);
+                    var isExtensaoScss = nomeArquivo.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_SCSS);
 
                     if (!(isExtensaoShtml || isExtensaoScss))
                     {

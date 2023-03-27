@@ -15,10 +15,11 @@ namespace Snebur.VisualStudio
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            if (!this.ExtensoesWeb.Contains(arquivo.Extension.ToLower()))
+            if (!ConstantesProjeto.ExtensoesWeb.Contains(arquivo.Extension.ToLower()))
             {
                 return null;
             }
+
             var projetoTS = await this.RetornarProjetoTSAsync(arquivo);
             if (projetoTS == null)
             {
@@ -34,19 +35,17 @@ namespace Snebur.VisualStudio
                 if (projetItem != null)
                 {
                     var projectItensArquivo = ProjetoDteUtil.RetornarProjectItemsArquivo(projetItem.ProjectItems, true);
+                    
                     await this.AnalisarArquivoRenomeadoEmbutidoAsync(projetoTS,
-                                                               projetItem,
-                                                               arquivo, projectItensArquivo,
-                                                               EXTENSAO_CONTROLE_SHTML_ESTILO);
+                                                                     projetItem,
+                                                                     arquivo, projectItensArquivo,
+                                                                     EXTENSAO_CONTROLE_SHTML_SCSS);
 
                     await this.AnalisarArquivoRenomeadoEmbutidoAsync(projetoTS,
                                                                      projetItem,
                                                                      arquivo,
                                                                      projectItensArquivo,
                                                                      EXTENSAO_CONTROLE_SHTML_TYPESCRIPT);
-
-
-
                 }
             }
             return projetoTS;
@@ -82,8 +81,7 @@ namespace Snebur.VisualStudio
                         {
                             //projetoTS.TodosArquivos.Add(caminhoCodigo.ToLower());
                             //projetoTS.Arquivos.Add(caminhoCodigo);
-
-
+                             
                             ArquivoUtil.MoverArquivo(caminhoArquivoEmbutido,
                                                      caminhoDestino);
 
@@ -91,7 +89,7 @@ namespace Snebur.VisualStudio
                             //caminhoDestino = caminhoDestino.ToLower();
 
                             await this.RemoverArquivoAsync(projectItemEmbutido);
-                            await this.AdicionaarArquivoAsync(projecItemMestre.ProjectItems, caminhoDestino);
+                            await this.AdicionarArquivoAsync(projecItemMestre.ProjectItems, caminhoDestino);
 
 
                             projetoTS.TodosArquivos.Remove(caminhoArquivoEmbutido.ToLower());
@@ -112,7 +110,7 @@ namespace Snebur.VisualStudio
         }
 
         private bool _isAdicionarArquivo = false;
-        private async Task AdicionaarArquivoAsync(ProjectItems projectItems, string caminhoDestino)
+        private async Task AdicionarArquivoAsync(ProjectItems projectItems, string caminhoDestino)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this._isAdicionarArquivo = true;
@@ -129,9 +127,7 @@ namespace Snebur.VisualStudio
             projectItemEmbutido?.Remove();
             this._isRemovendoArquivo = false;
         }
-        #region Talvez Renomear
-        #endregion
-
+         
         #region Talvez novo arquivo 
         private async Task DocumentoAbertoAsync(Document documento)
         {
@@ -163,10 +159,11 @@ namespace Snebur.VisualStudio
 
         private async Task<ProjetoTypeScript> AgruparArquivoAsync(FileInfo arquivo)
         {
-            if (!this.ExtensoesWeb.Contains(arquivo.Extension.ToLower()))
+            if (!ConstantesProjeto.ExtensoesWeb.Contains(arquivo.Extension.ToLower()))
             {
                 return null;
             }
+
             var projetoTS = await this.RetornarProjetoTSAsync(arquivo);
             if (projetoTS != null)
             {
@@ -186,31 +183,29 @@ namespace Snebur.VisualStudio
                     await projetoTS.NormalizarReferenciasAsync();
                 }
 
-                var caminhoarArquivo = arquivo.FullName;
+                var caminhoarNovoArquivo = arquivo.FullName;
                 LogVSUtil.Log($"Novo arquivo {arquivo.Name}");
 
-                var dte = await DteEx.GetDTEAsync();
-                var projetItem = dte.Solution.FindProjectItem(caminhoarArquivo);
-                if (projetItem == null)
+                projetoTS.TodosArquivos.Add(caminhoarNovoArquivo.ToLower());
+                projetoTS.ArquivosTS.Add(caminhoarNovoArquivo.ToLower());
+
+                if (ArquivoControleUtil.IsArquivoControle(arquivo))
                 {
-                    LogVSUtil.Alerta($"O project item do arquivo não foi {arquivo.Name}, o arquivo pode não está no projeto");
-                    return;
-                }
+                    var caminhoShtml = ArquivoControleUtil.RetornarCaminhoShtml(arquivo);
+                    var caminhoCodigo = caminhoShtml + EXTENSAO_TYPESCRIPT;
+                    var caminhoEstilo = caminhoShtml + EXTENSAO_SASS;
 
-                if (arquivo.Extension == EXTENSAO_CONTROLE_SHTML)
-                {
-                    var caminhoCodigo = caminhoarArquivo + EXTENSAO_TYPESCRIPT;
-                    var caminhoEstilo = caminhoarArquivo + EXTENSAO_SASS;
-
-                    var projectItemLayout = projetItem;
-
-                    if (projectItemLayout != null)
+                    var dte = await DteEx.GetDTEAsync();
+                    var projetItemShtml = dte.Solution.FindProjectItem(caminhoShtml);
+                    if (projetItemShtml == null)
                     {
-                        projetoTS.TodosArquivos.Add(caminhoarArquivo.ToLower());
-                        projetoTS.ArquivosTS.Add(caminhoarArquivo.ToLower());
+                        LogVSUtil.Alerta($"O project item do arquivo não foi {arquivo.Name}, o arquivo pode não está no projeto");
+                        return;
+                    }
 
+                    if (projetItemShtml != null)
+                    {
                         LogVSUtil.Log($"Arquivo de layout encontrado {arquivo.Name}");
-
                         var projectItemCodigo = dte.Solution.FindProjectItem(caminhoCodigo);
 
                         if (projectItemCodigo == null)
@@ -226,24 +221,25 @@ namespace Snebur.VisualStudio
                             LogVSUtil.Log($"Normalizando o arquivo do código {arquivo.Name}{EXTENSAO_TYPESCRIPT}");
                         }
 
-                        var projetoItemEstilo = dte.Solution.FindProjectItem(caminhoEstilo);
-                        if (projetoItemEstilo != null)
+                        var projetoItemScss = dte.Solution.FindProjectItem(caminhoEstilo);
+                        if (projetoItemScss != null)
                         {
                             projetoTS.TodosArquivos.Add(caminhoEstilo.ToLower());
                             LogVSUtil.Log($"Normalizando o arquivo do estilo {arquivo.Name}{EXTENSAO_SASS}");
                         }
 
 
-                        var isAgrupar = (projectItemLayout != null) &&
+                        var isAgrupar = (projetItemShtml != null) &&
                                         (projectItemCodigo != null);
+
                         if (isAgrupar)
                         {
                             LogVSUtil.Log($"Agrupando arquivo {arquivo.Name}, {arquivo.Name}.ts, {arquivo.Name}{EXTENSAO_SASS}");
 
-                            await this.AgruparArquivosAsync(projectItemLayout,
+                            await this.AgruparArquivosAsync(projetItemShtml,
                                                             projectItemCodigo,
-                                                            projetoItemEstilo,
-                                                            caminhoarArquivo,
+                                                            projetoItemScss,
+                                                            caminhoShtml,
                                                             caminhoCodigo,
                                                             caminhoEstilo);
                         }
@@ -259,6 +255,8 @@ namespace Snebur.VisualStudio
                 //}
             }
         }
+
+
 
         private async Task<ProjetoTypeScript> RetornarProjetoTSAsync(FileInfo arquivo)
         {
@@ -289,16 +287,16 @@ namespace Snebur.VisualStudio
             return null;
         }
 
-        private async Task AgruparArquivosAsync(ProjectItem projectItemLayout,
-                                         ProjectItem projectItemCodigo,
-                                         ProjectItem projetoItemEstilo,
-                                         string caminhoLayout,
-                                         string caminhoCodigo,
-                                         string caminhoEstilo)
+        private async Task AgruparArquivosAsync(ProjectItem projectItemScss,
+                                                 ProjectItem projectItemCodigo,
+                                                 ProjectItem projetoItemEstilo,
+                                                 string caminhoLayout,
+                                                 string caminhoCodigo,
+                                                 string caminhoEstilo)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            if (projectItemLayout.ProjectItems == null)
+            if (projectItemScss.ProjectItems == null)
             {
                 LogVSUtil.LogErro("A propriedade ProjectItems do arquivo layout não está definida");
                 return;
@@ -309,9 +307,9 @@ namespace Snebur.VisualStudio
 
             if (projetoItemEstilo != null)
             {
-                await this.AdicionaarArquivoAsync(projectItemLayout.ProjectItems, caminhoEstilo);
+                await this.AdicionarArquivoAsync(projectItemScss.ProjectItems, caminhoEstilo);
             }
-            await this.AdicionaarArquivoAsync(projectItemLayout.ProjectItems, caminhoCodigo);
+            await this.AdicionarArquivoAsync(projectItemScss.ProjectItems, caminhoCodigo);
 
         }
 
@@ -387,10 +385,13 @@ namespace Snebur.VisualStudio
                     var nomeTipo = arquivo.Name.ToLower().StartsWith("enum") ? "enum" : "class";
                     var nomeSemExtensao = arquivo.Name.Split('.').First();
 
+                    var isViewModel = arquivo.Name.EndsWith("ViewModel.ts");
+                    var estenderViewModel = isViewModel ? " extends Snebur.Dominio.BaseViewModel "  : String.Empty;
+
                     var sb = new StringBuilder();
                     sb.AppendLine($"namespace {projetoTS.NomeProjeto}");
                     sb.AppendLine("{");
-                    sb.AppendLine($"\texport {nomeTipo} {nomeSemExtensao}");
+                    sb.AppendLine($"\texport {nomeTipo} {nomeSemExtensao}{estenderViewModel}");
                     sb.AppendLine("\t{");
                     sb.AppendLine("");
                     sb.AppendLine("\t}");

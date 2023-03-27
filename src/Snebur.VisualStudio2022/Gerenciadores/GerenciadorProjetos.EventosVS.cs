@@ -108,12 +108,13 @@ namespace Snebur.VisualStudio
             }
 
             var projetosTS = new HashSet<ProjetoTypeScript>();
-
             var arquivos = itens.Select(x => new FileInfo(x.FullPath));
-            var arquivosLayout = arquivos.Where(x => x.Extension.Equals(EXTENSAO_CONTROLE_SHTML, StringComparison.InvariantCultureIgnoreCase));
-            var arquivosCodigo = arquivos.Where(x => x.Extension.Equals(EXTENSAO_TYPESCRIPT) && !this.ExtensoesControlesSnebur.Any(e => x.FullName.EndsWith(e)));
+            var arquivosControles = ArquivoControleUtil.RetornarArquivosControle(arquivos);
 
-            foreach (var arquivo in arquivosLayout)
+            var arquivosCodigoComum = arquivos.Where(x => x.Extension.Equals(EXTENSAO_TYPESCRIPT) && !ArquivoControleUtil.IsArquivoControle(x));
+
+            var arquivosControlesNormalizados = this.RetornarArquivosControlesNormalizados(arquivosControles);
+            foreach (var arquivo in arquivosControles)
             {
                 if (arquivo.Exists)
                 {
@@ -122,7 +123,7 @@ namespace Snebur.VisualStudio
                 }
             }
 
-            foreach (var arquivo in arquivosCodigo)
+            foreach (var arquivo in arquivosCodigoComum)
             {
                 if (arquivo.Exists)
                 {
@@ -131,6 +132,22 @@ namespace Snebur.VisualStudio
                 }
             }
             await this.NormalizarProjetosAsync(projetosTS);
+        }
+
+        private IEnumerable<FileInfo> RetornarArquivosControlesNormalizados(IEnumerable<FileInfo> arquivosControles)
+        {
+            if (arquivosControles.Count() > 1)
+            {
+                var retorno = new List<FileInfo>();
+                var grupos = arquivosControles.GroupBy(x => ArquivoControleUtil.RetornarCaminhoShtml(x));
+                foreach (var grupo in grupos)
+                {
+                    var arquivo = grupo.OrderBy(x => ArquivoControleUtil.RetornarOrdenacao(x)).First();
+                    retorno.Add(arquivo);
+                }
+                return retorno;
+            }
+            return arquivosControles;
         }
 
         private async Task NormalizarProjetosAsync(HashSet<ProjetoTypeScript> projetosTS)

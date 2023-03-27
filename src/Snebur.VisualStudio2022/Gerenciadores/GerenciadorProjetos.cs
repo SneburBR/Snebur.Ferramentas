@@ -18,8 +18,12 @@ namespace Snebur.VisualStudio
     {
         private bool _isInicializado;
         private bool _isExecutando = false;
+        private bool _isProjetosAtualizados;
+        private bool _isAtualizando;
+
         private DateTime _dataHoraUltimaVerificacao;
         private ServicoDepuracao _servicoDepuracao;
+        private HashSet<string> _extensoesEncodindUt8;
 
         private bool IsLimparLogCompilandoInterno => GerenciadorProjetos.IsLimparLogCompilando;
         public bool IsCompilando { get; private set; }
@@ -29,12 +33,8 @@ namespace Snebur.VisualStudio
         public SneburVisualStudio2022Package LocalPackage { get; private set; }
         internal ConcurrentDictionary<string, ProjetoTypeScript> ProjetosTS { get; } = new ConcurrentDictionary<string, ProjetoTypeScript>();
         internal ConcurrentDictionary<string, ProjetoSass> ProjetosSass { get; } = new ConcurrentDictionary<string, ProjetoSass>();
-        private HashSet<string> ExtensoesWeb { get; } = new HashSet<string> { EXTENSAO_TYPESCRIPT, EXTENSAO_SASS, EXTENSAO_CONTROLE_SHTML };
-        private HashSet<string> ExtensoesControlesSnebur { get; } = new HashSet<string> { EXTENSAO_CONTROLE_SHTML_TYPESCRIPT, EXTENSAO_CONTROLE_SHTML, EXTENSAO_CONTROLE_SHTML_ESTILO };
 
-        private HashSet<string> _extensoesEncodindUt8;
-        public HashSet<string> ExtensoesEncodindUt8 => 
-            LazyUtil.RetornarValorLazyComBloqueio(ref this._extensoesEncodindUt8,this.RetornarExtesoesEncodingUt8);
+        public HashSet<string> ExtensoesEncodindUt8 =>  LazyUtil.RetornarValorLazyComBloqueio(ref this._extensoesEncodindUt8,this.RetornarExtesoesEncodingUt8);
          
         public event EventHandler SoluacaoAberta;
 
@@ -66,7 +66,6 @@ namespace Snebur.VisualStudio
         #region Depuração
 
         #region  Observadores -- FileSystemWatcher
-
 
         private void ObservadorArquivo_Error(object sender, ErrorEventArgs e)
         {
@@ -211,11 +210,7 @@ namespace Snebur.VisualStudio
         {
             _ = this.ReiniciarAsync();
         }
-
-
-        private bool _isProjetosAtualizados;
-        private bool _isAtualizando;
-
+         
         private async Task AtualizarProjetosAsync(bool isAtualizarAguardar = false)
         {
             var t = Stopwatch.StartNew();
@@ -264,7 +259,6 @@ namespace Snebur.VisualStudio
 
                 if (!ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
                 {
-
                     var projetosStartup = await VS.Solutions.GetStartupProjectsAsync();
                     if (projetosStartup?.Count() > 0)
                     {
@@ -434,8 +428,8 @@ namespace Snebur.VisualStudio
         private HashSet<string> RetornarExtesoesEncodingUt8()
         {
             var extensoes = new HashSet<string>();
-            extensoes.AddRange(this.ExtensoesWeb);
-            extensoes.AddRange(this.ExtensoesControlesSnebur);
+            extensoes.AddRange(ConstantesProjeto.ExtensoesWeb);
+            extensoes.AddRange(ConstantesProjeto.ExtensoesControlesSnebur);
             extensoes.AddRange(new string[] { ".cs", ".aspx", ".ashx",".config",
                                               ".json", ".js", ".html"  } );
             return extensoes;

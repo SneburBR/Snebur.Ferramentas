@@ -62,7 +62,7 @@ namespace Snebur.VisualStudio
 
 
 
-                    var declaracao = String.Format("let {0} = new Snebur.Reflexao.TipoListaTipoPrimario({1});",
+                    var declaracao = String.Format("const {0} = new Snebur.Reflexao.TipoListaTipoPrimario({1});",
                                                    declaracaoListaTipoPrimario,
                                                    declaracaoTipoPrimario);
 

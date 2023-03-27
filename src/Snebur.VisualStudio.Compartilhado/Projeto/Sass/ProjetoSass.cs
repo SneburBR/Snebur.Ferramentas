@@ -326,7 +326,7 @@ namespace Snebur.VisualStudio
 
         private bool IsArquivoSassShtml(FileInfo arquivo)
         {
-            return arquivo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_ESTILO);
+            return arquivo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_SCSS);
         }
 
         private bool IsArquivoSassPersonalizado(FileInfo arquivo)

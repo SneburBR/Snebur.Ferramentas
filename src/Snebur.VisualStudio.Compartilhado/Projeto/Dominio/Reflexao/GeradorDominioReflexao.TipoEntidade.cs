@@ -135,7 +135,7 @@ namespace Snebur.VisualStudio
             //var declaracaoListaBaseDominio = AjudanteReflexao.RetornarDeclaracaoListaTipoBaseDominio(tipo);
             var declaracaoTipoEntidade = AjudanteReflexao.RetornarDeclaracaoTipoBaseDominio(tipo);
 
-            var retorno = String.Format("let {0} = new Snebur.Reflexao.TipoListaEntidade(\"{1}\", \"{2}\", \"{3}\",{4});",
+            var retorno = String.Format("const {0} = new Snebur.Reflexao.TipoListaEntidade(\"{1}\", \"{2}\", \"{3}\",{4});",
                                                           declaracaoListaBaseEntidade,
                                                           nomeTipoListaEntidade,
                                                           _namespace,
