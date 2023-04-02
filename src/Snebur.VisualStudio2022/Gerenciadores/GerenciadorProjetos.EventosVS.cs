@@ -170,7 +170,7 @@ namespace Snebur.VisualStudio
 
         private void SolutionEvents_OnAfterOpenSolution(Solution obj)
         {
-            _ = this.AnalisarNecessidadeServicoDepuracaoAsync();
+            _ = this.SolucaoAbertaAsync();
         }
 
         private void SolutionEvents_OnBeforeCloseSolution()

@@ -95,17 +95,22 @@ namespace Snebur.VisualStudio
 
         private async Task SolucaoAbertaAsync()
         {
+            await this.ReiniciarAsync();
             await this.AnalisarNecessidadeServicoDepuracaoAsync();
+            this.SoluacaoAberta?.Invoke(this, EventArgs.Empty);
         }
 
         public async Task AnalisarNecessidadeServicoDepuracaoAsync()
         {
-            await this.AtualizarProjetosAsync();
+            if (!this._isProjetosAtualizados)
+            {
+                await this.AtualizarProjetosAsync();
+            }
+            
             if (this.ProjetosTS.Count > 0)
             {
                 await this.IniciarServicoDepuracaoAsync();
             }
-            this.SoluacaoAberta?.Invoke(this, EventArgs.Empty);
         }
 
         private async Task CompilacaoIniciandoAsync(Stopwatch tempoAntesBuild)

@@ -31,11 +31,12 @@ namespace Snebur.VisualStudio
         public Stopwatch TtempoCompilacao { get; private set; }
 
         public SneburVisualStudio2022Package LocalPackage { get; private set; }
-        internal ConcurrentDictionary<string, ProjetoTypeScript> ProjetosTS { get; } = new ConcurrentDictionary<string, ProjetoTypeScript>();
-        internal ConcurrentDictionary<string, ProjetoSass> ProjetosSass { get; } = new ConcurrentDictionary<string, ProjetoSass>();
 
-        public HashSet<string> ExtensoesEncodindUt8 =>  LazyUtil.RetornarValorLazyComBloqueio(ref this._extensoesEncodindUt8,this.RetornarExtesoesEncodingUt8);
-         
+        private ConcurrentDictionary<string, ProjetoTypeScript> ProjetosTS { get; } = new ConcurrentDictionary<string, ProjetoTypeScript>();
+        private ConcurrentDictionary<string, ProjetoSass> ProjetosSass { get; } = new ConcurrentDictionary<string, ProjetoSass>();
+
+        public HashSet<string> ExtensoesEncodindUt8 => LazyUtil.RetornarValorLazyComBloqueio(ref this._extensoesEncodindUt8, this.RetornarExtesoesEncodingUt8);
+
         public event EventHandler SoluacaoAberta;
 
         public GerenciadorProjetos() : base()
@@ -210,7 +211,7 @@ namespace Snebur.VisualStudio
         {
             _ = this.ReiniciarAsync();
         }
-         
+
         private async Task AtualizarProjetosAsync(bool isAtualizarAguardar = false)
         {
             var t = Stopwatch.StartNew();
@@ -317,7 +318,7 @@ namespace Snebur.VisualStudio
 
                     LogVSUtil.Log($"Iniciando gerenciador de projeto typescript '{projetoTS.NomeProjeto}'");
                     var todosArquivo = await SolutionUtil.RetornarTodosArquivosAsync(projetoVS, true);
-                    projetoTS.TodosArquivos = todosArquivo;
+                    //projetoTS.TodosArquivos2 = todosArquivo;
                     await projetoTS.NormalizarReferenciasAsync();
                     this.AtualizarProjetoTS(projetoTS);
                 }
@@ -356,7 +357,7 @@ namespace Snebur.VisualStudio
             this.ProjetosSass.TryRemove(projetoSass.Chave, out var _);
             this.ProjetosSass.TryAdd(projetoSass.Chave, projetoSass);
         }
-         
+
 
 
 
@@ -413,7 +414,7 @@ namespace Snebur.VisualStudio
            });
         }
 
-       
+
 
         private static void InicializarPropriedadesGlobal()
         {
@@ -431,7 +432,7 @@ namespace Snebur.VisualStudio
             extensoes.AddRange(ConstantesProjeto.ExtensoesWeb);
             extensoes.AddRange(ConstantesProjeto.ExtensoesControlesSnebur);
             extensoes.AddRange(new string[] { ".cs", ".aspx", ".ashx",".config",
-                                              ".json", ".js", ".html"  } );
+                                              ".json", ".js", ".html"  });
             return extensoes;
         }
 
@@ -446,7 +447,10 @@ namespace Snebur.VisualStudio
         public override void AtualizarProjetoTS(ProjetoTypeScript projeto)
         {
             this.ProjetosTS.TryRemove(projeto.Chave, out var _);
-            this.ProjetosTS.TryAdd(projeto.Chave, projeto);
+           if( this.ProjetosTS.TryAdd(projeto.Chave, projeto))
+            {
+                LogVSUtil.Log($"Projeto TS {projeto.NomeProjeto} atualizado no gerenciador ");
+            }
         }
 
         private void DispensarProjetos()

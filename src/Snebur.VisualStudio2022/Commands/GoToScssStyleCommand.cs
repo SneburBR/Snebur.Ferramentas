@@ -1,14 +1,8 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Globalization;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using Community.VisualStudio.Toolkit;
 using EnvDTE;
 using EnvDTE80;
-using System.IO;
 using Snebur.Utilidade;
-using Snebur.VisualStudio.Utilidade;
-using Community.VisualStudio.Toolkit;
+using System.IO;
 
 namespace Snebur.VisualStudio
 {
@@ -31,13 +25,50 @@ namespace Snebur.VisualStudio
                     {
                         caminhoArquivoAtual = caminhoArquivoAtual.Substring(0, caminhoArquivoAtual.Length - 3);
                     }
-                    var caminhoEstilo = caminhoArquivoAtual + ".scss";
-                    if (File.Exists(caminhoEstilo))
+                    var caminhoScsss = caminhoArquivoAtual + ".scss";
+                    if (!File.Exists(caminhoScsss))
                     {
-                        dte.AbrirArquivo(caminhoEstilo);
+                        this.AdicionarAcaoParaCriarEstilo(dte, caminhoArquivoAtual, caminhoScsss);
+
+                        return;
+                    }
+                    if (File.Exists(caminhoScsss))
+                    {
+                        dte.AbrirArquivo(caminhoScsss);
                     }
                 }
             }
+        }
+
+        private void AdicionarAcaoParaCriarEstilo(DTE2 dte, string caminhoArquivoAtual, string caminhoScss)
+        {
+            var nomeArquivoScss = Path.GetFileName(caminhoScss);
+            LogVSUtil.Alerta($"Arquivo {nomeArquivoScss} SCSS não existe");
+            LogVSUtil.LogAcaoLink($"Clique aqui para adicionar {nomeArquivoScss}", (Action)(() =>
+            {
+                _ = this.AdicioanrArquivoAsync(caminhoArquivoAtual, caminhoScss);
+            }));
+
+        }
+
+        private async Task AdicioanrArquivoAsync(string caminhoArquivoAtual,
+                                                 string caminhoScss)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (File.Exists(caminhoScss))
+            {
+                return;
+            }
+            ArquivoUtil.CriarArquivoTexto(caminhoScss);
+            var dte = await DteEx.GetDTEAsync();
+            var caminhoLayout = ArquivoControleUtil.RetornarCaminhoShtml(caminhoArquivoAtual);
+            var projetoItem = dte.Solution.FindProjectItem(caminhoLayout);
+            if (projetoItem == null)
+            {
+                LogVSUtil.LogErro($"Não foi encontrado o arquivo do layout {Path.GetFileName(caminhoScss)}");
+                return;
+            }
+            await GerenciadorProjetos.Instancia.AdicionarArquivoAsync(projetoItem.ProjectItems, caminhoScss);
         }
     }
 }

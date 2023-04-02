@@ -35,6 +35,11 @@ namespace Snebur.VisualStudio
             return 3;
         }
 
+        public static string RetornarCaminhoShtml(string caminhoArquivo)
+        {
+            return RetornarCaminhoShtml(new FileInfo(caminhoArquivo));
+        }
+
         public static string RetornarCaminhoShtml(FileInfo arquivo)
         {
             if (!IsArquivoControle(arquivo))

@@ -69,7 +69,7 @@
 
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" IsEnabled="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="135*"/>
                 <ColumnDefinition Width="219*"/>
@@ -77,7 +77,9 @@
                 <ColumnDefinition Width="180*"/>
             </Grid.ColumnDefinitions>
 
-            <ScrollViewer x:Name="ScrollLog" HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="4">
+            <ScrollViewer x:Name="ScrollLog"
+                          HorizontalScrollBarVisibility="Visible" 
+                          VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="4">
 
                 <ItemsControl 
                           Margin="5" ItemsSource="{Binding Logs}"  
@@ -96,13 +98,17 @@
                             <TextBox FontSize="13" FontFamily="Lucida Console" 
                                      Margin="{Binding Margem}" 
                                      TextDecorations="{Binding TextoDecoracao}"
-                                     Cursor="{Binding Cursor}" MouseLeftButtonDown="Link_Click" 
+                                     Cursor="{Binding Cursor}"
+                                     
+                                     MouseLeftButtonDown="Link_Click" 
+                                     MouseDoubleClick="Link_Click"
                                      TextWrapping="NoWrap"
                                      Text="{Binding Mensagem, Mode=OneWay}" Foreground="{Binding BrushColor}"
                                      IsReadOnly="True"
                                      BorderThickness="0"
                                      Background="Transparent"
-                                     BorderBrush="Transparent">
+                                     BorderBrush="Transparent"
+                                     IsEnabled="True" >
 
                             </TextBox>
                         </DataTemplate>

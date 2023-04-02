@@ -111,12 +111,14 @@ namespace Snebur.VisualStudio.Reflexao
             {
                 return $"{ReflexaoUtil.RetornarTipoSemNullable(tipo).Name} | null";
             }
+
             if (!tipo.IsEnum && ReflexaoUtil.TipoRetornaTipoPrimario(ReflexaoUtil.RetornarTipoSemNullable(tipo)))
             {
 
                 return TipoUtil.RetornarNomeTipoPrimarioTypeScript(tipo);
             }
-            else if (ReflexaoUtil.TipoRetornaColecao(tipo) && !tipo.IsInterface)
+
+            if (ReflexaoUtil.TipoRetornaColecao(tipo))
             {
                 var tipoItemLista = ReflexaoUtil.RetornarTipoGenericoColecao(tipo);
                 if (tipo.IsGenericType)
@@ -132,11 +134,14 @@ namespace Snebur.VisualStudio.Reflexao
                     {
                         return String.Format("ListaEntidades<{0}>", RetornarCaminhoTipoTS(tipoItemLista));
                     }
-                    else if (tipoDefinicacao == typeof(List<>))
+
+                    if (tipoDefinicacao == typeof(List<>) ||
+                        tipoDefinicacao == typeof(IEnumerable<>))
                     {
                         return String.Format("Array<{0}>", RetornarCaminhoTipoTS(tipoItemLista));
                     }
-                    else if (tipoDefinicacao == typeof(Dictionary<,>))
+
+                    if (tipoDefinicacao == typeof(Dictionary<,>))
                     {
                         var tipoDaChave = tipo.GetGenericArguments().First();
                         if (tipoDaChave != typeof(string))
@@ -156,65 +161,63 @@ namespace Snebur.VisualStudio.Reflexao
                         }
 
                     }
-                    else if (tipoDefinicacao == typeof(HashSet<>))
+
+                    if (tipoDefinicacao == typeof(HashSet<>))
                     {
                         return String.Format("HashSet<{0}>", TipoUtil.RetornarCaminhoTipoTS(tipoItemLista));
                     }
-                    else
-                    {
-                        throw new ErroNaoSuportado("O tipo da coleção  não é suportado");
-                    }
+
+                    throw new ErroNaoSuportado("O tipo da coleção  não é suportado");
+
                 }
-                else
-                {
-                    return String.Format("Array<{0}>", TipoUtil.RetornarCaminhoTipoTS(tipoItemLista));
-                }
+
+                return String.Format("Array<{0}>", TipoUtil.RetornarCaminhoTipoTS(tipoItemLista));
+
             }
-            else
+
+            if (tipo.Namespace != null && tipo.Namespace.StartsWith("System"))
             {
-                if (tipo.Namespace != null && tipo.Namespace.StartsWith("System"))
+                if (tipo == typeof(object))
                 {
-                    if (tipo == typeof(object))
-                    {
-                        return "any";
-                    }
-
-                    if (tipo.Name == "Void")
-                    {
-                        return "void";
-                    }
-
-                    if (tipo == typeof(System.IO.FileInfo))
-                    {
-                        return "SnBlob";
-                    }
-
-                    if (tipo == typeof(Type))
-                    {
-                        return "r.BaseTipo | string";
-                    }
-
-                    if (tipo == typeof(PropertyInfo))
-                    {
-                        return "r.Propriedade | string";
-                    }
-
-                    if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ValidationAttribute)))
-                    {
-                        return AjudanteAssembly.NOME_TIPO_BASE_ATRIBUTO_VALIDACAO;
-                    }
-                    else if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ForeignKeyAttribute)) ||
-                             TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ScaffoldColumnAttribute)))
-                    {
-                        return AjudanteAssembly.NomeTipoBaseAtributoDominio;
-                    }
-                    else
-                    {
-                        throw new NotImplementedException(tipo.Name);
-                    }
+                    return "any";
                 }
-                return tipo.Name;
+
+                if (tipo.Name == "Void")
+                {
+                    return "void";
+                }
+
+                if (tipo == typeof(System.IO.FileInfo))
+                {
+                    return "SnBlob";
+                }
+
+                if (tipo == typeof(Type))
+                {
+                    return "r.BaseTipo | string";
+                }
+
+                if (tipo == typeof(PropertyInfo))
+                {
+                    return "r.Propriedade | string";
+                }
+
+                if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ValidationAttribute)))
+                {
+                    return AjudanteAssembly.NOME_TIPO_BASE_ATRIBUTO_VALIDACAO;
+                }
+
+                if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ForeignKeyAttribute)) ||
+                         TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ScaffoldColumnAttribute)))
+                {
+                    return AjudanteAssembly.NomeTipoBaseAtributoDominio;
+                }
+
+                throw new NotImplementedException(tipo.Name);
+
             }
+            return tipo.Name;
+
         }
 
         public static List<Type> IgnorarAtributo(List<Type> tipos, string nomeAtributo)
@@ -316,37 +319,36 @@ namespace Snebur.VisualStudio.Reflexao
             {
                 return String.Empty;
             }
-            else if (ReflexaoUtil.TipoRetornaColecao(tipo))
+
+            if (ReflexaoUtil.TipoRetornaColecao(tipo))
             {
                 return String.Empty;
 
             }
-            else
-            {
-                if (tipo.Namespace.StartsWith("System"))
-                {
-                    if (tipo == typeof(object) ||
-                        tipo == typeof(System.IO.FileInfo) ||
-                        tipo == typeof(Type) ||
-                        tipo == typeof(PropertyInfo) ||
-                        tipo.Name == "Void")
-                    {
-                        return String.Empty;
-                    }
 
-                    if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ValidationAttribute)) ||
-                        TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ForeignKeyAttribute)) ||
-                        TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ScaffoldColumnAttribute)))
-                    {
-                        return "Snebur.Dominio.Atributos";
-                    }
-                    else
-                    {
-                        throw new Exception($"O tipo {tipo.Namespace}.{tipo.Name} não é suportado pelo domínio");
-                    }
+            if (tipo.Namespace.StartsWith("System"))
+            {
+                if (tipo == typeof(object) ||
+                    tipo == typeof(System.IO.FileInfo) ||
+                    tipo == typeof(Type) ||
+                    tipo == typeof(PropertyInfo) ||
+                    tipo.Name == "Void")
+                {
+                    return String.Empty;
                 }
-                return tipo.Namespace;
+
+                if (TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ValidationAttribute)) ||
+                    TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ForeignKeyAttribute)) ||
+                    TipoUtil.TipoIgualOuSubTipo(tipo, typeof(ScaffoldColumnAttribute)))
+                {
+                    return "Snebur.Dominio.Atributos";
+                }
+                else
+                {
+                    throw new Exception($"O tipo {tipo.Namespace}.{tipo.Name} não é suportado pelo domínio");
+                }
             }
+            return tipo.Namespace;
         }
 
         public static string RetornarCaminhoTipoTS(Type tipo, bool isPromise)

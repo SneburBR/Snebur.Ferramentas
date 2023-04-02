@@ -39,6 +39,7 @@ namespace Snebur.VisualStudio
             await this.OcuparAsync();
             this.TxtTitulo.Text = "Snebur v." + this.GetType().Assembly.GetName().Version.ToString();
             LogUtil.CriarEspacoSneburVisualizadorEventos();
+            
             await GerenciadorProjetos.Instancia.AnalisarNecessidadeServicoDepuracaoAsync();
             await this.AtualizarEstadoServicoDepuracaoAsync();
             await this.DesocuparAsync();

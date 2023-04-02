@@ -39,7 +39,7 @@ namespace Snebur.VisualStudio
 
         public HashSet<string> CaminhosTipoClassBase { get; private set; } = new HashSet<string>();
         public HashSet<string> NomesTipoClassBase { get; private set; } = new HashSet<string>();
-        public HashSet<string> TodosArquivos { get;  set; }
+        //public HashSet<string> TodosArquivos2 { get;  set; }
 
         public Dictionary<string, int> ProjetosPrioridade { get; set; } = new Dictionary<string, int>();
         public Dictionary<string, string> Dependencias => this.ConfiguracaoProjeto?.Depedencias;
@@ -644,13 +644,13 @@ namespace Snebur.VisualStudio
             this.NomesTipoClassBase?.Clear();
             this.ArquivosTypeScript?.Clear();
             this.ArquivosTypeScriptOrdenados?.Clear();
-            this.TodosArquivos?.Clear();
+            //this.TodosArquivos2?.Clear();
 
             this.ArquivosTS = null;
             this.NomesTipoClassBase = null;
             this.ArquivosTypeScript = null;
             this.ArquivosTypeScriptOrdenados = null;
-            this.TodosArquivos = null;
+            //this.TodosArquivos2 = null;
         }
          
         public override void InscrementarVersao()
