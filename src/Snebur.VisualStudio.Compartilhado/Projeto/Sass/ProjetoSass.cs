@@ -140,7 +140,7 @@ namespace Snebur.VisualStudio
             var parcial = linha.Substring(linha.IndexOf(procurarhref) + procurarhref.Length);
             var aspa = parcial[0];
             parcial = parcial.Substring(1);
-            var caminho = parcial.Substring(0, parcial.IndexOf(aspa));
+            var caminho = parcial.Substring(0, Math.Max( parcial.IndexOf(aspa), 0));
             if (Uri.TryCreate(caminho, UriKind.RelativeOrAbsolute, out Uri url))
             {
                 caminho = url.IsAbsoluteUri ? url.AbsolutePath : caminho;

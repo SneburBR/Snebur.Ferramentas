@@ -19,7 +19,6 @@ namespace Snebur.VisualStudio
         public PropertyInfo Propriedade { get; set; }
 
         public string NomePropriedade { get; set; }
-
         public string ValorPropriedade { get; set; }
         public bool IsPossuiValorPadraoCampoPrivado { get; }
         public bool Abstrata { get; set; }

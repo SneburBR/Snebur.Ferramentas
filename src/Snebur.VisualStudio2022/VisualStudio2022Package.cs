@@ -1,22 +1,21 @@
 ﻿global using Microsoft.VisualStudio.Shell;
 global using System;
- 
 //global using ProjectTK = Community.VisualStudio.Toolkit.Project;
 //global using Project = EnvDTE.Project;
 global using Task = System.Threading.Tasks.Task;
-
 using Community.VisualStudio.Toolkit;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
+using Snebur.Utilidade;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Snebur.Utilidade;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.Collections.Generic;
 
 namespace Snebur.VisualStudio
 {
+
+
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
     [ProvideOptionPage(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true, 0, ProvidesLocalizedCategoryName = false)]
@@ -32,6 +31,8 @@ namespace Snebur.VisualStudio
     [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.guidSneburVisualStudio2022String)]
+
+
     public sealed class SneburVisualStudio2022Package : ToolkitPackage
     {
         public static bool IsVsixInialized { get; private set; }

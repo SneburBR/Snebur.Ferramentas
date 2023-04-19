@@ -21,7 +21,7 @@ namespace Snebur.VisualStudio
             this.InitializeComponent();
             this.DataContext = this;
             this.Loaded += this.Janela_Loaded;
-         }
+        }
 
         private bool _isInicializado;
         public void Janela_Loaded(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ namespace Snebur.VisualStudio
             await this.OcuparAsync();
             this.TxtTitulo.Text = "Snebur v." + this.GetType().Assembly.GetName().Version.ToString();
             LogUtil.CriarEspacoSneburVisualizadorEventos();
-            
+
             await GerenciadorProjetos.Instancia.AnalisarNecessidadeServicoDepuracaoAsync();
             await this.AtualizarEstadoServicoDepuracaoAsync();
             await this.DesocuparAsync();
@@ -77,7 +77,7 @@ namespace Snebur.VisualStudio
                 await this.DesocuparAsync();
             }
         }
-         
+
 
         private void BtnReiniciarGerenciadorProjetosTS_Click(object sender, RoutedEventArgs e)
         {
@@ -136,71 +136,23 @@ namespace Snebur.VisualStudio
             }
         }
 
-        //private void BtnFormatarStringFormat_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        LogVSUtil.Logs?.Clear();
-        //        this.FormatarNovoStringFormat();
-        //    }
-        //    catch (Exception erro)
-        //    {
-        //        LogVSUtil.LogErro(erro);
-        //    }
-        //    this.Dispatcher.VerifyAccess();
-        //}
+        private   void BtnFormatarStringFormat_Click(object sender, RoutedEventArgs e)
+        {
+            _ = this.FormatarStringFormatAsync();
+        }
 
-        //private void FormatarNovoStringFormat()
-        //{
-        //    this.Dispatcher.VerifyAccess();
-
-        //    var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-        //    var documento = dte.ActiveDocument;
-
-        //    if (documento != null)
-        //    {
-        //        var nomeArquivo = documento.Name;
-        //        var fi = new FileInfo(documento.FullName);
-
-        //        if (FormatarDocumentoUtil.ExtensoesSuportadas.Contains(fi.Extension))
-        //        {
-        //            if (documento.Selection is TextSelection selecao)
-        //            {
-        //                var posicao = selecao.TopPoint;
-        //                var posicaoLinha = selecao.TopPoint.Line;
-        //                var posicaoColuna = selecao.TopPoint.LineCharOffset;
-
-        //                selecao.SelectAll();
-
-        //                var conteudo = selecao.Text;
-        //                var isCsharp = fi.Extension.ToLower() == ".cs";
-
-        //                var objSubstituir = new SubstituicaoNovoStringFormatTS(conteudo, isCsharp);
-        //                var conteudoFormatado = objSubstituir.RetornarConteudo();
-
-        //                //selecao.SelectAll();
-        //                var totalLinhas = conteudoFormatado.TotalLinhas();
-        //                if ((totalLinhas - 1) < posicaoLinha)
-        //                {
-        //                    posicaoLinha = totalLinhas - 1;
-        //                }
-        //                selecao.Delete();
-        //                selecao.Insert(conteudoFormatado);
-        //                selecao.Collapse();
-
-        //                selecao.MoveToLineAndOffset(posicaoLinha, posicaoColuna, true);
-        //                selecao.Collapse();
-
-
-        //                if (conteudoFormatado.Contains(SubstituicaoNovoStringFormatTS.PESQUISAR))
-        //                {
-        //                    selecao.FindText(SubstituicaoNovoStringFormatTS.PESQUISAR);
-        //                    selecao.SelectLine();
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        private async Task FormatarStringFormatAsync()
+        {
+            try
+            {
+                LogVSUtil.Logs?.Clear();
+                await TsNewStringFormatUtil.FormatarNovoStringFormatAsync();
+            }
+            catch (Exception erro)
+            {
+                LogVSUtil.LogErro(erro);
+            }
+        }
 
         private async void BtnHtmlIntellisense_Click(object sender, RoutedEventArgs e)
         {
@@ -262,6 +214,6 @@ namespace Snebur.VisualStudio
             this.Cursor = Cursors.Arrow;
             this.IsOcupado = false;
         }
-    }
 
+    }
 }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Snebur.VisualStudio2022.Rubens Cordeiro.32ce5bbe-ac29-4dbe-8db0-d9e684995904" Version="23.3.30.1715" Language="en-US" Publisher="Rubens Cordeiro" />
+    <Identity Id="Snebur.VisualStudio2022.Rubens Cordeiro.32ce5bbe-ac29-4dbe-8db0-d9e684995904" Version="23.4.12.182" Language="en-US" Publisher="Rubens Cordeiro" />
     <DisplayName>Snebur.VisualStudio2022</DisplayName>
     <Description xml:space="preserve">Snebur extensão </Description>
     <Icon>Resources\Icon.png</Icon>

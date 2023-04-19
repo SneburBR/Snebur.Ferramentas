@@ -630,6 +630,7 @@ namespace Snebur.VisualStudio.Commands
                         { "sn-click-async", new AtributoArgumento("sn-click-async", "ui.UIEventArgs", true) },
 
                         { "sn-item-click", new AtributoArgumento("sn-click", "ui.UIEventArgs") },
+                        { "sn-valor-modificando", new AtributoArgumento("sn-valor-modificando", "ui.UIValorAlteradoEventArgs") },
                         { "sn-valor-alterado", new AtributoArgumento("sn-valor-alterado", "ui.UIValorAlteradoEventArgs") },
                         { "sn-selecionar-arquivos", new AtributoArgumento("sn-selecionar-arquivo", "ui.SelecionarArquivosEventoArgs") },
                         { "sn-item-selecionado-alterado", new AtributoArgumento("sn-item-selecionado-alterado", "ui.UIValorAlteradoEventArgs") },

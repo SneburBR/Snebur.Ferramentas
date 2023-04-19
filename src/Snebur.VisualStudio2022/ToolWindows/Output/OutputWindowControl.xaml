@@ -38,13 +38,13 @@
                         Click="BtnHtmlIntellisense_Click" Width="100" 
                         Margin="5 0 0 0"/>
 
-                <!--<Button x:Name="BtnNovoString" 
+                <Button x:Name="BtnNovoString" 
                         Content="Str.Format" 
                         Width="100"
                         Click="BtnFormatarStringFormat_Click" 
-                        Margin="5 0 0 0" />-->
+                        Margin="5 0 0 0" />
 
-                <Button x:Name="BtnNovoString" 
+                <Button x:Name="BtnDeletarBinAndObj" 
                         Content="Delete bin e obj" 
                         Width="100"
                         Click="BtnDeletarBinAndObj_Click" 

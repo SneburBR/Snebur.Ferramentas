@@ -48,21 +48,22 @@ namespace Snebur.VisualStudio
         {
             if (!this.IsPropriedadeInterace)
             {
-                return String.Format("{0}private {1} : {2} = {3};", tabInicial, this.NomePriprieadePrivada, this.CaminhoTipo, this.ValorPropriedade);
+                return$"{tabInicial}private {this.NomePriprieadePrivada} : {this.CaminhoTipo} = {this.ValorPropriedade};";
             }
             return String.Empty;
         }
 
         public override List<string> RetornarLinhasTypeScript(string tabInicial)
         {
-            var linhas = new List<string>();
-
-            linhas.Add(String.Format("{0}public get {1}(): {2} ", tabInicial, this.NomePropriedade, this.CaminhoTipo));
-            linhas.Add(String.Format("{0}{{", tabInicial));
+            var linhas = new List<string>
+            {
+                $"{tabInicial}public get {this.NomePropriedade}(): {this.CaminhoTipo} ",
+                $"{tabInicial}{{"
+            };
 
             if (this.IsPropriedadeInterace)
             {
-                linhas.Add(String.Format("{0}{1}return this.{2} as any;", tabInicial, TAB, this.NomeVariavelPrivada));
+                linhas.Add($"{tabInicial}{TAB}return this.{this.NomeVariavelPrivada} as any;");
             }
             else
             {
