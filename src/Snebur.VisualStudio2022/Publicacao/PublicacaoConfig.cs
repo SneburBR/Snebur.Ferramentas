@@ -9,7 +9,7 @@
         public string NomePastaBuild { get; set; }
         public bool IsCriarPastaVersao { get; set; }
         public string[] Builds { get; set; }
-        public BuildjsOptions BuildJsOptions { get; set; }
+        public BuildJsOptions BuildJsOptions { get; set; }
         public string[] ArquivosWeb { get; set; }
         public string[] ArquivosBin { get; set; }
         public string ExecutarProcessoDepois { get; set; }

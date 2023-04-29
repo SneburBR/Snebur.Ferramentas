@@ -32,10 +32,10 @@ namespace Snebur.VisualStudio
             return Instance.OcuparAsync();
         }
 
-        internal static Task AtualizarEstadoServicoDepuracaoAsync()
+        internal static Task AtualizarStatusServicoDepuracaoAsync()
         {
             if (Instance == null) return Task.CompletedTask;
-            return Instance.AtualizarEstadoServicoDepuracaoAsync();
+            return Instance.AtualizarStatusServicoDepuracaoAsync();
         }
 
         internal static Task DesocuparAsync()

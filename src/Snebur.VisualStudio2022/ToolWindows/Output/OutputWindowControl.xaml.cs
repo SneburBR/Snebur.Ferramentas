@@ -41,7 +41,7 @@ namespace Snebur.VisualStudio
             LogUtil.CriarEspacoSneburVisualizadorEventos();
 
             await GerenciadorProjetos.Instancia.AnalisarNecessidadeServicoDepuracaoAsync();
-            await this.AtualizarEstadoServicoDepuracaoAsync();
+            await this.AtualizarStatusServicoDepuracaoAsync();
             await this.DesocuparAsync();
             this._isInicializado = true;
             LogVSUtil.Log("Extensão inicializada");
@@ -98,7 +98,7 @@ namespace Snebur.VisualStudio
         private async void BtnIniciarPararServicoDepuracao_Click(object sender, RoutedEventArgs e)
         {
             this.BtnIniciarPararServicoDepuracao.IsEnabled = false;
-            if (GerenciadorProjetos.EstadoServicoDepuracao == EnumEstadoServicoDepuracao.Ativo)
+            if (GerenciadorProjetos.StatusServicoDepuracao == EnumStatusServicoDepuracao.Ativo)
             {
                 GerenciadorProjetos.Instancia.PararServicoDepuracao();
             }
@@ -110,11 +110,11 @@ namespace Snebur.VisualStudio
         }
 
 
-        public async Task AtualizarEstadoServicoDepuracaoAsync()
+        public async Task AtualizarStatusServicoDepuracaoAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            if (GerenciadorProjetos.EstadoServicoDepuracao == EnumEstadoServicoDepuracao.Ativo)
+            if (GerenciadorProjetos.StatusServicoDepuracao == EnumStatusServicoDepuracao.Ativo)
             {
                 this.TxtPortaDepuracao.Text = $"Depuração porta: {this.PortaDepuracao}";
                 this.BtnIniciarPararServicoDepuracao.Content = "Parar depuração";

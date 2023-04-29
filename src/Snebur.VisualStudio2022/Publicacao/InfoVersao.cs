@@ -9,6 +9,7 @@
         public bool IsCompactado { get; set; }
         public bool IsEncapsulado { get; set; }
         public bool IsTeste { get; set; }
+        public bool IsLibZipAsync { get; set; }
     }
 
 }

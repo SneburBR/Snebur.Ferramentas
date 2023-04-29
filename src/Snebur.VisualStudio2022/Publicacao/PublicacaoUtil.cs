@@ -172,7 +172,8 @@ namespace Snebur.VisualStudio
                 NomePastaBuild = infoPublicacao.NomePastaBuild,
                 IsCompactado = infoPublicacao.BuildJsOptions.IsZipar,
                 IsEncapsulado = infoPublicacao.BuildJsOptions.IsEncapsular,
-                IsTeste = infoPublicacao.BuildJsOptions.IsTeste
+                IsTeste = infoPublicacao.BuildJsOptions.IsTeste,
+                IsLibZipAsync = infoPublicacao.BuildJsOptions.IsLibZipAsync
             };
             var json = JsonUtil.SerializarJsonCamelCase(infoVersion);
             var prefixoLastVersion = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ? String.Empty :

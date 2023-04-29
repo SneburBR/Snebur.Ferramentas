@@ -52,7 +52,8 @@
         "isUnir": { "type": "boolean" },
         "isEncapsular": { "type": "boolean" },
         "isZipar": { "type": "boolean" },
-        "isTeste": { "type": "boolean" }
+        "isTeste": { "type": "boolean" },
+        "isLibZipAsync": { "type": "boolean" }
       },
       "required": [ "nomeArquivo" ]
     }

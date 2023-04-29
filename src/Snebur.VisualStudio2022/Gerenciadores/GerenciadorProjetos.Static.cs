@@ -62,7 +62,7 @@ namespace Snebur.VisualStudio
  
 
 
-        public static EnumEstadoServicoDepuracao EstadoServicoDepuracao => GerenciadorProjetos.Instancia?._servicoDepuracao?.Estado ?? EnumEstadoServicoDepuracao.Parado;
+        public static EnumStatusServicoDepuracao StatusServicoDepuracao => GerenciadorProjetos.Instancia?._servicoDepuracao?.Status ?? EnumStatusServicoDepuracao.Parado;
 
 
         

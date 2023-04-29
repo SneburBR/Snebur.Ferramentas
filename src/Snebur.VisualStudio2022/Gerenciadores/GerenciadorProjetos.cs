@@ -180,7 +180,7 @@ namespace Snebur.VisualStudio
 
         public async Task IniciarServicoDepuracaoAsync()
         {
-            if (this._servicoDepuracao.Estado != EnumEstadoServicoDepuracao.Ativo)
+            if (this._servicoDepuracao.Status != EnumStatusServicoDepuracao.Ativo)
             {
                 await this._servicoDepuracao.IniciarAsync();
             }

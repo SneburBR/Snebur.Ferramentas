@@ -25,7 +25,7 @@ namespace Snebur.VisualStudio
 
         private ConcurrentDictionary<string, SessaoConectada> SessoesConectada { get; } = new ConcurrentDictionary<string, SessaoConectada>();
 
-        public EnumEstadoServicoDepuracao Estado { get; set; }
+        public EnumStatusServicoDepuracao Status { get; set; }
 
         public ServicoDepuracao()
         {
@@ -45,7 +45,7 @@ namespace Snebur.VisualStudio
 
                 LogVSUtil.Log($"Iniciando servidor de WebSocket: Porta {this.Porta}");
 
-                if (this.ServidorWebSocket != null && this.Estado == EnumEstadoServicoDepuracao.Ativo)
+                if (this.ServidorWebSocket != null && this.Status == EnumStatusServicoDepuracao.Ativo)
                 {
                     LogVSUtil.LogErro("O servidor de web socket já está ativo");
                     return;
@@ -62,11 +62,11 @@ namespace Snebur.VisualStudio
                 };
                 servicoWebSocket.Inicializar();
                 this.ServidorWebSocket = servicoWebSocket;
-                this.Estado = EnumEstadoServicoDepuracao.Ativo;
+                this.Status = EnumStatusServicoDepuracao.Ativo;
                 await this.SalvarPortaAsync();
                 LogVSUtil.Sucesso($"Serviço de depuração inicializado: Porta {this.Porta}", null);
 
-                await OutputWindow.AtualizarEstadoServicoDepuracaoAsync();
+                await OutputWindow.AtualizarStatusServicoDepuracaoAsync();
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace Snebur.VisualStudio
                 this.ServidorWebSocket = null;
                 LogVSUtil.LogErro($"Não possível iniciar o servidor web socket na porta {this.Porta}, o serviço deve está ativo em outra instancia do visual studio");
                 LogVSUtil.LogErro($"Erro: {ex.Message}");
-                this.Estado = EnumEstadoServicoDepuracao.Parado;
+                this.Status = EnumStatusServicoDepuracao.Parado;
                 this.Porta += 1;
 
             }
@@ -159,7 +159,7 @@ namespace Snebur.VisualStudio
 
             return Task.Run(() =>
             {
-                if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
+                if (this.Status == EnumStatusServicoDepuracao.Ativo)
                 {
                     var caminhoTSConfig = Path.Combine(caminhoProjeto, "tsconfig.json");
                     if (File.Exists(caminhoTSConfig))
@@ -205,7 +205,7 @@ namespace Snebur.VisualStudio
 
         internal void EnviarMensagemParaTodos(Mensagem mensagem)
         {
-            if (this.Estado == EnumEstadoServicoDepuracao.Ativo)
+            if (this.Status == EnumStatusServicoDepuracao.Ativo)
             {
                 var conexoes = this.SessoesConectada.Values.ToList<SessaoConectada>();
                 if (conexoes.Count == 0)
@@ -251,7 +251,7 @@ namespace Snebur.VisualStudio
             this.ServidorWebSocket?.Parar();
             this.ServidorWebSocket?.Dispose();
             this.ServidorWebSocket = null;
-            this.Estado = EnumEstadoServicoDepuracao.Parado;
+            this.Status = EnumStatusServicoDepuracao.Parado;
         }
 
         //internal void Reiniciar()
@@ -316,7 +316,7 @@ namespace Snebur.VisualStudio
         }
     }
 
-    public enum EnumEstadoServicoDepuracao
+    public enum EnumStatusServicoDepuracao
     {
         Ativo = 1,
         Parado = 2,
