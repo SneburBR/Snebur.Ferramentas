@@ -237,9 +237,11 @@ namespace Snebur.VisualStudio
                 }
 
                 this._isAtualizando = true;
+                await SolutionUtil.DefinirProjetosInicializacaoAsync();
                 var projetosVS = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
                 //ProjetoUtil.RetornarProjetosVisualStudioAsync();
 
+               
                 foreach (var projetoVS in projetosVS)
                 {
                     try
@@ -296,8 +298,6 @@ namespace Snebur.VisualStudio
 
         protected async Task AtualizarProjetoTypescriptAsync(Project projetoVS)
         {
-
-
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var arquivoProjeto = new FileInfo(projetoVS.FullPath);

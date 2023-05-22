@@ -146,7 +146,10 @@ namespace Snebur.VisualStudio
         private ConfiguracaoProjetoTypeScript RetornarConfiguracaoProjetoTypescript()
         {
             var arquivosTypescript = this.ArquivosTypeScriptOrdenados.Select(x => @x.Arquivo.FullName).ToList();
-            var caminhoJavasriptSaida = CaminhoUtil.RetornarCaminhoRelativo(new FileInfo(this.CaminhoSaidaPadrao), this.CaminhoProjeto);
+            //var caminhoJavasriptSaida = CaminhoUtil.RetornarCaminhoRelativo(new FileInfo(this.CaminhoSaidaPadrao), 
+            //                                                                this.CaminhoProjeto);
+
+            var caminhoJavasriptSaida = this.CaminhoSaidaAtual;
             var configuracaoProjetoAtual = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(this.CaminhoConfiguracao);
 
             caminhoJavasriptSaida = this.NormalizarCaminhos(caminhoJavasriptSaida, 
