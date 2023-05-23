@@ -1,10 +1,12 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Snebur.Linq;
+using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Snebur.VisualStudio.ConstantesProjeto;
 
 namespace Snebur.VisualStudio
@@ -252,7 +254,15 @@ namespace Snebur.VisualStudio
             if (encoding != null &&
                 encoding.EncodingName != Encoding.UTF8.EncodingName)
             {
+                var caminho = CaminhoUtil.NormalizarCaminho(documentoView.FilePath, EnumTipoCaminho.CaminhoWindows);
+                var reg = new Regex(@"[\\github\\clones\\|\\github\\forks\\]", RegexOptions.IgnoreCase);
+                if (reg.IsMatch(caminho))
+                {
+                    return;
+                }
+                 
                 LogVSUtil.Alerta($"Alterando encoding do arquivo {Path.GetFileName(documentoView.FilePath)} de {encoding?.EncodingName} para UTF-8");
+
                 documentoView.Document.Encoding = Encoding.UTF8;
                 documentoView.Document.Save();
             }

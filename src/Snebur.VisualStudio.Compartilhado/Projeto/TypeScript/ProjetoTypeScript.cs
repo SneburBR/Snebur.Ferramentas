@@ -223,9 +223,6 @@ namespace Snebur.VisualStudio
                 arquivosTypescript.Insert(0, caminhoFinal);
                 scriptsDepedentes.Add(nomeArquivo);
             }
-
-
-
         }
 
         #region " Métodos "
