@@ -40,7 +40,7 @@ namespace Snebur.VisualStudio
             if (!tipo.IsAbstract  && TipoUtil.TipoImplementaInterface(tipo, AjudanteAssembly.TipoInterfaceIImagem))
             {
                 parametrosConstrutor.Add(new EstruturaParametroConstrutor("arquivo", typeof(FileInfo), false, false));
-                parametrosConstrutor.Add(new EstruturaParametroConstrutor("informacaoImagem", "IInformacaoImagem", false, false));
+                parametrosConstrutor.Add(new EstruturaParametroConstrutor("informacaoImagem", "IInformacaoImagem", true, false));
             }
             return parametrosConstrutor;
         }

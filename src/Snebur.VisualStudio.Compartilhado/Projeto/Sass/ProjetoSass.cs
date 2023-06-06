@@ -347,7 +347,7 @@ namespace Snebur.VisualStudio
         public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
-            var configuracoes = JsonUtil.Deserializar<List<ConfiguracaoProjetoSass>>(json).
+            var configuracoes = JsonUtil.Deserializar<List<ConfiguracaoProjetoSass>>(json, EnumTipoSerializacao.Javascript).
                                  Where(x => Path.GetExtension(x.inputFile) == ".scss").ToList();
 
             if (configuracoes.Count == 0)

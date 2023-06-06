@@ -9,7 +9,7 @@ namespace Snebur.VisualStudio
         public static ConfiguracaoProjetoRegrasNegocio RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
-            return JsonUtil.Deserializar<ConfiguracaoProjetoRegrasNegocio>(json);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoRegrasNegocio>(json, EnumTipoSerializacao.Javascript);
         }
 
     }

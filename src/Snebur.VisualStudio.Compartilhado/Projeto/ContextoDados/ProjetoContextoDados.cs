@@ -230,7 +230,7 @@ namespace Snebur.VisualStudio
         public static ConfiguracaoProjetoContextoDados RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
-            return JsonUtil.Deserializar<ConfiguracaoProjetoContextoDados>(json, true);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoContextoDados>(json, EnumTipoSerializacao.Javascript);
         }
 
         private int RetornarPosicaoInicioConsulta(string caminhoArquivo, List<string> linhas)

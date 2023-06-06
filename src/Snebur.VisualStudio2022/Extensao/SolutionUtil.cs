@@ -31,7 +31,7 @@ namespace Snebur.VisualStudio
                 {
                     try
                     {
-                        var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(caminhoTS));
+                        var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
                         GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(configuracaoTypescript);
                         if (configuracaoTypescript.IsDebugScriptsDepedentes)
                         {

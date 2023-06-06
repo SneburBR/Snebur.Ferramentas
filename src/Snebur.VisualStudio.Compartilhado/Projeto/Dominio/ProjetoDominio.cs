@@ -40,7 +40,7 @@ namespace Snebur.VisualStudio
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
             var teste = TextoUtil.RemoverAcentos(json);
-            return JsonUtil.Deserializar<ConfiguracaoProjetoDominio>(json, true);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoDominio>(json, EnumTipoSerializacao.Javascript);
         }
 
         protected override void AtualizarInterno()

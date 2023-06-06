@@ -8,8 +8,10 @@ using Snebur.VisualStudio.Utilidade;
 using Snebur.VisualStudio.Reflexao;
 using Snebur.Utilidade;
 using Snebur.Reflexao;
+using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
 
-namespace Snebur.VisualStudio 
+namespace Snebur.VisualStudio
 {
     public class BaseEstrutura
     {
@@ -41,6 +43,7 @@ namespace Snebur.VisualStudio
             {
                 return "null";
             }
+
             var tipo = valor.GetType();
             if (ReflexaoUtil.TipoRetornaColecao(tipo))
             {
@@ -58,12 +61,17 @@ namespace Snebur.VisualStudio
                 return this.RetornarValorTipoPrimario(tipoPrimarioEnum, valor);
             }
 
-            throw new NotSupportedException("RetornarValorTypeScript");
+            var isTipoComplexao = TipoUtil.TipoIgualOuSubTipo(valor.GetType(), typeof(BaseTipoComplexo));
+            if (isTipoComplexao)
+            {
+               return TipoComplexoTypeScriptUtil.RetornarValor(valor);
+            }
+
+            throw new NotSupportedException($"Não foi possível retornar o valor de {valor.GetType().Name} em Typescript em  {this.CaminhoTipo}  - RetornarValorTypeScript");
         }
 
         protected string RetornarValorPadraoTipoPrimario(EnumTipoPrimario tipoPrimarioEnum)
         {
-
             switch (tipoPrimarioEnum)
             {
                 case EnumTipoPrimario.Byte:
@@ -91,8 +99,6 @@ namespace Snebur.VisualStudio
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
-
-
         }
 
         protected string RetornarValorTipoPrimario(EnumTipoPrimario tipoPrimarioEnum, object valor)
@@ -134,8 +140,6 @@ namespace Snebur.VisualStudio
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
-
         }
-
     }
 }

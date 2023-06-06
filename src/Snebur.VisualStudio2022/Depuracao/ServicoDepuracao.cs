@@ -123,7 +123,7 @@ namespace Snebur.VisualStudio
                 {
                     if (this.SessoesConectada.TryGetValue(sessaoContexto.Identificador, out SessaoConectada sessaoConectada))
                     {
-                        var contrato = JsonUtil.Deserializar<Contrato>(contratoSerializado, false);
+                        var contrato = JsonUtil.Deserializar<Contrato>(contratoSerializado, EnumTipoSerializacao.DotNet);
                         var mensagem = contrato.Mensagem;
                         this.ProcessarMensagemRecebida(sessaoConectada, mensagem);
                         LogVSUtil.Log("Mensagem de: " + sessaoContexto.Identificador + "] - " + mensagem.GetType().Name);
@@ -300,7 +300,7 @@ namespace Snebur.VisualStudio
                     LogVSUtil.Log($"Mensagem {mensagem.GetType().Name} para  {this.Sessao.Identificador}");
 
                     var contrato = new Contrato(mensagem);
-                    var constratoSerializado = JsonUtil.Serializar(contrato, true);
+                    var constratoSerializado = JsonUtil.Serializar(contrato, EnumTipoSerializacao.Javascript);
                     this.Sessao.Send(constratoSerializado);
                 }
                 catch (Exception ex)

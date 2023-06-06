@@ -159,7 +159,7 @@ namespace Snebur.VisualStudio
         public static ConfiguracaoProjetoServico RetornarConfiguracao(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
-            return JsonUtil.Deserializar<ConfiguracaoProjetoServico>(json, true);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoServico>(json, EnumTipoSerializacao.Javascript);
         }
 
         protected override void DispensarInerno()

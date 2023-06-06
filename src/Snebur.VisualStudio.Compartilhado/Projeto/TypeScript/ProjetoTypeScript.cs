@@ -374,7 +374,7 @@ namespace Snebur.VisualStudio
         private void SalvarTSConfig(ConfiguracaoProjetoTypeScript tsconfig)
         {
             //var js = new System.Web.Script.Serialization.JavaScriptSerializer();
-            var json = JsonUtil.Serializar(tsconfig, true, true);
+            var json = JsonUtil.Serializar(tsconfig, EnumTipoSerializacao.Javascript, true);
 
             ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
@@ -549,7 +549,7 @@ namespace Snebur.VisualStudio
                 var propriedades = new List<string>();
                 foreach (var atributo in corpo.Attributes)
                 {
-                    var valorSerializado = JsonUtil.Serializar(atributo.Value, true);
+                    var valorSerializado = JsonUtil.Serializar(atributo.Value, EnumTipoSerializacao.Javascript);
                     propriedades.Add($"\"{atributo.Name}\" : {valorSerializado}");
                 }
 

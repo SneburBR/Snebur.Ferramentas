@@ -14,25 +14,24 @@ using System.Windows.Threading;
 
 namespace Snebur.VisualStudio
 {
-
-
+    [Guid(PackageGuids.guidSneburVisualStudio2022String)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
-    [ProvideOptionPage(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true, 0, ProvidesLocalizedCategoryName = false)]
-    [ProvideProfile(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true)]
-    [ProvideToolWindow(typeof(MigrationWindow.Pane), Style = VsDockStyle.Float, Width = 500, Height = 300, Window = WindowGuids.MainWindow)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids80.EmptySolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(OutputWindow.Pane), Style = VsDockStyle.Tabbed, Window = WindowGuids.OutputWindow)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasSingleProject_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionHasMultipleProjects_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.NoSolution_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.EmptySolution_string)]
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionOpening_string)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasSingleProject, PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionHasMultipleProjects, PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(PackageGuids.guidSneburVisualStudio2022String)]
-
-
+    [ProvideOptionPage(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true, 0, ProvidesLocalizedCategoryName = false)]
+    [ProvideProfile(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true)]
+    [ProvideToolWindow(typeof(MigrationWindow.Pane), Style = VsDockStyle.AlwaysFloat, Width = 800, Height = 400)]
     public sealed class SneburVisualStudio2022Package : ToolkitPackage
     {
         public static bool IsVsixInialized { get; private set; }

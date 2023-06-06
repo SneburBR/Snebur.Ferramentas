@@ -27,7 +27,7 @@ namespace Snebur.VisualStudio
         public NormalizarCompilacaoJavascript(ProjetoTypeScript projetoTS)
         {
             this.ProjetoTS = projetoTS;
-            this.ConfiguracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(this.ProjetoTS.CaminhoConfiguracao), true);
+            this.ConfiguracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(this.ProjetoTS.CaminhoConfiguracao), EnumTipoSerializacao.Javascript);
             this.IsNormalizarWhere = !this.ConfiguracaoTypescript.IsIgnorarNormnalizacaoCompilacao;
         }
 

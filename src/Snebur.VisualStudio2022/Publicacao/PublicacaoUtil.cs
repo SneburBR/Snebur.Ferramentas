@@ -268,7 +268,6 @@ namespace Snebur.VisualStudio
             {
                 LogVSUtil.LogErro(erro);
             }
-
         }
 
         //internal static void AtribuirVersaoExtensaoVisualStudio(Version versao, string caminhoProjeto)
@@ -348,7 +347,7 @@ namespace Snebur.VisualStudio
             }
             try
             {
-                return JsonUtil.DeserializaArquivor<PublicacaoConfig>(caminhoInfoPulicacao, Encoding.UTF8);
+                return JsonUtil.DeserializaArquivor<PublicacaoConfig>(caminhoInfoPulicacao, Encoding.UTF8, EnumTipoSerializacao.Javascript);
             }
             catch (Exception ex)
             {

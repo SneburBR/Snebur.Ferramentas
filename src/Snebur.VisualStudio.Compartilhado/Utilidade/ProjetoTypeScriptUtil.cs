@@ -21,7 +21,7 @@ namespace Snebur.VisualStudio
         public static ConfiguracaoProjetoTypeScript RetornarConfiguracaoProjetoTypeScript(string caminhoConfiguracao)
         {
             var json = File.ReadAllText(caminhoConfiguracao, Encoding.UTF8);
-            return JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(json);
+            return JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(json, EnumTipoSerializacao.Javascript);
         }
 
         internal static DateTime? RetornarDataHoraScriptNormalizado(string caminhoScript)
