@@ -16,6 +16,7 @@ namespace Snebur.VisualStudio
                     return $"new d.Cor({tipoComplexo.Red}, {tipoComplexo.Green}, {tipoComplexo.Blue}, {tipoComplexo.AlphaDecimal.ToString(CultureInfo.InvariantCulture)})";
 
                 case nameof(Margem):
+
                     return $"new d.Margem({tipoComplexo.Esquerda?.ToString(CultureInfo.InvariantCulture) ?? "0"}," +
                                          $"{tipoComplexo.Superior?.ToString(CultureInfo.InvariantCulture) ?? "0"}, " +
                                          $"{tipoComplexo.Direita?.ToString(CultureInfo.InvariantCulture) ?? "0"}, " +
@@ -30,16 +31,22 @@ namespace Snebur.VisualStudio
 
                 case nameof(Regiao):
 
-                    return $"new d.Regiao({tipoComplexo.X.ToString(CultureInfo.InvariantCulture)}," +
+                    return $"new d.Regiao({tipoComplexo.X.ToString(CultureInfo.InvariantCulture)}, " +
                                          $"{tipoComplexo.Y.ToString(CultureInfo.InvariantCulture)}, " +
                                          $"{tipoComplexo.Largura.ToString(CultureInfo.InvariantCulture)}, " +
                                          $"{tipoComplexo.Altura.ToString(CultureInfo.InvariantCulture)})";
+
+                case nameof(Borda):
+
+                    return $"new d.Borda(\"{tipoComplexo.CorRgba.ToString(CultureInfo.InvariantCulture)}\", " +
+                                       $"{tipoComplexo.IsInterna.ToString().ToLower()}, " +
+                                       $"{tipoComplexo.Afastamento.ToString(CultureInfo.InvariantCulture)}, " +
+                                       $"{tipoComplexo.Espessura.ToString(CultureInfo.InvariantCulture)}, " +
+                                       $"{tipoComplexo.Arredondamento.ToString(CultureInfo.InvariantCulture)})";
                 default:
 
                     throw new NotImplementedException($"RetornarValor em Typescript do tipo {tipoComplexo.GetType().Name}");
             }
         }
-
-
     }
 }
