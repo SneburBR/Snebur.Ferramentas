@@ -353,7 +353,7 @@ namespace Snebur.VisualStudio.Commands
                 var nome = TextoUtil.RetornarPrimeiraLetraMinusculo(tipoControle.Split('.').Last());
 
                 var selecaoAtual = selecao.Text;
-                var declaracaoMetodo = $"private {nomeMetodo}({nome}: {tipoControle}, e:{atributoArgumento.NomeArgumentoEvento})";
+                var declaracaoMetodo = $"public {nomeMetodo}({nome}: {tipoControle}, e:{atributoArgumento.NomeArgumentoEvento})";
                 var sb = new StringBuilder();
                 sb.AppendLine(selecaoAtual);
                 sb.AppendLine($"\t\t{declaracaoMetodo}");
@@ -373,7 +373,7 @@ namespace Snebur.VisualStudio.Commands
                 {
                     sb.AppendLine("\t\t\tthrow new ErroNaoImplementado(this);");
                 }
-                 
+
                 sb.AppendLine("\t\t}");
                 //sb.AppendLine("");
 
@@ -391,7 +391,7 @@ namespace Snebur.VisualStudio.Commands
         {
             var tagName = outerHTML.Split(' ').First().Substring(1);
             var tipoControle = this.RetornarTipoControle(outerHTML);
-            var declaracao = String.Format("private readonly {0}: {1};", nomeControle, tipoControle);
+            var declaracao = String.Format("public readonly {0}: {1};", nomeControle, tipoControle);
             this.InserirDeclaracao(selecao, declaracao);
         }
 
@@ -399,7 +399,7 @@ namespace Snebur.VisualStudio.Commands
         {
             var tagName = outerHTML.Split(' ').First().Substring(1);
             var tipoElemento = this.RetornarTipoElemento(tagName);
-            var declaracao = String.Format("private readonly {0}: {1};", nomeElemento, tipoElemento);
+            var declaracao = String.Format("public readonly {0}: {1};", nomeElemento, tipoElemento);
             this.InserirDeclaracao(selecao, declaracao);
         }
 
@@ -481,30 +481,38 @@ namespace Snebur.VisualStudio.Commands
 
             if (selecao.FindText("constructor"))
             {
+                var linhaAtual = selecao.CurrentLine;
+
+                selecao.GotoLine(selecao.CurrentLine, true);
+
                 while (!selecao.Text.Contains("{"))
                 {
-                    selecao.LineDown(true);
-                    selecao.SelectLine();
+                    selecao.GotoLine(selecao.CurrentLine + 1, true);
                 }
 
                 while (!selecao.Text.Contains("super("))
                 {
-                    selecao.LineDown(true);
+                    selecao.GotoLine(selecao.CurrentLine + 1, true);
 
                     if (selecao.Text.Contains("}"))
                     {
-                        selecao.LineUp(true);
+                        selecao.GotoLine(selecao.CurrentLine - 1);
                         break;
                     }
                 }
-                selecao.SelectLine();
+                //selecao.SelectLine();
+                selecao.GotoLine(selecao.CurrentLine, false);
+                selecao.EndOfLine();
 
                 var selecaoAtual = selecao.Text;
-                var sb = new StringBuilder();
-                sb.AppendLine(selecaoAtual);
-                sb.AppendLine($"\t\t\t{declaracao}");
-                selecao.Insert(sb.ToString());
+                selecao.NewLine();
+                selecao.NewLine();
 
+                //var sb = new StringBuilder();
+                //sb.AppendLine(selecaoAtual);
+                //sb.AppendLine($"\t\t\t{declaracao}");
+                selecao.Insert($"\t\t\t{declaracao}");
+                selecao.NewLine();
                 selecao.StartOfDocument(true);
                 selecao.FindText(declaracao);
                 selecao.LineDown();
@@ -826,7 +834,7 @@ namespace Snebur.VisualStudio.Commands
             this.InserirDeclaracao(selecao, declaracaoPropriedade);
             if (!isLista)
             {
-                var declaracaoPropriedadeConstrutor = this.RetornarDeclaracaoPropriedadeConstrutor(nomePropriedade, isLista);
+                var declaracaoPropriedadeConstrutor = this.RetornarDeclaracaoPropriedadeConstrutor(nomePropriedade);
                 this.InserirDeclaracaoConstrutor(selecao, declaracaoPropriedadeConstrutor);
             }
             selecao.StartOfDocument(true);
@@ -844,14 +852,14 @@ namespace Snebur.VisualStudio.Commands
         {
             if (isLista)
             {
-                return $"private readonly {nomePropriedade} = new ListaObservacao<{NOME_TIPO}>();";
+                return $"public readonly {nomePropriedade} = new ListaObservacao<{NOME_TIPO}>();";
             }
-            return $"private {nomePropriedade}: {NOME_TIPO};";
+            return $"public {nomePropriedade}: {NOME_TIPO};";
         }
 
-        private string RetornarDeclaracaoPropriedadeConstrutor(string nomePropriedade, bool isLista)
+        private string RetornarDeclaracaoPropriedadeConstrutor(string nomePropriedade)
         {
-            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {NOME_TIPO}, \"{nomePropriedade}\");";
+            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {NOME_TIPO});";
         }
 
         private async Task<(ArquivoTypescriptDefinicao, bool)> RetornarCaminhoArquivoViewModelAsync(DTE2 dte, Document documento, string nomeAtributo, string nomePropriedade, bool isOrigemThis)
