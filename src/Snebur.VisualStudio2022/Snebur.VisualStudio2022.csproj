@@ -61,13 +61,13 @@
     <Compile Include="Commands\Context\ContextoMenuEstilo.cs" />
     <Compile Include="Commands\Context\ContextoMenuOutro.cs" />
     <Compile Include="Commands\DeclaracaoComponentes.cs" />
-    <Compile Include="Commands\NewFolder1\FormatarDocumento.cs" />
+    <Compile Include="Commands\Temp\FormatarDocumento.cs" />
     <Compile Include="Commands\ContextMenuFormatarDocumentoCommand.cs" />
     <Compile Include="Commands\GoToCodeCommand.cs" />
     <Compile Include="Commands\GoToDefinitionCommand.cs" />
     <Compile Include="Commands\GoToLayoutCommand.cs" />
-    <Compile Include="Commands\NewFolder1\IrParaCodigo.cs" />
-    <Compile Include="Commands\NewFolder1\IrParaDefinicao.cs" />
+    <Compile Include="Commands\Temp\IrParaCodigo.cs" />
+    <Compile Include="Commands\Temp\IrParaDefinicao.cs" />
     <Compile Include="Commands\GoToScssStyleCommand.cs" />
     <Compile Include="Commands\RemoveDominFormatingCommand.cs" />
     <Compile Include="Commands\RemoveFormatingCommand.cs" />
