@@ -27,7 +27,6 @@ namespace Snebur.VisualStudio
             {
                 foreach (var chaveValor in configuracaoProjetoTypeScript.Depedencias)
                 {
-
                     var nomeProjeto = chaveValor.Key;
                     var caminhoParcial = chaveValor.Value;
                     var caminhoDefinicacao = Path.GetFullPath(Path.Combine(caminhoProjeto, caminhoParcial));

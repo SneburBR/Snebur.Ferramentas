@@ -20,10 +20,11 @@ namespace Snebur.VisualStudio
         private const string NOME_ARQUIVO_VARIAVEIS = "variaveis.scss";
         private const string NOME_ARQUIVO_PERSONALIZADO = "personalizado.scss";
 
-        public FileInfo ArquivoEstiloCompilado { get; }
-        public FileInfo ArquivoEstiloCompiladoMinificado { get; }
-        public FileInfo ArquivoEstiloReferenciaSass { get; }
-        private FileInfo ArquivoVariaveis { get; }
+        public readonly FileInfo ArquivoEstiloCompilado;
+        public readonly FileInfo ArquivoEstiloCompiladoMinificado;
+        public readonly FileInfo ArquivoEstiloReferenciaSass;
+        private readonly FileInfo ArquivoVariaveis;
+        private readonly List<FileInfo> TodosArquivos;
         private FileInfo ArquivoMixins { get; }
         private string CaminhoRepositorioSass { get; }
          
@@ -48,6 +49,12 @@ namespace Snebur.VisualStudio
             this.ArquivoMixins = new FileInfo(Path.Combine(this.CaminhoRepositorioSass, NOME_ARQUIVO_MIXINS_SIMPLES));
             this.ArquivoVariaveis = new FileInfo(Path.Combine(this.CaminhoRepositorioSass, NOME_ARQUIVO_VARIAVEIS));
 
+            this.TodosArquivos = LocalProjetoUtil.RetornarTodosArquivosAsync(this.ProjetoViewModel.ProjetoVS, 
+                                                                             this.CaminhoProjeto, true).
+                                                  GetAwaiter().
+                                                  GetResult().
+                                                  Select(x => new FileInfo(x)).
+                                                  ToList();
             this.AtualizarArquivosSass();
         }
 
@@ -75,30 +82,26 @@ namespace Snebur.VisualStudio
         }
 
         public HashSet<string> ArquivosScss { get; } = new HashSet<string>();
+
         private void AtualizarLinkEstiloProjeto()
         {
-            var arquivosScss = this.RetornaArquivosScss(this.IsArquivoSassShtml);
-
+            var arquivosSHTML = this.TodosArquivos.Where(x=> x.Extension == ConstantesProjeto.EXTENSAO_CONTROLE_SHTML).ToList();
             var arquivosEstilo = this.RetornarArquivosEstilo();
-            foreach (var arquivo in arquivosScss)
+            foreach (var arquivoShtml in arquivosSHTML)
             {
-                var caminhoArquivoShtml = Path.Combine(arquivo.DirectoryName, Path.GetFileNameWithoutExtension(arquivo.FullName));
-                if (File.Exists(caminhoArquivoShtml))
+                if (arquivoShtml.Exists)
                 {
-                    var conteudo = File.ReadAllText(caminhoArquivoShtml, Encoding.UTF8);
+                    var conteudo = File.ReadAllText(arquivoShtml.FullName, Encoding.UTF8);
                     var linhas = conteudo.ToLines();
                     var linhasCabecalho = TextoUtil.RetornarIntervaloLinhas(linhas, "<head>", "</head>");
                     if (linhasCabecalho.Count > 1)
                     {
                         var linhasRemover = linhasCabecalho.Where(x => x.Contains("<link") && this.IsLinhaEstiloRemover(arquivosEstilo, x)).ToList();
-
                         linhas.RemoveRange(linhasRemover);
 
                         foreach (var arquivoEstilo in arquivosEstilo)
                         {
-                            var caminhoRelativo = CaminhoUtil.RetornarCaminhoRelativo(arquivoEstilo.FullName, arquivo.DirectoryName);
-
-
+                            var caminhoRelativo = CaminhoUtil.RetornarCaminhoRelativo(arquivoEstilo.FullName, arquivoShtml.DirectoryName);
                             var primeiraLinha = linhasCabecalho.First();
                             var tabulacao = primeiraLinha.Substring(0, primeiraLinha.IndexOf("<head>")) + "    ";
 
@@ -111,16 +114,12 @@ namespace Snebur.VisualStudio
                         var novoConteudo = String.Join(System.Environment.NewLine, linhas);
                         if (novoConteudo.Trim() != conteudo.Trim())
                         {
-                            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoShtml, novoConteudo);
+                            ArquivoUtil.SalvarArquivoTexto(arquivoShtml.FullName, novoConteudo);
                         }
                     }
                 }
             }
-
-
             this.AtualizarArquivosSass();
-
-
         }
 
         private void AtualizarArquivosSass()
@@ -291,27 +290,17 @@ namespace Snebur.VisualStudio
             return caminhosParcial;
         }
 
-        private List<FileInfo> RetornaArquivosScss(Func<FileInfo, bool> funcaoFiltroArquivoScsss,
-                                                   FileInfo arquivoDestino = null)
+        private List<FileInfo> RetornaArquivosScss(Func<FileInfo, bool> funcaoFiltroArquivo,
+                                                        FileInfo arquivoDestino = null)
         {
-            
             var diretorioProjeto = new DirectoryInfo(this.CaminhoProjeto);
-
-            //var arquivos =   diretorioProjeto.GetFiles("*.scss", SearchOption.AllDirectories);
-            var xxx = LocalProjetoUtil.RetornarTodosArquivosAsync(this.ProjetoViewModel.ProjetoVS,
-                                                                  this.CaminhoProjeto, true).
-                                                                  GetAwaiter().
-                                                                  GetResult();
-
-            var arquivos = xxx.Select(x => new FileInfo(x)).
-                                             Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
-             
+            var arquivos = this.TodosArquivos.Where(x => x.Extension == ConstantesProjeto.EXTENSAO_SASS);
             if (arquivoDestino != null)
             {
-                return arquivos.Where(x => funcaoFiltroArquivoScsss.Invoke(x) && !CaminhoUtil.CaminhoIgual(x.FullName, arquivoDestino.FullName)
-                                                && !x.Name.StartsWith(PREFIXO_CORES)).Select(x => x).ToList();
+                return arquivos.Where(x => funcaoFiltroArquivo.Invoke(x) && !CaminhoUtil.CaminhoIgual(x.FullName, arquivoDestino.FullName)
+                                                                         && !x.Name.StartsWith(PREFIXO_CORES)).Select(x => x).ToList();
             }
-            return arquivos.Where(x => funcaoFiltroArquivoScsss.Invoke(x) && !x.Name.StartsWith(PREFIXO_CORES)).Select(x => x).ToList();
+            return arquivos.Where(x => funcaoFiltroArquivo.Invoke(x) && !x.Name.StartsWith(PREFIXO_CORES)).Select(x => x).ToList();
         }
 
         private bool IsArquivoSassNormal(FileInfo arquivo)
@@ -328,7 +317,7 @@ namespace Snebur.VisualStudio
         {
             return arquivo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_SCSS);
         }
-
+         
         private bool IsArquivoSassPersonalizado(FileInfo arquivo)
         {
             return arquivo.Name.ToLower().EndsWith(NOME_ARQUIVO_PERSONALIZADO);  //&& arquivo.Name != NOME_ARQUIVO_MIXINS_SIMPLES;

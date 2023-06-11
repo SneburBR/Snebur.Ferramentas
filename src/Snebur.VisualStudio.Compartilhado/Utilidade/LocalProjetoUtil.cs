@@ -18,10 +18,10 @@ namespace Snebur.VisualStudio
         }
 
         internal static async Task<IEnumerable<string>> RetornarTodosArquivosAsync(object projetoVS,
-                                                                                   string caminhoProjeto, 
-                                                                                   bool isLowerCase)
+                                                                                    string caminhoProjeto,
+                                                                                    bool isLowerCase)
         {
-            return await  BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjetoAsync(projetoVS,
+            return await BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjetoAsync(projetoVS,
                                                                                                 caminhoProjeto,
                                                                                                 isLowerCase);
         }

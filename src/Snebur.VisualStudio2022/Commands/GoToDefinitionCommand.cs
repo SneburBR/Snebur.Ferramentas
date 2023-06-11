@@ -610,8 +610,7 @@ namespace Snebur.VisualStudio.Commands
             }
             return String.Empty;
         }
-
-
+         
         #region Atributos argumento - temp
 
         private Dictionary<string, AtributoArgumento> AtributosArgumento
@@ -665,7 +664,6 @@ namespace Snebur.VisualStudio.Commands
 
         private class AtributoArgumento
         {
-
             internal string NomeAtributo { get; }
             internal string NomeArgumentoEvento { get; }
             internal EnumAcao Acao { get; }
@@ -838,7 +836,7 @@ namespace Snebur.VisualStudio.Commands
             selecao.StartOfDocument(true);
             selecao.FindText(declaracaoPropriedade);
             selecao.StartOfLine(vsStartOfLineOptions.vsStartOfLineOptionsFirstText);
-            selecao.FindText(TipoUtil.RetornarNomeTipo(nomePropriedade));
+            selecao.FindText(DeclararPropridadeTSUtil.RetornarMelhorNomeTipoDaPropriedadeTypescript(nomePropriedade));
             //selecao.EndOfLine();
             //selecao.WordLeft();
             //selecao.LineDown();
@@ -849,14 +847,14 @@ namespace Snebur.VisualStudio.Commands
         {
             if (isLista)
             {
-                return $"public readonly {nomePropriedade} = new ListaObservacao<{TipoUtil.RetornarNomeTipo(nomePropriedade)}>();";
+                return $"public readonly {nomePropriedade} = new ListaObservacao<{DeclararPropridadeTSUtil.RetornarMelhorNomeTipoDaPropriedadeTypescript(nomePropriedade)}>();";
             }
-            return $"public {nomePropriedade}: {TipoUtil.RetornarNomeTipo(nomePropriedade)};";
+            return $"public {nomePropriedade}: {DeclararPropridadeTSUtil.RetornarMelhorNomeTipoDaPropriedadeTypescript(nomePropriedade)};";
         }
 
         private string RetornarDeclaracaoPropriedadeConstrutor(string nomePropriedade)
         {
-            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {TipoUtil.RetornarNomeTipo(nomePropriedade)});";
+            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {DeclararPropridadeTSUtil.RetornarMelhorNomeTipoDaPropriedadeTypescript(nomePropriedade, true)});";
         }
 
         private async Task<(ArquivoTypescriptDefinicao, bool)> RetornarCaminhoArquivoViewModelAsync(DTE2 dte, Document documento, string nomeAtributo, string nomePropriedade, bool isOrigemThis)
@@ -960,7 +958,6 @@ namespace Snebur.VisualStudio.Commands
                     this.DeclararPropriedade(selecao, nomePropriedade, nomeAtributo);
                     documentoAtual.Save();
                 });
-
             }
         }
 
@@ -1051,8 +1048,6 @@ namespace Snebur.VisualStudio.Commands
                 this.IsViewModel = this.NomeArquivo.ToLower().Contains("viewmodel");
                 this.IsControle = this.RetornarIsControle();
                 this.Ordenacao = this.IsViewModel ? -1 : 1;
-
-
             }
 
             private bool RetornarIsControle()

@@ -446,15 +446,7 @@ namespace Snebur.VisualStudio
 
 
         }
-        private const string NOME_TIPO = "_NOME_TIPO_";
-        public static string RetornarNomeTipo(string nomePropriedade)
-        {
-            if(nomePropriedade.StartsWith("Is") || nomePropriedade.StartsWith("is"))
-            {
-                return "boolean";
-            }
-            return NOME_TIPO;
-        }
+      
 
     }
 }

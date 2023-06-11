@@ -144,7 +144,7 @@ namespace Snebur.VisualStudio
 
         private ConfiguracaoProjetoTypeScript RetornarConfiguracaoProjetoTypescript()
         {
-            var arquivosTypescript = this.ArquivosTypeScriptOrdenados.Select(x => @x.Arquivo.FullName).ToList();
+            var arquivosTypescript = this.ArquivosTypeScriptOrdenados.Select(x => x.Arquivo.FullName).ToList();
             //var caminhoJavasriptSaida = CaminhoUtil.RetornarCaminhoRelativo(new FileInfo(this.CaminhoSaidaPadrao), 
             //                                                                this.CaminhoProjeto);
 
@@ -458,8 +458,8 @@ namespace Snebur.VisualStudio
         private string RetornarDeclaracaoTiposUI(string namespaceReflexao)
         {
             var declaracoesTipos = new DeclaracaoTiposUI(this.ArquivosTypeScriptOrdenados,
-                                                        this.DicionariosArquivosTypeScript,
-                                                        namespaceReflexao);
+                                                         this.DicionariosArquivosTypeScript,
+                                                         namespaceReflexao);
 
             return declaracoesTipos.RetornarDeclaracao().TrimEnd();
         }

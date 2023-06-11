@@ -8,17 +8,15 @@ namespace Snebur.VisualStudio
 {
     public class DeclaracaoTiposUI
     {
-
         private const string NOME_TIPO_BASE_UI_ELEMENTO = "BaseUIElemento";
         private const string NOME_TIPO_BASE_VIEW_MODEL = "BaseViewModel";
 
-        public List<BaseArquivoTypeScript> ArquivosTypeScriptOrdenados { get; private set; } = new List<BaseArquivoTypeScript>();
-        private Dictionary<string, ArquivoTypeScript> DicionariosArquivosTypeScript { get; } = new Dictionary<string, ArquivoTypeScript>();
-
-        private string NamespaceReflexao { get; }
+        private readonly List<BaseArquivoTypeScript> ArquivosTypeScriptOrdenados;
+        private readonly Dictionary<string, ArquivoTypeScript> DicionariosArquivosTypeScript;
+        private readonly string NamespaceReflexao;
         public DeclaracaoTiposUI(List<BaseArquivoTypeScript> arquivosTypeScriptOrdenados,
-                              Dictionary<string, ArquivoTypeScript> dicionariosArquivosTypeScript,
-                              string namespaceReflexao)
+                                 Dictionary<string, ArquivoTypeScript> dicionariosArquivosTypeScript,
+                                 string namespaceReflexao)
         {
             this.ArquivosTypeScriptOrdenados = arquivosTypeScriptOrdenados;
             this.DicionariosArquivosTypeScript = dicionariosArquivosTypeScript;
@@ -41,15 +39,13 @@ namespace Snebur.VisualStudio
             todos.AddRange(arquivosTipoHtmlReferencia);
             todos.AddRange(arquivosBaseViewModel);
             todos.AddRange(arquivosTipoBaseHtmlReferencia);
-
-
+             
             foreach (var arquivoTypeScript in todos)
             {
                 var declaracao = this.RetornarDeclaracaoCaminhoTipo(arquivoTypeScript);
                 sb.AppendLine(declaracao.TrimEnd());
             }
-
-
+             
             foreach (var arquivoTypeScript in arquivosBaseUIElemento)
             {
                 var declaracao = this.RetornarDeclaracaoTipoUI(arquivoTypeScript, "TipoUI");
@@ -74,7 +70,6 @@ namespace Snebur.VisualStudio
                 sb.AppendLine(declaracao.TrimEnd());
             }
 
-
             return sb.ToString();
         }
 
@@ -89,8 +84,7 @@ namespace Snebur.VisualStudio
             var arquivos = this.ArquivosTypeScriptOrdenados.OfType<ArquivoTypeScript>().
                                                             Where(x => !x.IsTipoAbstrato && !x.IsTipoHtmlReferencia && this.IsTipoBaseHtmlReferencia(x)).ToList();
             return arquivos;
-        }
-        
+        } 
 
         private bool IsTipoBaseViewModel(ArquivoTypeScript arquivoTypeScript)
         {
@@ -101,7 +95,8 @@ namespace Snebur.VisualStudio
                     return true;
                 }
 
-                if (arquivoTypeScript.IsExisteTipoBase && this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
+                if (arquivoTypeScript.IsExisteTipoBase && 
+                    this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
                 {
                     return this.IsTipoBaseViewModel(this.DicionariosArquivosTypeScript[arquivoTypeScript.CaminhoTipoBase]);
                 }
@@ -118,16 +113,15 @@ namespace Snebur.VisualStudio
 
             if (arquivoTypeScript.IsExisteTipoBase && arquivoTypeScript.IsExisteTipo)
             {
-                if (arquivoTypeScript.IsExisteTipoBase && this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
+                if (arquivoTypeScript.IsExisteTipoBase && 
+                    this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
                 {
                     return this.IsTipoBaseHtmlReferencia(this.DicionariosArquivosTypeScript[arquivoTypeScript.CaminhoTipoBase], true);
                 }
             }
             return false;
         }
-
-
-
+         
         private List<ArquivoTypeScript> RetornarArquivosTiposBaseUIElemento()
         {
             var arquivos = this.ArquivosTypeScriptOrdenados.OfType<ArquivoTypeScript>().Where(x => !x.IsTipoHtmlReferencia && this.IsTipoBaseUIElemento(x)).ToList();
@@ -143,7 +137,8 @@ namespace Snebur.VisualStudio
                     return true;
                 }
 
-                if (arquivoTypeScript.IsExisteTipoBase && this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
+                if (arquivoTypeScript.IsExisteTipoBase && 
+                    this.DicionariosArquivosTypeScript.ContainsKey(arquivoTypeScript.CaminhoTipoBase))
                 {
                     return this.IsTipoBaseUIElemento(this.DicionariosArquivosTypeScript[arquivoTypeScript.CaminhoTipoBase]);
                 }
@@ -171,15 +166,13 @@ namespace Snebur.VisualStudio
             var caminhoTipoBase = this.RetornarCaminhoTipoBase(arquivoTypeScript);
 
             sb.AppendLine($"\t$Reflexao.Tipos.Add({arquivoTypeScript.CaminhoTipo}.{ProjetoTypeScript.NOME_PROPRIEDADE_CAMINHO_TIPO}, " +
-                          $"new {NamespaceReflexao}.{nomeTipo}(\"{arquivoTypeScript.NomeTipo}\", \"{arquivoTypeScript.Namespace}\"," +
+                          $"new {this.NamespaceReflexao}.{nomeTipo}(\"{arquivoTypeScript.NomeTipo}\", \"{arquivoTypeScript.Namespace}\"," +
                           $"{caminhoTipoBase}, " +
                           $"{arquivoTypeScript.IsTipoAbstrato.ToString().ToLower()}));");
 
             return sb.ToString();
         }
-
-
-
+         
         private string RetornarCaminhoTipoBase(ArquivoTypeScript arquivoTypeScript)
         {
             if (arquivoTypeScript.IsExisteTipoBase)

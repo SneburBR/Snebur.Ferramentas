@@ -24,7 +24,7 @@ namespace Snebur.VisualStudio
         protected override void AtualizarInterno()
         {
             ValidacaoUtil.ValidarReferenciaNula(this.ConfiguracaoProjeto.CaminhoExtensaoTypeScript, nameof(this.ConfiguracaoProjeto.CaminhoExtensaoTypeScript));
-            var caminhoExtensao = CaminhoUtil.RetornarCaminhosAbsoluto(this.ConfiguracaoProjeto.CaminhoExtensaoCSharp, this.CaminhoProjeto);
+            var caminhoExtensao = CaminhoUtil.RetornarCaminhoAbsoluto(this.ConfiguracaoProjeto.CaminhoExtensaoCSharp, this.CaminhoProjeto);
             if (!File.Exists(caminhoExtensao))
             {
                 throw new FileNotFoundException(caminhoExtensao);

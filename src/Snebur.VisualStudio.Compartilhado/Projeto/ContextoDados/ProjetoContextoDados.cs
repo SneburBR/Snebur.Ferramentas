@@ -29,7 +29,7 @@ namespace Snebur.VisualStudio
 
         protected override void AtualizarInterno()
         {
-            var caminhoAbsolutoContextoDadosEntity = CaminhoUtil.RetornarCaminhosAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosEntity, this.CaminhoProjeto);
+            var caminhoAbsolutoContextoDadosEntity = CaminhoUtil.RetornarCaminhoAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosEntity, this.CaminhoProjeto);
             var linhasContextoEntity = File.ReadAllLines(caminhoAbsolutoContextoDadosEntity, Encoding.UTF8).ToList();
             var posicaoInicioConsultaEntity = this.RetornarPosicaoInicioConsulta(caminhoAbsolutoContextoDadosEntity, linhasContextoEntity);
             var posicaoFimConsultaEntity = 1 + (this.RetornarPosicaoFimConsulta(caminhoAbsolutoContextoDadosEntity, linhasContextoEntity) - posicaoInicioConsultaEntity);
@@ -52,7 +52,7 @@ namespace Snebur.VisualStudio
                 return;
             }
 
-            var caminhoAbsolutoContextoDadosNET = CaminhoUtil.RetornarCaminhosAbsoluto(caminhoArquivo, this.CaminhoProjeto);
+            var caminhoAbsolutoContextoDadosNET = CaminhoUtil.RetornarCaminhoAbsoluto(caminhoArquivo, this.CaminhoProjeto);
 
             var linhasContextoDadosNET = File.ReadAllLines(caminhoAbsolutoContextoDadosNET, Encoding.UTF8).ToList();
             var posicaoInicioConsultaNET = this.RetornarPosicaoInicioConsulta(caminhoAbsolutoContextoDadosNET, linhasContextoDadosNET);
@@ -102,7 +102,7 @@ namespace Snebur.VisualStudio
 
         private void SalvarContextoTS(List<string> linhasConsultaEntity)
         {
-            var caminhoAbsolutoContextoDadosTS = CaminhoUtil.RetornarCaminhosAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosTS, this.CaminhoProjeto);
+            var caminhoAbsolutoContextoDadosTS = CaminhoUtil.RetornarCaminhoAbsoluto(this.ConfiguracaoProjeto.CaminhoContextoDadosTS, this.CaminhoProjeto);
 
             if (!File.Exists(caminhoAbsolutoContextoDadosTS))
             {
