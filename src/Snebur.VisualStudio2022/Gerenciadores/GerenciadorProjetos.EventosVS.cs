@@ -191,7 +191,7 @@ namespace Snebur.VisualStudio
         private void SolutionEvents_OnBeforeCloseSolution()
         {
             this.DispensarProjetos();
-            DiretorioInicializarUtil.ClearDiretorioProjetoTypescriptInicializacao();
+            ProjetoTypescriptInitUtil.ClearDiretorioProjeto();
         }
 
         #endregion

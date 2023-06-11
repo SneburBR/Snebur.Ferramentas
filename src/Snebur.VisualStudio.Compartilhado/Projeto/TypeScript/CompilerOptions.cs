@@ -3,11 +3,30 @@ using Snebur.Linq;
 using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Snebur.VisualStudio
 {
     public class CompilerOptions
     {
+        private string _outFile;
+        private List<string> _lib ;
+
+        [JsonProperty("outFile")]
+        public string outFile
+        {
+            get => this._outFile;
+            private set
+            {
+                if (value != null && CaminhoUtil.IsFullPath(value))
+                {
+                    LogVSUtil.LogErro($"outFile: caminho absoluto não é suportado {value}");
+                    value = this.NormalizarCaminho(value);
+                }
+                this._outFile = value;
+            }
+        }
+
         public bool allowJs { get; set; } = false;
         public bool noImplicitAny { get; set; } = true;
         public bool noEmitOnError { get; set; } = true;
@@ -25,44 +44,30 @@ namespace Snebur.VisualStudio
         public bool noStrictGenericChecks { get; set; } = false;
         public bool stripInternal { get; set; } = false;
         public bool strictNullChecks { get; set; } = false;
-        public string target { get; set; } = "ES5";
-        public List<string> lib { get; set; } = new List<string> { "DOM", "ES2015.Promise", "ES5" };
-        public bool declaration { get; set; } = false;
-        public bool declarationMap { get; set; } = false;
-
-        private string _outFile;
-
-        [JsonProperty("outFile")]
-        public string outFile
+        public string target { get; set; }
+        public List<string> lib
         {
-            get => this._outFile;
-            private set
-            {
-                if (value != null && CaminhoUtil.IsFullPath(value))
-                {
-                    LogVSUtil.LogErro($"outFile: caminho absoluto não é suportado {value}");
-                    value = this.NormalizarCaminho(value);
-                }
-                this._outFile = value;
-            }
+            get => this._lib;
+            set => this._lib = value.Distinct().ToList();
         }
+        public bool declaration { get; set; }
+        public bool declarationMap { get; set; }
 
-      
         public CompilerOptions()
         {
-            //var compilerOptionsInicializacao = GerenciadorProjetosUtil.ConfiguracaoProjetoTypesriptInicializacao?.CompilerOptions;
-            //if (compilerOptionsInicializacao != null)
-            //{
-            //    this.lib.AddRangeNew(compilerOptionsInicializacao.lib);
-            //    this.target = compilerOptionsInicializacao.target;
-            //}
+            var compilerOptions = ProjetoTypescriptInitUtil.ConfiguracaoProjetoTypeScript?.CompilerOptions;
+            if (compilerOptions != null)
+            {
+                //this.lib.AddRangeNew(compilerOptionsInicializacao.lib);
+                this.target = compilerOptions.target;
+            }
         }
 
         public CompilerOptions(string caminhoSaida) : this()
         {
             this.outFile = caminhoSaida;
         }
-         
+
         private string NormalizarCaminho(string value)
         {
             var index = value.ToLower().LastIndexOf("\\build\\");

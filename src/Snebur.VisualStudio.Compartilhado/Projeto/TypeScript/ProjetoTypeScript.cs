@@ -18,8 +18,7 @@ namespace Snebur.VisualStudio
         public static string NOME_PROPRIEDADE_CAMINHO_TIPO { get; } = ReflexaoUtil.RetornarNomePropriedade<Snebur.Dominio.ICaminhoTipo>(x => x.__CaminhoTipo);
         public static string NOME_ARQUIVO_APLICACAO_CONFIG = "Aplicacao.Config.ts";
         private const string NOME_PROPRIEDADE_VERSAO_SCRIPT = "VersaoScript";
-
-
+         
         public string CaminhosDiretorioTypeScripts { get; }
         public string CaminhoAplicacaoConfig { get; }
         public string CaminhoHtmlReferencias { get; }
@@ -170,10 +169,10 @@ namespace Snebur.VisualStudio
                                           ConfiguracaoProjetoTypeScript configuracaoProjetoAtual,
                                           List<string> arquivosTypescript)
         {
-            if (GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao != null &&
-                Directory.Exists(GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao))
+            if (ProjetoTypescriptInitUtil.DiretorioProjeto != null &&
+                Directory.Exists(ProjetoTypescriptInitUtil.DiretorioProjeto))
             {
-                var diretorioProjeto = GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao;
+                var diretorioProjeto = ProjetoTypescriptInitUtil.DiretorioProjeto;
                 var caminhoSaida = Path.Combine(diretorioProjeto, caminhoJavasriptSaida);
                 var caminhoSaidaRelativo = CaminhoUtil.RetornarCaminhoRelativo(caminhoSaida, this.CaminhoProjeto);
 
@@ -256,7 +255,7 @@ namespace Snebur.VisualStudio
             {
                 if (this.ArquivosTypeScript.Count > 0)
                 {
-                    var arquivosRestante = String.Join(System.Environment.NewLine, this.ArquivosTypeScript.Select(x => x.Arquivo.FullName));
+                    var arquivosRestante = String.Join(Environment.NewLine, this.ArquivosTypeScript.Select(x => x.Arquivo.FullName));
                     var mensagem = String.Format("Não possível encontrar o próximo arquivo da fila, Conferir as dependências dos tipos bases e os padrões de nomeclaturas {0}. {1}{2}", this.NomeProjeto, Environment.NewLine, arquivosRestante);
                     LogVSUtil.LogErro(mensagem);
                     //throw new Exception(mensagem);
@@ -369,45 +368,10 @@ namespace Snebur.VisualStudio
         {
             //var js = new System.Web.Script.Serialization.JavaScriptSerializer();
             var json = JsonUtil.Serializar(tsconfig, EnumTipoSerializacao.Javascript, true);
-
             ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
         }
-
-        //private string RetornarCaminhoSaidaAtual(string caminhoProjeto)
-        //{
-        //    if (Directory.Exists(GerenciadorProjetos.DiretorioProjetoTypescriptInicializacao))
-        //    {
-        //        throw new NotImplementedException();
-
-
-        //    }
-
-        //    //return this.ConfiguracaoProjeto.RetornarCaminhoSaida(caminhoProjeto, this.NomeProjeto);
-        //    //var caminhoRaiz = caminhoProjeto;
-        //    ////if (Directory.Exists(Path.Combine(caminhoProjeto, "www")))
-        //    ////{
-        //    ////    caminhoRaiz = Path.Combine(caminhoProjeto, "www");
-        //    ////}
-        //    //var debug = this.IsProjetoDebug ? ".Debug" : String.Empty;
-
-        //    //var isApresentacao = this.ConfiguracaoProjeto.IsEditarApresentacao;
-        //    //var caminhoScripts = Path.Combine(caminhoRaiz, ConstantesPublicacao.NOME_PASTA_BUILD);
-        //    ////caminhoScripts = this.ConfiguracaoProjeto.RetornarCaminhoScripts(caminhoRaiz);
-
-        //    //if (isApresentacao)
-        //    //{
-        //    //    var diretorio = Path.Combine(caminhoScripts, "compilado");
-        //    //    DiretorioUtil.CriarDiretorio(diretorio);
-        //    //    return diretorio;
-        //    //}
-
-        //    ////var xxx = Path.Combine(caminhoScripts, $"{this.NomeProjeto}{debug}.js");
-
-        //    //return Path.Combine(caminhoScripts, String.Format("{0}{1}.js", this.NomeProjeto, debug));
-
-        //    return Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD, $"{this.NomeProjeto}.js");
-        //}
+         
 
         private int RetornarPrioridadeProjeto(FileInfo arquivo)
         {
@@ -456,7 +420,6 @@ namespace Snebur.VisualStudio
         #endregion
 
         #region Html  Referencias
-
 
         private void ConfigurarHtmlRerefencias()
         {
@@ -556,20 +519,7 @@ namespace Snebur.VisualStudio
             return "null";
 
         }
-
-        //private string RetornarCaminhoChaveHtmlReferencia(string caminhoArquivo, FileInfo arquivo)
-        //{
-        //    if (caminhoArquivo.Contains("."))
-        //    {
-        //        var posicaoFinal = caminhoArquivo.LastIndexOf(".");
-        //        var _namespace = caminhoArquivo.Substring(0, posicaoFinal);
-        //        var chave = String.Format("{0}.{1}", _namespace, Path.GetFileNameWithoutExtension(arquivo.Name));
-        //        return chave;
-        //    }
-        //    return arquivo.Name;
-
-        //}
-
+         
         private string RetornarHtml(FileInfo arquivo)
         {
             var html = File.ReadAllText(arquivo.FullName, Encoding.UTF8);
@@ -706,7 +656,7 @@ namespace Snebur.VisualStudio
             var caminhoSaidaConfigurado = Path.GetFullPath(Path.Combine(this.CaminhoProjeto, comilerOptions.outFile));
             if (!this.ConfiguracaoProjeto.IsIgnorar)
             {
-                if (GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao != null)
+                if (ProjetoTypescriptInitUtil.DiretorioProjeto != null)
                 {
                     var caminhoProjetoAtual = this.RetornarCaminhoSaidaProjetoAtual();
                     if (!CaminhoUtil.CaminhoIgual(caminhoProjetoAtual, caminhoSaidaConfigurado))
@@ -718,8 +668,6 @@ namespace Snebur.VisualStudio
 
                         BaseGerenciadoProjetos.TryIntancia?.SetReiniciarGerenciadorPendente(true);
                     }
-                    //var caminhoSaida = CaminhoUtil.RetornarCaminhoRelativo(caminhoProjetoAtual, this.DiretorioProjeto.FullName);
-                    //return caminhoSaida;
                     return caminhoProjetoAtual;
 
                 }
@@ -729,10 +677,10 @@ namespace Snebur.VisualStudio
         private string RetornarCaminhoSaidaProjetoAtual()
         {
             var caminhoSaida = this.CaminhoSaidaPadrao;
-            if (GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao != null)
+            if (ProjetoTypescriptInitUtil.DiretorioProjeto != null)
             {
                 var nomeArquivo = Path.GetFileName(caminhoSaida);
-                return Path.Combine(GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao,
+                return Path.Combine(ProjetoTypescriptInitUtil.DiretorioProjeto,
                                    ConstantesProjeto.PASTA_BUILD,
                                    nomeArquivo);
             }

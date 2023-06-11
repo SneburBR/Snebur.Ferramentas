@@ -74,8 +74,12 @@ namespace Snebur.VisualStudio
             };
 
 
-            this.CompilerOptions = new CompilerOptions(caminhoJavasriptSaida); ;
-            this.CompilerOptions.target = configuracaoProjeto.CompilerOptions.target;
+            this.CompilerOptions = new CompilerOptions(caminhoJavasriptSaida); 
+            if (String.IsNullOrWhiteSpace(this.CompilerOptions.target))
+            {
+                this.CompilerOptions.target = configuracaoProjeto.CompilerOptions.target;
+            }
+            
             this.CompilerOptions.lib = configuracaoProjeto.CompilerOptions.lib;
 
             this.CompilerOptions.declaration = configuracaoProjeto.CompilerOptions.declaration;

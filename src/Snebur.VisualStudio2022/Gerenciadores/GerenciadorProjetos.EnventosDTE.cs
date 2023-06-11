@@ -73,7 +73,7 @@ namespace Snebur.VisualStudio
         private async Task BuildDoneAsync()
         {
             var t = Stopwatch.StartNew();
-            if (DiretorioInicializarUtil.DiretorioProjetoTypescriptInicializacao == null)
+            if (ProjetoTypescriptInitUtil.DiretorioProjeto == null)
             {
                 await SolutionUtil.DefinirProjetosInicializacaoAsync();
             }
