@@ -9,16 +9,34 @@ namespace Snebur.VisualStudio
 {
     public static class SolutionUtil
     {
+        private static bool _isDefinidoProjetoInicializacao = false;
         private static string[] IgrnorarPastas = new string[] { "build", "bin", "obj", ".vs", ".git" };
 
         public static async Task DefinirProjetosInicializacaoAsync()
         {
-            GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(null);
-            var startupProjects = await VS.Solutions.GetStartupProjectsAsync();
-            if (startupProjects?.Count() > 0)
+            if (_isDefinidoProjetoInicializacao)
             {
-                DefinirProjetosInicializacao(startupProjects);
+                return;
             }
+
+            try
+            {
+                _isDefinidoProjetoInicializacao = true;
+                var startupProjects = await VS.Solutions.GetStartupProjectsAsync();
+                if (startupProjects?.Count() > 0)
+                {
+                    SolutionUtil.DefinirProjetosInicializacao(startupProjects);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro(ex);
+            }
+            finally
+            {
+                _isDefinidoProjetoInicializacao = false;
+            }
+            
         }
 
         private static void DefinirProjetosInicializacao(IEnumerable<Project> startupProjects)
@@ -31,13 +49,8 @@ namespace Snebur.VisualStudio
                 {
                     try
                     {
-                        var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
-                        GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(configuracaoTypescript);
-                        if (configuracaoTypescript.IsDebugScriptsDepedentes)
-                        {
-                            GerenciadorProjetos.Instancia.SetDiretorioProjetoTypescriptInicializacao(diretorioProjeto);
-                            return;
-                        }
+                        var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScript>(ArquivoUtil.LerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
+                        DiretorioInicializarUtil.SetDiretorioProjetoTypescriptInicializacao(diretorioProjeto);
                     }
                     catch (Exception ex)
                     {

@@ -73,7 +73,7 @@ namespace Snebur.VisualStudio
         private async Task BuildDoneAsync()
         {
             var t = Stopwatch.StartNew();
-            if (this.DiretorioProjetoTypescriptInicializacao == null)
+            if (DiretorioInicializarUtil.DiretorioProjetoTypescriptInicializacao == null)
             {
                 await SolutionUtil.DefinirProjetosInicializacaoAsync();
             }
@@ -95,6 +95,7 @@ namespace Snebur.VisualStudio
 
         private async Task SolucaoAbertaAsync()
         {
+            await SolutionUtil.DefinirProjetosInicializacaoAsync();
             await this.ReiniciarAsync();
             await this.AnalisarNecessidadeServicoDepuracaoAsync();
             this.SoluacaoAberta?.Invoke(this, EventArgs.Empty);

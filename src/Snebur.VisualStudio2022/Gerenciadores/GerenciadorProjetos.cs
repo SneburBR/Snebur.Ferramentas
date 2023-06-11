@@ -237,28 +237,33 @@ namespace Snebur.VisualStudio
                 }
 
                 this._isAtualizando = true;
-                await SolutionUtil.DefinirProjetosInicializacaoAsync();
+                
                 var projetosVS = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
                 //ProjetoUtil.RetornarProjetosVisualStudioAsync();
-
-               
-                foreach (var projetoVS in projetosVS)
+                if (projetosVS.Count() > 0)
                 {
-                    try
+                    await SolutionUtil.DefinirProjetosInicializacaoAsync();
+                    foreach (var projetoVS in projetosVS)
                     {
-
-                        if (!String.IsNullOrWhiteSpace(projetoVS.FullPath))
+                        try
                         {
-                            await projetoVS.SaveAsync();
-                            await this.AtualizarProjetoTypescriptAsync(projetoVS);
-                            this.AtualizarProjetoSass(projetoVS);
+
+                            if (!String.IsNullOrWhiteSpace(projetoVS.FullPath))
+                            {
+                                await projetoVS.SaveAsync();
+                                await this.AtualizarProjetoTypescriptAsync(projetoVS);
+                                this.AtualizarProjetoSass(projetoVS);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogVSUtil.LogErro(ex);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        LogVSUtil.LogErro(ex);
-                    }
+
                 }
+
+           
 
                 if (!ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
                 {
@@ -276,7 +281,6 @@ namespace Snebur.VisualStudio
                             }
                         }
                     }
-
                 }
 
                 this._isProjetosAtualizados = (projetosVS.Count() > 0);
@@ -317,7 +321,7 @@ namespace Snebur.VisualStudio
                                                                                     caminhoConfiguracao);
 
                     LogVSUtil.Log($"Iniciando gerenciador de projeto typescript '{projetoTS.NomeProjeto}'");
-                    var todosArquivo = await SolutionUtil.RetornarTodosArquivosAsync(projetoVS, true);
+                    //var todosArquivo = await SolutionUtil.RetornarTodosArquivosAsync(projetoVS, true);
                     //projetoTS.TodosArquivos2 = todosArquivo;
                     await projetoTS.NormalizarReferenciasAsync();
                     this.AtualizarProjetoTS(projetoTS);
@@ -414,8 +418,6 @@ namespace Snebur.VisualStudio
            });
         }
 
-
-
         private static void InicializarPropriedadesGlobal()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -447,7 +449,7 @@ namespace Snebur.VisualStudio
         public override void AtualizarProjetoTS(ProjetoTypeScript projeto)
         {
             this.ProjetosTS.TryRemove(projeto.Chave, out var _);
-           if( this.ProjetosTS.TryAdd(projeto.Chave, projeto))
+            if (this.ProjetosTS.TryAdd(projeto.Chave, projeto))
             {
                 LogVSUtil.Log($"Projeto TS {projeto.NomeProjeto} atualizado no gerenciador ");
             }

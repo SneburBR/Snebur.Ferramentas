@@ -25,6 +25,8 @@ namespace Snebur.VisualStudio
 
             VS.Events.SolutionEvents.OnAfterOpenSolution += this.SolutionEvents_OnAfterOpenSolution;
             VS.Events.SolutionEvents.OnBeforeCloseSolution += this.SolutionEvents_OnBeforeCloseSolution;
+            VS.Events.SolutionEvents.OnBeforeUnloadProject += this.SolutionEvents_OnBeforeUnloadProject;
+            VS.Events.SolutionEvents.OnAfterLoadProject += this.SolutionEvents_OnAfterLoadProject;
 
             VS.Events.BuildEvents.ProjectBuildStarted += this.BuildEvents_ProjectBuildStarted;
             VS.Events.BuildEvents.ProjectBuildDone += this.BuildEvents_ProjectBuildDone;
@@ -32,6 +34,17 @@ namespace Snebur.VisualStudio
             VS.Events.DocumentEvents.Opened += this.DocumentEvents_Opened;
             VS.Events.DocumentEvents.BeforeDocumentWindowShow += this.DocumentEvents_BeforeDocumentWindowShow;
             VS.Events.DocumentEvents.Saved += this.DocumentEvents_Saved;
+        }
+
+        private void SolutionEvents_OnBeforeUnloadProject(Project project)
+        {
+            _ = SolutionUtil.DefinirProjetosInicializacaoAsync();
+        }
+
+        private void SolutionEvents_OnAfterLoadProject(Project project)
+        {
+            _=SolutionUtil.DefinirProjetosInicializacaoAsync();
+            
         }
 
         #region Projects Itens
@@ -178,6 +191,7 @@ namespace Snebur.VisualStudio
         private void SolutionEvents_OnBeforeCloseSolution()
         {
             this.DispensarProjetos();
+            DiretorioInicializarUtil.ClearDiretorioProjetoTypescriptInicializacao();
         }
 
         #endregion

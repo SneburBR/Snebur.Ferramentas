@@ -8,7 +8,7 @@ using Snebur.AcessoDados;
 using Snebur.Reflexao;
 using Snebur.Utilidade;
 
-namespace Snebur.VisualStudio.Reflexao
+namespace Snebur.VisualStudio
 {
     public static partial class TipoUtil
     {
@@ -445,6 +445,15 @@ namespace Snebur.VisualStudio.Reflexao
             }
 
 
+        }
+        private const string NOME_TIPO = "_NOME_TIPO_";
+        public static string RetornarNomeTipo(string nomePropriedade)
+        {
+            if(nomePropriedade.StartsWith("Is") || nomePropriedade.StartsWith("is"))
+            {
+                return "boolean";
+            }
+            return NOME_TIPO;
         }
 
     }
