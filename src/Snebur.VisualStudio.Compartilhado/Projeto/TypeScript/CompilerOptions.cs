@@ -1,11 +1,12 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
 using Snebur.Linq;
+using Snebur.Utilidade;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Snebur.VisualStudio
 {
-    public abstract class BaseCompilerOptions
+    public class CompilerOptions
     {
         public bool allowJs { get; set; } = false;
         public bool noImplicitAny { get; set; } = true;
@@ -29,55 +30,48 @@ namespace Snebur.VisualStudio
         public bool declaration { get; set; } = false;
         public bool declarationMap { get; set; } = false;
 
-        protected BaseCompilerOptions()
+        private string _outFile;
+
+        [JsonProperty("outFile")]
+        public string outFile
         {
-            var compilerOptionsInicializacao = GerenciadorProjetosUtil.ConfiguracaoProjetoTypesriptInicializacao?.CompilerOptions;
-            if (compilerOptionsInicializacao != null)
+            get => this._outFile;
+            private set
             {
-                this.lib.AddRangeNew(compilerOptionsInicializacao.lib);
-                this.target = compilerOptionsInicializacao.target;
+                if (value != null && CaminhoUtil.IsFullPath(value))
+                {
+                    LogVSUtil.LogErro($"outFile: caminho absoluto não é suportado {value}");
+                    value = this.NormalizarCaminho(value);
+                }
+                this._outFile = value;
             }
         }
-    }
 
-    public class CompilerOptionsFramework : BaseCompilerOptions
-    {
-        public string outFile { get; set; }
+      
+        public CompilerOptions()
+        {
+            //var compilerOptionsInicializacao = GerenciadorProjetosUtil.ConfiguracaoProjetoTypesriptInicializacao?.CompilerOptions;
+            //if (compilerOptionsInicializacao != null)
+            //{
+            //    this.lib.AddRangeNew(compilerOptionsInicializacao.lib);
+            //    this.target = compilerOptionsInicializacao.target;
+            //}
+        }
 
-        public CompilerOptionsFramework(string caminhoSaida) : base()
+        public CompilerOptions(string caminhoSaida) : this()
         {
             this.outFile = caminhoSaida;
         }
+         
+        private string NormalizarCaminho(string value)
+        {
+            var index = value.ToLower().LastIndexOf("\\build\\");
+            if (index > 0)
+            {
+                return value.Substring(index + 1);
+            }
+            return Path.GetFileName(value);
+        }
     }
 
-    //public class CompilerOptionsApresentacao : BaseCompilerOptions
-    //{
-    //    public string outDir { get; set; }
-
-    //    public CompilerOptionsApresentacao()
-    //    {
-
-    //    }
-
-    //    public CompilerOptionsApresentacao(string caminhoSaida) : base()
-    //    {
-    //        this.outDir = caminhoSaida;
-    //    }
-    //}
-
-    //public class CompilerOptionsRuntime : BaseCompilerOptions
-    //{
-    //    public string outDir { get; set; }
-
-    //    public CompilerOptionsRuntime():base()
-    //    {
-
-    //    }
-
-    //    public CompilerOptionsRuntime(string caminhoSaida)
-    //    {
-    //        this.outDir = caminhoSaida;
-    //        this.declaration = false;
-    //    }
-    //}
 }
