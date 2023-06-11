@@ -229,41 +229,41 @@ namespace Snebur.VisualStudio
             //    }
             //}
 
-            private static void DefinirProjetosInicializacao(DTE2 dte,
-                                                            Array projetosStartup)
-            {
-                foreach (var projetoStartup in projetosStartup)
-                {
-                    if (projetoStartup is string caminhoRelativoProjeto)
-                    {
-                        var diretorioSolucacao = Path.GetDirectoryName(dte.Solution.FullName);
-                        //var caminhoRelativoProjeto = (string)projetosStartup.GetValue(0);
-                        var caminhoProjeto = Path.GetFullPath(Path.Combine(diretorioSolucacao, caminhoRelativoProjeto));
-                        var diretorioProjeto = Path.GetDirectoryName(caminhoProjeto);
-                        var caminhoTS = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
-                        if (File.Exists(caminhoTS))
-                        {
-                            try
-                            {
+            //private static void DefinirProjetosInicializacao(DTE2 dte,
+            //                                                Array projetosStartup)
+            //{
+            //    foreach (var projetoStartup in projetosStartup)
+            //    {
+            //        if (projetoStartup is string caminhoRelativoProjeto)
+            //        {
+            //            var diretorioSolucacao = Path.GetDirectoryName(dte.Solution.FullName);
+            //            //var caminhoRelativoProjeto = (string)projetosStartup.GetValue(0);
+            //            var caminhoProjeto = Path.GetFullPath(Path.Combine(diretorioSolucacao, caminhoRelativoProjeto));
+            //            var diretorioProjeto = Path.GetDirectoryName(caminhoProjeto);
+            //            var caminhoTS = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
+            //            if (File.Exists(caminhoTS))
+            //            {
+            //                try
+            //                {
 
-                                var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
-                                GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(configuracaoTypescript);
-                                if (configuracaoTypescript.IsDebugScriptsDepedentes)
-                                {
-                                    GerenciadorProjetos.Instancia.SetDiretorioProjetoTypescriptInicializacao(diretorioProjeto);
-                                    return;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                LogVSUtil.LogErro(ex);
-                            }
-                        }
+            //                    var configuracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScript>(ArquivoUtil.LerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
+            //                    GerenciadorProjetos.Instancia.SetConfiguracaoProjetoTypesriptInicializacao(configuracaoTypescript);
+            //                    if (configuracaoTypescript.IsDebugScriptsDepedentes)
+            //                    {
+            //                        GerenciadorProjetos.Instancia.SetDiretorioProjetoTypescriptInicializacao(diretorioProjeto);
+            //                        return;
+            //                    }
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    LogVSUtil.LogErro(ex);
+            //                }
+            //            }
 
-                    }
+            //        }
 
-                }
-            }
+            //    }
+            //}
 
             //private static readonly string[] PastarIgnorar = new string[] { "build", "pr" };
 

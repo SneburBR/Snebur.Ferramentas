@@ -1,5 +1,4 @@
 ﻿using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Settings;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,26 +30,20 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                     AjudanteAssembly.Clear();
                 }
                 AjudanteAssembly.Inicializar(isCompilar);
-
-                //throw new Exception("Apenas Teste");
-                //var dte = await VSEx.GetDTEAsync();
-                //dte.ExecuteCommand("File.SaveAll");
-
+                 
                 await VS.Solutions.SaveAllProjetsAsync();
-
-           
-
+                 
                 var projetos = await AjudanteNormalizarProjetos.RetornarProjetosAsync();
-                if (projetos.Count > 0)
+                if (projetos?.Count > 0)
                 {
                     
                     await SolutionUtil.DefinirProjetosInicializacaoAsync();
+
                     LogVSUtil.Log($"Total de projetos encontrados {projetos.Count}");
 
                     var projetosTypeScript = projetos.OfType<ProjetoTypeScript>().ToList();
-
-
                     var projetosDominio = projetos.OfType<ProjetoDominio>().OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio).ToList();
+
                     foreach (var projeto in projetosDominio)
                     {
                         await projeto.NormalizarReferenciasAsync(isCompilar);

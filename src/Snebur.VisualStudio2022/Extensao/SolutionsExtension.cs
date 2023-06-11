@@ -1,6 +1,4 @@
-﻿using Bogus.Extensions;
-using Community.VisualStudio.Toolkit;
-using Microsoft.VisualStudio.Settings;
+﻿using Community.VisualStudio.Toolkit;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
-
     public static class SolutionsExtension
     {
         public async static Task<IEnumerable<Project>> GetStartupProjectsAsync(this Solutions solutions)
@@ -21,13 +18,27 @@ namespace Snebur.VisualStudio
                 try
                 {
                     var sb = dte.Solution.SolutionBuild;
-                    var projectsName = ((Array)sb.StartupProjects).Cast<string>().Select(x => Path.GetFileNameWithoutExtension(x));
-                    var allProjects = await solutions.GetAllProjectsAsync();
-                    return allProjects.Where(x => projectsName.Contains(x.Name));
-                }
-                catch
-                {
+                    var projectsName = ((Array)sb.StartupProjects).Cast<string>().
+                                                                   Select(x => Path.GetFileNameWithoutExtension(x)).
+                                                                   ToList();
 
+                    if (projectsName.Count > 0)
+                    {
+                        var allProjects = await solutions.GetAllProjectsAsync();
+                        var projetosInicializacao = allProjects.Where(x => projectsName.Contains(x.Name, new IgnorarCasoSensivel()) || projectsName.Contains(x.Text, new IgnorarCasoSensivel())).ToList();
+                        if (projetosInicializacao.Count < projectsName.Count)
+                        {
+                            var startupProjetNames = projetosInicializacao.Select(x => x.Name).ToList();
+                            var projetosNaoEncontrados = projectsName.Where(x => !startupProjetNames.Contains(x, new IgnorarCasoSensivel())).ToList();
+                            var descricaoProjetosNaoEncontrados = String.Join(", ", projetosNaoEncontrados);
+                            LogVSUtil.LogErro($"Os projetos de inicialização {descricaoProjetosNaoEncontrados} não foram encontrados");
+                        }
+                        return projetosInicializacao;
+                    }
+                }
+                catch(Exception erro)
+                {
+                    LogVSUtil.LogErro(erro);
                 }
             }
             return new List<Project>();
@@ -97,5 +108,5 @@ namespace Snebur.VisualStudio
         }
     }
 
-    
+
 }

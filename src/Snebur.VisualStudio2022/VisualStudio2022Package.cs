@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Snebur.Utilidade;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -42,15 +43,27 @@ namespace Snebur.VisualStudio
 
             await this.RegisterCommandsAsync();
             this.RegisterToolWindows();
-
+            
             try
             {
                 await GerenciadorProjetos.Instancia.InicializarAsync(this);
                 //InstalarItensTemplate.Instalar();
                 //await HtmlIntellisense.InicializarAsync();
                 //JsonUtil.Serializar(true, true);
-                AppDomain.CurrentDomain.UnhandledException += this.This_UnhandledException;
-                Application.Current.DispatcherUnhandledException += this.This_DispatcherUnhandledException;
+                _ = Task.Factory.StartNew(() =>
+                 {
+                     try
+                     {
+                         AppDomain.CurrentDomain.UnhandledException += this.This_UnhandledException;
+                         Application.Current.DispatcherUnhandledException += this.This_DispatcherUnhandledException;
+                     }
+                     catch
+                     {
+
+                     }
+                     
+                 }, cancellationToken, TaskCreationOptions.None, TaskScheduler.Default);
+
             }
             catch (Exception ex)
             {
@@ -72,6 +85,7 @@ namespace Snebur.VisualStudio
 
         private void This_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            e.Handled = true;
             LogUtil.ErroAsync(e.Exception);
         }
     }

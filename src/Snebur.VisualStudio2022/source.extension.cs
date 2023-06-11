@@ -11,7 +11,7 @@ namespace Snebur.VisualStudio
         public const string Name = "Snebur.VisualStudio2022";
         public const string Description = @"Snebur extensão ";
         public const string Language = "en-US";
-        public const string Version = "23.6.8.210";
+        public const string Version = "23.6.9.212";
         public const string Author = "Rubens Cordeiro";
         public const string Tags = "";
     }

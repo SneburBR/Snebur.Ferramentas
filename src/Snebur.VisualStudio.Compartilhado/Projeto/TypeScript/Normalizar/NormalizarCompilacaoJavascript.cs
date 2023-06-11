@@ -18,7 +18,7 @@ namespace Snebur.VisualStudio
         private const string WHERE_BUFFER = "here";
 
         private ProjetoTypeScript ProjetoTS;
-        private ConfiguracaoProjetoTypeScriptFramework ConfiguracaoTypescript;
+        private ConfiguracaoProjetoTypeScript ConfiguracaoTypescript;
         internal static DateTime DATA_NORMALIZACAO_IMPLEMENTADA = new DateTime(2020, 3, 1);
         private readonly Encoding CODIFICACAO = Encoding.UTF8;
 
@@ -27,7 +27,7 @@ namespace Snebur.VisualStudio
         public NormalizarCompilacaoJavascript(ProjetoTypeScript projetoTS)
         {
             this.ProjetoTS = projetoTS;
-            this.ConfiguracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScriptFramework>(ArquivoUtil.LerTexto(this.ProjetoTS.CaminhoConfiguracao), EnumTipoSerializacao.Javascript);
+            this.ConfiguracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScript>(ArquivoUtil.LerTexto(this.ProjetoTS.CaminhoConfiguracao), EnumTipoSerializacao.Javascript);
             this.IsNormalizarWhere = !this.ConfiguracaoTypescript.IsIgnorarNormnalizacaoCompilacao;
         }
 
@@ -36,13 +36,11 @@ namespace Snebur.VisualStudio
             try
             {
                 var caminhoSaidaAtual = this.ProjetoTS.CaminhoSaidaAtual;
-                if (GerenciadorProjetosUtil.DiretorioProjetoTypescriptInicializacao != null)
+                if (!File.Exists(caminhoSaidaAtual) && File.Exists(this.ProjetoTS.CaminhoSaidaPadrao))
                 {
-                    if (!File.Exists(caminhoSaidaAtual) && File.Exists(this.ProjetoTS.CaminhoSaidaPadrao))
-                    {
-                        this.CopiarArquivosSaia(this.ProjetoTS.CaminhoSaidaPadrao, caminhoSaidaAtual);
-                    }
+                    this.CopiarArquivosSaia(this.ProjetoTS.CaminhoSaidaPadrao, caminhoSaidaAtual);
                 }
+
 
                 lock (ProjetoTypeScriptUtil.BloqueioManipuladorArquivos)
                 {
@@ -113,7 +111,7 @@ namespace Snebur.VisualStudio
                 throw new Exception("Falha ao copiar arquivo original" + caminhoJavascriptOriginal);
             }
             //LogVSUtil.Log($"Arquivo original: {File.Exists(caminhoJavascriptOriginal)}: {caminhoJavascriptOriginal}", tempo, false);
-          
+
             this.NornalizarScriptInterno(caminhoJavascriptOriginal,
                                          caminhoJavascriptNormalizado);
 
@@ -124,7 +122,7 @@ namespace Snebur.VisualStudio
 
             var caminhoRelativo = CaminhoUtil.RetornarCaminhoRelativo(caminhoSaida, this.ProjetoTS.DiretorioProjeto.FullName);
             LogVSUtil.Log($"{caminhoRelativo}");
-            LogVSUtil.Sucesso($"Compilação javascript {this.ProjetoTS.NomeProjeto} '{this.ConfiguracaoTypescript.compilerOptions.target}' normalizada ", tempo);
+            LogVSUtil.Sucesso($"Compilação javascript {this.ProjetoTS.NomeProjeto} '{this.ConfiguracaoTypescript.CompilerOptions.target}' normalizada ", tempo);
         }
         private void NornalizarScriptInterno(string caminhoJavascriptOriginal,
                                              string caminhoJavascriptNormalizado,
@@ -262,7 +260,7 @@ namespace Snebur.VisualStudio
 
         private BaseNormalizadorExpreessaoWhere RetornarNormalizarEspessaoWhere(string expressao)
         {
-            var es = this.ConfiguracaoTypescript.compilerOptions.target.ToUpper();
+            var es = this.ConfiguracaoTypescript.CompilerOptions.target.ToUpper();
             if (es == "ES5")
             {
                 return new NormalizadorExpreessaoWhere(expressao);
@@ -318,7 +316,7 @@ namespace Snebur.VisualStudio
                     using (var leitor = new StreamReader(fsOriginal, this.CODIFICACAO))
                     {
                         var primeiraLinha = leitor.ReadLine();
-                        if(primeiraLinha!= null)
+                        if (primeiraLinha != null)
                         {
                             return !primeiraLinha.Contains(NORMALIZADO);
                         }
