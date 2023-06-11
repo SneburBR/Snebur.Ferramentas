@@ -14,8 +14,6 @@ namespace Snebur.VisualStudio.Commands
     [Command(PackageIds.GoToDefinitionCommand)]
     internal sealed class GoToDefinitionCommand : BaseCommand<GoToDefinitionCommand>
     {
-        private const string NOME_TIPO = "_NOME_TIPO_";
-
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             try
@@ -840,11 +838,10 @@ namespace Snebur.VisualStudio.Commands
             selecao.StartOfDocument(true);
             selecao.FindText(declaracaoPropriedade);
             selecao.StartOfLine(vsStartOfLineOptions.vsStartOfLineOptionsFirstText);
-            selecao.FindText(NOME_TIPO);
+            selecao.FindText(TipoUtil.RetornarNomeTipo(nomePropriedade));
             //selecao.EndOfLine();
             //selecao.WordLeft();
             //selecao.LineDown();
-
             //selecao.StartOfLine(vsStartOfLineOptions.vsStartOfLineOptionsFirstText);
         }
 
@@ -852,14 +849,14 @@ namespace Snebur.VisualStudio.Commands
         {
             if (isLista)
             {
-                return $"public readonly {nomePropriedade} = new ListaObservacao<{NOME_TIPO}>();";
+                return $"public readonly {nomePropriedade} = new ListaObservacao<{TipoUtil.RetornarNomeTipo(nomePropriedade)}>();";
             }
-            return $"public {nomePropriedade}: {NOME_TIPO};";
+            return $"public {nomePropriedade}: {TipoUtil.RetornarNomeTipo(nomePropriedade)};";
         }
 
         private string RetornarDeclaracaoPropriedadeConstrutor(string nomePropriedade)
         {
-            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {NOME_TIPO});";
+            return $"this.DeclararPropriedade(x=> x.{nomePropriedade}, {TipoUtil.RetornarNomeTipo(nomePropriedade)});";
         }
 
         private async Task<(ArquivoTypescriptDefinicao, bool)> RetornarCaminhoArquivoViewModelAsync(DTE2 dte, Document documento, string nomeAtributo, string nomePropriedade, bool isOrigemThis)
@@ -1114,7 +1111,7 @@ namespace Snebur.VisualStudio.Commands
                     selecao.SelectLine();
                 }
                 var selecaoAtual = selecao.Text;
-                var declaracaoMetodo = $"private {nomeMetodo}(valor: any, dataContext: any): any";
+                var declaracaoMetodo = $"public {nomeMetodo}(valor: any, dataContext: any): any";
                 var sb = new StringBuilder();
                 sb.AppendLine(selecaoAtual);
                 sb.AppendLine($"\t\t{declaracaoMetodo}");
@@ -1157,7 +1154,7 @@ namespace Snebur.VisualStudio.Commands
 
                 var conteudoParametros = String.Join(", ", parametros.Select(x => $"{x.Key}: {x.Value}"));
                 var async = isAsync ? "async " : "";
-                var declaracaoMetodo = $"private {async} {nomeMetodo}({conteudoParametros}): {retorno}";
+                var declaracaoMetodo = $"public {async} {nomeMetodo}({conteudoParametros}): {retorno}";
                 var sb = new StringBuilder();
                 sb.AppendLine(selecaoAtual);
                 sb.AppendLine($"\t\t{declaracaoMetodo}");
@@ -1178,4 +1175,6 @@ namespace Snebur.VisualStudio.Commands
 
         #endregion
     }
+
+    
 }
