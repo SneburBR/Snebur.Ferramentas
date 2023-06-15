@@ -106,21 +106,20 @@ namespace Snebur.VisualStudio
                         }
                     }
 
-                    if (TipoUtil.TipoImplementaInterface(tipoEntidade, typeof(IDeletado)))
-                    {
-                        foreach (var propriedade in tipoEntidade.GetProperties().Where(x =>
-                        PropriedadeUtil.PossuiAtributo(x, typeof(ValidacaoUnicoAttribute))))
-                        {
-                            if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(ValorDeletadoConcatenarGuidAttribute)))
-                            {
-                                throw new Exception($"A entidade {tipoEntidade.Name},  implementa a interface {nameof(IDeletado)}," +
-                                                    $" a propriedade {propriedade.Name} possui  {nameof(ValidacaoUnicoAttribute)}  " +
-                                                    $"  adicionar o atributo  {nameof(ValorDeletadoConcatenarGuidAttribute)}" +
-                                                    $" ou  remover o atributo o {nameof(ValidacaoUnicoAttribute)} de {propriedade.Name}," +
-                                                    $" e utilizar {nameof(ValidacaoUnicoCompostaAttribute)} com propriedade  a {nameof(IDeletado.DataHoraDeletado)} ");
-                            }
-                        }
-                    }
+                    //if (TipoUtil.TipoImplementaInterface(tipoEntidade, typeof(IDeletado)))
+                    //{
+                    //    foreach (var propriedade in tipoEntidade.GetProperties().Where(x => PropriedadeUtil.PossuiAtributo(x, typeof(ValidacaoUnicoAttribute))))
+                    //    {
+                    //        if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(ValorDeletadoConcatenarGuidAttribute)))
+                    //        {
+                    //            throw new Exception($"A entidade {tipoEntidade.Name},  implementa a interface {nameof(IDeletado)}," +
+                    //                                $" a propriedade {propriedade.Name} possui  {nameof(ValidacaoUnicoAttribute)}  " +
+                    //                                $"  adicionar o atributo  {nameof(ValorDeletadoConcatenarGuidAttribute)}" +
+                    //                                $" ou  remover o atributo o {nameof(ValidacaoUnicoAttribute)} de {propriedade.Name}," +
+                    //                                $" e utilizar {nameof(ValidacaoUnicoCompostaAttribute)} com propriedade  a {nameof(IDeletado.DataHoraDeletado)} ");
+                    //        }
+                    //    }
+                    //}
 
                     var propriedadesRelacaoNn = tipoEntidade.GetProperties().Where(x => PropriedadeUtil.PossuiAtributo(x, typeof(RelacaoNnAttribute))).ToList();
                     foreach (var propriedade in propriedadesRelacaoNn)
