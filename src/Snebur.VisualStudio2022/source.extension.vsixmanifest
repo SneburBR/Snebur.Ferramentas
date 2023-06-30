@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
-        <Identity Id="Snebur.VisualStudio2022.Rubens Cordeiro.32ce5bbe-ac29-4dbe-8db0-d9e684995904" Version="23.6.14.224" Language="en-US" Publisher="Rubens Cordeiro" />
-        <DisplayName>Snebur.VisualStudio2022</DisplayName>
-        <Description xml:space="preserve">Snebur extensão </Description>
-        <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\Icon.png</PreviewImage>
-    </Metadata>
-    <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
-            <ProductArchitecture>amd64</ProductArchitecture>
-        </InstallationTarget>
-    </Installation>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
-    </Prerequisites>
-    <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    </Assets>
+  <Metadata>
+    <Identity Id="Snebur.VisualStudio2022.Rubens Cordeiro.32ce5bbe-ac29-4dbe-8db0-d9e684995904" Version="23.6.30.226" Language="en-US" Publisher="Rubens Cordeiro" />
+    <DisplayName>Snebur.VisualStudio2022</DisplayName>
+    <Description xml:space="preserve">Snebur extensão </Description>
+    <Icon>Resources\Icon.png</Icon>
+    <PreviewImage>Resources\Icon.png</PreviewImage>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+  </Assets>
 </PackageManifest>

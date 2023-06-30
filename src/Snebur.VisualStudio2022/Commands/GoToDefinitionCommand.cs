@@ -29,6 +29,7 @@ namespace Snebur.VisualStudio.Commands
                 LogVSUtil.LogErro(ex);
             }
         }
+
         private async Task ExecuteInternalAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

@@ -106,9 +106,6 @@ namespace Snebur.VisualStudio
                 return $"{tipoEnum.Namespace}.{tipoEnum.Name}.{valorEnum.ToString()}";
             }
             return this.RetornarValorTipoPrimario(tipoPrimarioEnum, valorPadrao);
-  
-
-
         }
 
     }

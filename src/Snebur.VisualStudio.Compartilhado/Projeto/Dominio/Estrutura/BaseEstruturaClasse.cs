@@ -12,7 +12,7 @@ namespace Snebur.VisualStudio
     {
         public string CaminhoTipoBase { get; set; }
         public string ImplentacaoInterfaces { get; set; }
-        public string Abastrada { get; set; }
+        public string Abstract { get; set; }
 
         public EstruturaConstrutor EstruturaConstrutor { get; }
         public List<EstruturaPropriedade> Propriedades { get; }
@@ -26,7 +26,7 @@ namespace Snebur.VisualStudio
             this.PropriedadesRelacaoChaveEstrangeira = this.RetornarPropriedadesRelacaoChaveEstrangeiras();
             this.Propriedades = this.RetornarEstruturasPropriedades(true);
             this.EstruturaConstrutor = this.RetornarEstruturaConstrutor();
-            this.Abastrada = (tipo.IsAbstract) ? " abstract" : String.Empty;
+            this.Abstract = (tipo.IsAbstract) ? " abstract" : String.Empty;
             this.ImplentacaoInterfaces = this.RetornarImplentacaoInterfaces();
         }
 
@@ -34,7 +34,7 @@ namespace Snebur.VisualStudio
         {
             var dicionario = new Dictionary<string, PropertyInfo>();
 
-            var propriedades = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo);
+            var propriedades = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo, true);
 
             var propriedadesRelacaoChavaEstrangeira = propriedades.Where(x => PropriedadeUtil.PossuiAtributo(x, typeof(ChaveEstrangeiraAttribute).Name)).ToList();
 
@@ -57,7 +57,7 @@ namespace Snebur.VisualStudio
             var linhas = new List<string>();
 
 
-            linhas.Add(String.Format("export{0} class {1} extends {2}{3}", this.Abastrada, this.NomeTipo, this.CaminhoTipoBase, this.ImplentacaoInterfaces));
+            linhas.Add(String.Format("export{0} class {1} extends {2}{3}", this.Abstract, this.NomeTipo, this.CaminhoTipoBase, this.ImplentacaoInterfaces));
             linhas.Add("{");
 
             if (this.Propriedades.Count() > 0)
@@ -111,11 +111,11 @@ namespace Snebur.VisualStudio
             return linhas;
         }
 
-        protected virtual List<EstruturaPropriedade> RetornarEstruturasPropriedades(bool ignoratTipoBase)
+        protected virtual List<EstruturaPropriedade> RetornarEstruturasPropriedades(bool isIgnorarTipoBase)
         {
             var estruturasPropriedade = new List<EstruturaPropriedade>();
-            var propriedadesPublica = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo);
-            var propriedadesEspecializada = AjudantePropriedades.RetornarPropriedadesClasseEspecializada(this.Tipo);
+            var propriedadesPublica = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo, isIgnorarTipoBase);
+            var propriedadesEspecializada = AjudantePropriedades.RetornarPropriedadesClasseEspecializada(this.Tipo, isIgnorarTipoBase);
 
             foreach (var propriedade in propriedadesPublica)
             {
@@ -136,13 +136,13 @@ namespace Snebur.VisualStudio
             {
                 estruturasPropriedade.Add(new EstruturaPropriedadeEspecializada(propriedade));
             }
-
             return estruturasPropriedade;
         }
 
         private EstruturaConstrutor RetornarEstruturaConstrutor()
         {
-            return new EstruturaConstrutor(this.Tipo, this.RetornarEstruturasPropriedades(false).OfType<EstruturaPropriedadePublica>().ToList());
+            var estruturasPropriedade = this.RetornarEstruturasPropriedades(false).OfType<EstruturaPropriedadePublica>().ToList();
+            return new EstruturaConstrutor(this.Tipo, estruturasPropriedade);
         }
 
         private string RetornarTypeScriptPropriedades(string tabInicial)
@@ -186,9 +186,7 @@ namespace Snebur.VisualStudio
                 return nome.GetHashCode();
             }
         }
-
-
-
+         
         private void AdicionarLinhasExtrasInterfaceImagm()
         {
             this.LinhasExtra.Add(String.Empty);

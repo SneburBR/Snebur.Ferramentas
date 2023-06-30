@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Snebur.Dominio;
+using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Snebur.Dominio;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -17,9 +16,11 @@ namespace Snebur.VisualStudio
         public PropertyInfo PropriedadeRelacaoChaveEstrangeira { get; }
         public bool IsPropriedadeIsAtivo { get; private set; }
 
+        private bool IsCampoProtected;
+
         //public string NomePropriedadeAtribuir { get; set; }
 
-        public EstruturaPropriedadePublica( PropertyInfo propriedade,
+        public EstruturaPropriedadePublica(PropertyInfo propriedade,
                                             PropertyInfo propriedadeRelacaoChaveEstrangeira) :
                                            base(propriedade)
         {
@@ -27,10 +28,13 @@ namespace Snebur.VisualStudio
             this.PropriedadeRelacaoChaveEstrangeira = propriedadeRelacaoChaveEstrangeira;
 
             var atributoInterfacePropriedade = propriedade.GetCustomAttributes().Where(k => k.GetType().Name == AjudanteAssembly.NomeTipoAtributoProprieadeInterface).SingleOrDefault();
+            var atributoCampoProtegido = propriedade.GetCustomAttributes().Where(k => k.GetType().Name == AjudanteAssembly.NomeTipoAtributoCampoProtegida).SingleOrDefault();
+            this.IsCampoProtected = atributoCampoProtegido != null;
+
             if (atributoInterfacePropriedade != null)
             {
                 this.IsPropriedadeInterace = true;
-                this.NomeVariavelPrivada = Convert.ToString(Snebur.Utilidade.ReflexaoUtil.RetornarValorPropriedade(atributoInterfacePropriedade, "NomePropriedade"));
+                this.NomeVariavelPrivada = Convert.ToString(ReflexaoUtil.RetornarValorPropriedade(atributoInterfacePropriedade, "NomePropriedade"));
                 this.NomePropriedade = this.Propriedade.Name.Split('.').Last();
             }
             else
@@ -48,7 +52,9 @@ namespace Snebur.VisualStudio
         {
             if (!this.IsPropriedadeInterace)
             {
-                return$"{tabInicial}private {this.NomePriprieadePrivada} : {this.CaminhoTipo} = {this.ValorPropriedade};";
+                var visibilidade = this.IsCampoProtected ? "protected" :
+                                                            "private";
+                return $"{tabInicial}{visibilidade} {this.NomePriprieadePrivada} : {this.CaminhoTipo} = {this.ValorPropriedade};";
             }
             return String.Empty;
         }
@@ -84,7 +90,7 @@ namespace Snebur.VisualStudio
 
             linhas.Add(String.Format("{0}}}", tabInicial));
 
-            linhas.Add($"{tabInicial}public set {this.NomePropriedade}(value: { this.CaminhoTipo}) ");
+            linhas.Add($"{tabInicial}public set {this.NomePropriedade}(value: {this.CaminhoTipo}) ");
             linhas.Add(String.Format("{0}{{", tabInicial));
 
             var metodoNotificarPropriedadeAlterada = this.RetornarMetodoNotificarPropriedadeAlterada();
@@ -98,7 +104,7 @@ namespace Snebur.VisualStudio
             {
                 linhas.Add($"{tabInicial}{TAB}this.{metodoNotificarPropriedadeAlterada}(\"{this.NomePropriedade}\", this.{this.NomeVariavelPrivada}, this.{this.NomeVariavelPrivada} = {valor});");
             }
-            
+
             //linhas.Add(String.Format("{0}{1}this.NotificarPropriedadeAlterada(\"{2}\", this.{3}, this.{3} = value);", tabInicial, TAB, this.NomePropriedade, this.NomeVariavelPrivada));
 
 

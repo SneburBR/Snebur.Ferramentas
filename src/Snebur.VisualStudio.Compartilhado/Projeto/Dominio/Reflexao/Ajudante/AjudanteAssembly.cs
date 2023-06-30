@@ -55,6 +55,7 @@ namespace Snebur.VisualStudio
         public static readonly string NomeTipoAtributoCriarInstanciaTS = nameof(CriarInstanciaTSAttribute);
         public static readonly string NomeTipoAtributoMensagemValidacao = nameof(MensagemValidacaoAttribute);
         public static readonly string NomeTipoAtributoProprieadeInterface = nameof(PropriedadeInterfaceAttribute);
+        public static readonly string NomeTipoAtributoCampoProtegida = nameof(CampoProtegidoAttribute);
         public static readonly string NomePropriedadeChavePrimariaEntidade = ReflexaoUtil.RetornarNomePropriedade<Entidade>(x => x.Id);
 
         public static Type TipoBaseAtributoValidacao { get; private set; }

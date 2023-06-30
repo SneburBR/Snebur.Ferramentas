@@ -1,14 +1,11 @@
-﻿using System;
+﻿using Snebur.Dominio.Atributos;
+using Snebur.Linq;
+using Snebur.Utilidade;
+using Snebur.VisualStudio.Reflexao;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur;
-using Snebur.Utilidade;
 using System.Reflection;
-using Snebur.VisualStudio.Reflexao;
-using Snebur.Dominio.Atributos;
-using Snebur.Linq;
 
 namespace Snebur.VisualStudio
 {
@@ -17,12 +14,10 @@ namespace Snebur.VisualStudio
         public static BindingFlags Estaticas = BindingFlags.Public | BindingFlags.Static;
 
         public static BindingFlags Publicas = BindingFlags.Public |
-                                              BindingFlags.Instance |
-                                              BindingFlags.DeclaredOnly;
+                                              BindingFlags.Instance  ;
 
         public static BindingFlags PropriedadesInterface = BindingFlags.NonPublic |
-                                                           BindingFlags.Instance |
-                                                           BindingFlags.DeclaredOnly;
+                                                           BindingFlags.Instance ;
 
         public static List<PropertyInfo> RetornarPropriedadesClasseEstaticas(Type tipo)
         {
@@ -33,10 +28,10 @@ namespace Snebur.VisualStudio
         }
 
 
-        public static List<PropertyInfo> RetornarPropriedadesClassePublicas(Type tipo)
+        public static List<PropertyInfo> RetornarPropriedadesClassePublicas(Type tipo, bool ignoratTipoBase)
         {
 
-            var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Publicas, true);
+            var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Publicas, ignoratTipoBase);
 
             propriedades = propriedades.Where(x => x.GetGetMethod() != null && x.GetGetMethod().IsPublic).ToList();
 
@@ -55,9 +50,9 @@ namespace Snebur.VisualStudio
             return propriedades;
         }
 
-        public static List<PropertyInfo> RetornarPropriedadesClasseEspecializada(Type tipo)
+        public static List<PropertyInfo> RetornarPropriedadesClasseEspecializada(Type tipo, bool isIgnorarTipoBase)
         {
-            var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Publicas, true);
+            var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Publicas, isIgnorarTipoBase);
 
             propriedades = propriedades.Where(x => x.GetGetMethod() != null && x.GetGetMethod().IsPublic).ToList();
 
@@ -67,9 +62,9 @@ namespace Snebur.VisualStudio
             }
 
 
-            propriedades = propriedades.Where(x =>
-             x.GetCustomAttributes().Any(k => k.GetType().Name == nameof(PropriedadeTSEspecializadaAttribute))
-             ).ToList();
+            propriedades = propriedades.Where(x => x.GetCustomAttributes().
+                                                     Any(k => k.GetType().Name == nameof(PropriedadeTSEspecializadaAttribute))).
+                                        ToList();
 
             return propriedades;
         }

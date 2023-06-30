@@ -30,7 +30,6 @@ namespace Snebur.VisualStudio
         {
             try
             {
-
                 if (!(await this.AtualizandoConnectionStringEmTempoExecucaoAsync()))
                 {
                     return;
