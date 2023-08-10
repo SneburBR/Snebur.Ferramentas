@@ -95,7 +95,8 @@ namespace Snebur.VisualStudio
                 case EnumTipoPrimario.TimeSpan:
 
                     return " new TimeSpan(0,0,0,0,0);";
-
+                case EnumTipoPrimario.Char:
+                    return "null";
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
