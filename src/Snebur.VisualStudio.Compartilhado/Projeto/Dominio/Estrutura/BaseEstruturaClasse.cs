@@ -33,9 +33,7 @@ namespace Snebur.VisualStudio
         private Dictionary<string, PropertyInfo> RetornarPropriedadesRelacaoChaveEstrangeiras()
         {
             var dicionario = new Dictionary<string, PropertyInfo>();
-
-            var propriedades = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo, true);
-
+            var propriedades = AjudantePropriedades.RetornarPropriedadesClassePublicas(this.Tipo, true, false);
             var propriedadesRelacaoChavaEstrangeira = propriedades.Where(x => PropriedadeUtil.PossuiAtributo(x, typeof(ChaveEstrangeiraAttribute).Name)).ToList();
 
             foreach (var propriedadeRelacao in propriedadesRelacaoChavaEstrangeira)

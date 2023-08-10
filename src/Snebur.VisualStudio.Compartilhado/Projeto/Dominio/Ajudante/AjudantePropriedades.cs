@@ -28,7 +28,9 @@ namespace Snebur.VisualStudio
         }
 
 
-        public static List<PropertyInfo> RetornarPropriedadesClassePublicas(Type tipo, bool ignoratTipoBase)
+        public static List<PropertyInfo> RetornarPropriedadesClassePublicas(Type tipo,
+                                                                            bool ignoratTipoBase, 
+                                                                            bool isIgnorarPropriedadeOverride = true)
         {
 
             var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Publicas, ignoratTipoBase);
@@ -36,13 +38,17 @@ namespace Snebur.VisualStudio
             propriedades = propriedades.Where(x => x.GetGetMethod() != null && x.GetGetMethod().IsPublic).ToList();
 
             //propriedades = propriedades.Where(x => !x.GetSetMethod().IsAbstract && !x.GetGetMethod().IsAbstract).ToList();
-            propriedades = propriedades.Where(x =>
+            if (ignoratTipoBase && isIgnorarPropriedadeOverride)
             {
-                var getMetodo = x.GetGetMethod(false);
-                var getBaseMetodo = getMetodo.GetBaseDefinition();
-                return getMetodo == getBaseMetodo;
+                propriedades = propriedades.Where(x =>
+                {
+                    var getMetodo = x.GetGetMethod(false);
+                    var getBaseMetodo = getMetodo.GetBaseDefinition();
+                    return getMetodo == getBaseMetodo;
 
-            }).ToList();
+                }).ToList();
+            }
+           
 
             propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS)).
                                         Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == nameof(PropriedadeTSEspecializadaAttribute))).ToList();
