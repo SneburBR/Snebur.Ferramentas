@@ -14,6 +14,8 @@
             if (nomePropriedade.StartsWith("nome") ||
                 nomePropriedade.StartsWith("descricao") ||
                 nomePropriedade.StartsWith("name") ||
+                nomePropriedade.StartsWith("rotulo") ||
+                nomePropriedade.StartsWith("legenda") ||
                 nomePropriedade.StartsWith("description"))
             {
                 return isConstrutor ? "String" : "string";
@@ -22,6 +24,8 @@
             if (nomePropriedade.StartsWith("total") ||
                 nomePropriedade.StartsWith("count") ||
                 nomePropriedade.StartsWith("valor") ||
+                nomePropriedade.StartsWith("Id") ||
+                nomePropriedade.EndsWith("_Id") ||
                 nomePropriedade.StartsWith("preco"))
             {
                 return isConstrutor ? "Number" : "number";
