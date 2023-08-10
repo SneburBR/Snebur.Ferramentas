@@ -45,8 +45,6 @@ namespace Snebur.VisualStudio
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("/*eslint-disable*/");
-                //sb.AppendLine(String.Format("//Data : {0}", DateTime.Now.ToLongDateString()));
-                //sb.AppendLine(String.Format("//Hora : {0}", DateTime.Now.ToLongTimeString()));
                 sb.AppendLine(String.Format("//@Namespace: {0}", this.ConfiguracaoDominio.Namespace));
                 sb.AppendLine(String.Format("//@PrioridadeDominio: {0}", this.ConfiguracaoDominio.PrioridadeDominio));
                 sb.AppendLine(String.Format("//@Globalizar: {0}", this.ConfiguracaoDominio.Globalizar));
