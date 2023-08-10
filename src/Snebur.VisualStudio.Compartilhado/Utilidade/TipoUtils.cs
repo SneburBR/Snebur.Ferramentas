@@ -407,6 +407,8 @@ namespace Snebur.VisualStudio
                     return "string";
                 case EnumTipoPrimario.TimeSpan:
                     return "TimeSpan";
+                case EnumTipoPrimario.Char:
+                    return "string";
                 case EnumTipoPrimario.Object:
                     return "any";
                 default:
