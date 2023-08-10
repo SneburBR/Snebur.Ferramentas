@@ -56,6 +56,7 @@ namespace Snebur.VisualStudio
             this.SubExtensao = ArquivoUtil.RetornarSubExtenmsao(arquivo.Name).ToLower();
             this.Linhas = File.ReadAllLines(this.Arquivo.FullName, System.Text.UTF8Encoding.UTF8).ToList();
             this.TipoArquivoTypeScript = this.RetornarTipoArquivoTypeScript();
+          
 
             this.Namespace = this.RetornarNamespace();
             this.NomeTipo = this.RetornarNomeTipo();

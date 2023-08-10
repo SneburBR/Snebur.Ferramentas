@@ -227,14 +227,7 @@ namespace Snebur.VisualStudio
                 var proximoAruqivo = this.RetornarProximoArquivoTypeScrit();
                 if (proximoAruqivo != null)
                 {
-                    if (proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBase ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBaseAbstrata ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseExportAbstrata ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.BaseClasseViewModel ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.BaseClasseViewModelAbstrata ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseViewModel ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseViewModelAbstrataExport ||
-                    proximoAruqivo.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseExport)
+                    if (TipoArquivoTypeScriptUtil.IsPossuiClasseBase(proximoAruqivo.TipoArquivoTypeScript))
                     {
                         this.CaminhosTipoClassBase.Add(((ArquivoTypeScript)proximoAruqivo).CaminhoTipo);
                         this.NomesTipoClassBase.Add(((ArquivoTypeScript)proximoAruqivo).NomeTipo);
@@ -313,7 +306,9 @@ namespace Snebur.VisualStudio
                       case EnumTipoArquivoTypeScript.SistemaLocalConfig:
                       case EnumTipoArquivoTypeScript.SistemaReflexao:
 
-                      case EnumTipoArquivoTypeScript.SistemaVariaveis:
+                      //case EnumTipoArquivoTypeScript.SistemaMapeamento:
+                      case EnumTipoArquivoTypeScript.SistemaMapeamentos:
+                      case EnumTipoArquivoTypeScript.SistemaExports:
                       case EnumTipoArquivoTypeScript.SistemaDeclarationType:
 
                           return true;
@@ -354,6 +349,7 @@ namespace Snebur.VisualStudio
                           }
 
                       default:
+
                           throw new NotSupportedException("TipoArquivo não suportado ");
                   }
 
@@ -366,13 +362,11 @@ namespace Snebur.VisualStudio
 
         private void SalvarTSConfig(ConfiguracaoProjetoTypeScript tsconfig)
         {
-            //var js = new System.Web.Script.Serialization.JavaScriptSerializer();
             var json = JsonUtil.Serializar(tsconfig, EnumTipoSerializacao.Javascript, true);
             ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
         }
-         
-
+          
         private int RetornarPrioridadeProjeto(FileInfo arquivo)
         {
             if (arquivo.Directory.FullName.Contains(this.CaminhoProjeto))

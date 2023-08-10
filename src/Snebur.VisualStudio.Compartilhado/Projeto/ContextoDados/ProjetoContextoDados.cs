@@ -17,7 +17,6 @@ namespace Snebur.VisualStudio
 
         private const string REGION_CONSTRUTOR_CONSULTAS_TS = "//#region Construtor Consultas";
 
-
         public ProjetoContextoDados(ProjetoViewModel projetoVM,
                                     ConfiguracaoProjetoContextoDados configuracaoProjeto,
                                     FileInfo arquivoProjeto,
@@ -364,7 +363,5 @@ namespace Snebur.VisualStudio
 
         }
         #endregion
-
-
     }
 }

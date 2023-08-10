@@ -187,7 +187,6 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-
                     arquivosTS.Add(new ArquivoTypeScript(configuracao,  caminhoProjeto, arquivo, prioridadeProjeto));
                 }
             }
@@ -206,5 +205,49 @@ namespace Snebur.VisualStudio
                               ThenBy(x => Convert.ToInt32(x.TipoArquivoTypeScript)).
                               ToList();
         }
-     }
+        internal static bool IsPossuiNamespace(EnumTipoArquivoTypeScript tipoArquivoTypeScript)
+        {
+            switch (tipoArquivoTypeScript)
+            {
+                case EnumTipoArquivoTypeScript.Nativo:
+                case EnumTipoArquivoTypeScript.Inteface:
+                case EnumTipoArquivoTypeScript.IntefaceExport:
+                case EnumTipoArquivoTypeScript.ClasseBaseAbstrata:
+                case EnumTipoArquivoTypeScript.ClasseBase:
+                case EnumTipoArquivoTypeScript.EnumBase:
+                case EnumTipoArquivoTypeScript.Vazio:
+                case EnumTipoArquivoTypeScript.Teste:
+                case EnumTipoArquivoTypeScript.SistemaExports:
+                //case EnumTipoArquivoTypeScript.SistemaMapeamento:
+                case EnumTipoArquivoTypeScript.SistemaMapeamentos:
+                case EnumTipoArquivoTypeScript.Desconhecido:
+
+                    return false;
+
+                default:
+
+                    return true;
+            }
+        }
+
+        internal static bool IsPossuiClasseBase(EnumTipoArquivoTypeScript tipoArquivoTypeScript)
+        {
+            switch (tipoArquivoTypeScript)
+            {
+                case EnumTipoArquivoTypeScript.ClasseBase:
+                case EnumTipoArquivoTypeScript.ClasseBaseAbstrata:
+                case EnumTipoArquivoTypeScript.ClasseExportAbstrata:
+                case EnumTipoArquivoTypeScript.BaseClasseViewModel:
+                case EnumTipoArquivoTypeScript.BaseClasseViewModelAbstrata:
+                case EnumTipoArquivoTypeScript.ClasseViewModel:
+                case EnumTipoArquivoTypeScript.ClasseViewModelAbstrataExport:
+                case EnumTipoArquivoTypeScript.ClasseExport:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+ 
 }

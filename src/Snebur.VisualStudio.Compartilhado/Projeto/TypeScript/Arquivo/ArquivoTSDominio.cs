@@ -73,12 +73,12 @@ namespace Snebur.VisualStudio
             var linhasAtributo = this.Linhas.Where(x => x.StartsWith(procurar)).ToList();
             if (linhasAtributo.Count == 0)
             {
-                throw new Exception(String.Format(" A linha do namespace não foi encontrado no Arquivo do dominio {0}", this.Arquivo.FullName));
+                throw new Exception(String.Format(" A linha do namespace não foi encontrado no Arquivo do domínio {0}", this.Arquivo.FullName));
             }
 
             if (linhasAtributo.Count > 1)
             {
-                throw new Exception(String.Format(" Existe mais de uma linha de namespace  no Arquivo do dominio {0}", this.Arquivo.FullName));
+                throw new Exception(String.Format(" Existe mais de uma linha de namespace  no Arquivo do domínio {0}", this.Arquivo.FullName));
             }
             var linhaAtributo = linhasAtributo.Single();
             var valorAtributo = linhaAtributo.Substring(procurar.Length).Trim();

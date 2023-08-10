@@ -138,16 +138,7 @@ namespace Snebur.VisualStudio
 
         protected override string RetornarNamespace()
         {
-            if (!(this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.Nativo ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.Inteface ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.IntefaceExport ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBaseAbstrata ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBase ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.EnumBase ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.Vazio ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.Teste ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.SistemaVariaveis ||
-                  this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.Desconhecido))
+            if (TipoArquivoTypeScriptUtil.IsPossuiNamespace(this.TipoArquivoTypeScript))
             {
 
                 var linhasNamespace = this.Linhas.Where(x => x.TrimStart().StartsWith(TipoArquivoTypeScriptUtil.PROCURAR_NAMESPACE)).ToList();
@@ -170,18 +161,8 @@ namespace Snebur.VisualStudio
 
         protected override string RetornarCaminhoClasseBase()
         {
-
-
-            if ((this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBase) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseBaseAbstrata) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseExport) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.BaseClasseViewModel) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.BaseClasseViewModelAbstrata) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseViewModel) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseViewModelAbstrataExport) ||
-                (this.TipoArquivoTypeScript == EnumTipoArquivoTypeScript.ClasseExportAbstrata))
+            if (TipoArquivoTypeScriptUtil.IsPossuiClasseBase(this.TipoArquivoTypeScript))
             {
-
                 var procurar = TipoArquivoTypeScriptUtil.RetornarProcurarTipo(this.TipoArquivoTypeScript);
                 var linhaClasse = this.Linhas.Where(x => x.Trim().StartsWith(procurar)).First();
 
