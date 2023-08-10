@@ -1,7 +1,6 @@
 ﻿using Snebur.Dominio.Atributos;
 using Snebur.Linq;
 using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 using Snebur.VisualStudio.Utilidade;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,6 @@ namespace Snebur.VisualStudio
 {
     public abstract class BaseGeradorDominio : IDisposable
     {
-
         protected const string TAB = "    ";
 
         protected string CaminhoArquivoDestino { get; set; }
@@ -39,7 +37,6 @@ namespace Snebur.VisualStudio
             this.CaminhoArquivoDestino = this.RetornarCaminhoArquivoDestino();
             this.ProjetoSneburDominio = this.ConfiguracaoDominio.Namespace == "Snebur.Dominio";
             this.TiposDominio = this.RetornarRetornarTiposDominios();
-
         }
 
         public void Gerar()
@@ -48,8 +45,8 @@ namespace Snebur.VisualStudio
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("/*eslint-disable*/");
-                sb.AppendLine(String.Format("//Data : {0}", DateTime.Now.ToLongDateString()));
-                sb.AppendLine(String.Format("//Hora : {0}", DateTime.Now.ToLongTimeString()));
+                //sb.AppendLine(String.Format("//Data : {0}", DateTime.Now.ToLongDateString()));
+                //sb.AppendLine(String.Format("//Hora : {0}", DateTime.Now.ToLongTimeString()));
                 sb.AppendLine(String.Format("//@Namespace: {0}", this.ConfiguracaoDominio.Namespace));
                 sb.AppendLine(String.Format("//@PrioridadeDominio: {0}", this.ConfiguracaoDominio.PrioridadeDominio));
                 sb.AppendLine(String.Format("//@Globalizar: {0}", this.ConfiguracaoDominio.Globalizar));

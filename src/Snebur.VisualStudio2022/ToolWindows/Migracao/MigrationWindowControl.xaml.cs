@@ -876,7 +876,7 @@ namespace Snebur.VisualStudio
                 {
                     this.Log(cmd.CommandText);
                     System.Threading.Thread.Sleep(15);
-                });
+                }, false);
 
                 this.LogSucesso("Migração realizada com sucesso.");
 
