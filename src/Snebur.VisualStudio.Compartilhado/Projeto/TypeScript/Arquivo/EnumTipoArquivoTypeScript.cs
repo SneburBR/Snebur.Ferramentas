@@ -58,8 +58,11 @@ namespace Snebur.VisualStudio
 
         SistemaReferencias = 860,
 
-        SistemaVariaveis = 870,
+        //SistemaMapeamento = 865,
+        SistemaMapeamentos = 865,
 
+        SistemaExports = 870,
+         
         SistemaLocalConfig = 880,
 
         SistemaAplicacaoConfiguracao = 890,

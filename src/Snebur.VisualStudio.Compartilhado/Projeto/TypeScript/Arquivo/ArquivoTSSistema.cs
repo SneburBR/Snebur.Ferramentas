@@ -14,7 +14,9 @@ namespace Snebur.VisualStudio
         private const string EXTENSAO_REGISTRAR_ELEMENTO = ".registrar.ts";
         private const string EXNTESAO_INICIO = ".inicio.ts";
         private const string EXTENSAO_REFERENCIAS = ".referencias.ts";
-        private const string EXTENSAO_VARIAVEIS = ".variaveis.ts";
+        private const string EXTENSAO_EXPORTS = ".exports.ts";
+        //private const string EXTENSAO_MAPEAMENTO = ".mapeamento.ts";
+        private const string EXTENSAO_MAPEAMENTOS = ".mapeamentos.ts";
         private const string EXTENSAO_DECLARACAO = ".d.ts";
         private const string EXTENSAO_REFLEXAO = ".reflexao.ts";
         private const string EXTENSAO_CONFIG = ".config.ts";
@@ -23,7 +25,9 @@ namespace Snebur.VisualStudio
         {
             {EXNTESAO_INICIO,EnumTipoArquivoTypeScript.SistemaInicio },
             {EXTENSAO_REFERENCIAS,EnumTipoArquivoTypeScript.SistemaReferencias },
-            {EXTENSAO_VARIAVEIS,EnumTipoArquivoTypeScript.SistemaVariaveis },
+            {EXTENSAO_EXPORTS,EnumTipoArquivoTypeScript.SistemaExports },
+            //{EXTENSAO_MAPEAMENTO,EnumTipoArquivoTypeScript.SistemaMapeamento },
+            {EXTENSAO_MAPEAMENTOS,EnumTipoArquivoTypeScript.SistemaMapeamentos },
             {EXTENSAO_DECLARACAO,EnumTipoArquivoTypeScript.SistemaDeclarationType },
             {EXTENSAO_REGISTRAR_ELEMENTO,EnumTipoArquivoTypeScript.SistemaReferencias },
             {EXTENSAO_REFLEXAO,EnumTipoArquivoTypeScript.SistemaExtensaoReflexao },
