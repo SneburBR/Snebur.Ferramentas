@@ -99,8 +99,8 @@ namespace Snebur.VisualStudio
                 var linhasCampoPrivadoRemover = new List<string>();
 
                 var linhasPropriedade = linhas.Where(x => x.Contains("public") &&
-                                                          x.Contains("get") &&
-                                                          x.Contains("set") &&
+                                                          x.Contains(" get") &&
+                                                          x.Contains(" set") &&
                                                           !x.Trim().StartsWith(@"//")).ToList();
 
                 var linhasPropriedadePesquisa = linhasPropriedade.Select(x => x.Substring(0, x.LastIndexOf("set"))).ToList();
@@ -143,7 +143,7 @@ namespace Snebur.VisualStudio
                 foreach (var propriedadeNormal in propriedadesNormal)
                 {
                     var nomeCampoPrivado = this.RetornarNomeCampoPrivado(propriedadeNormal.Name);
-                    var linhaNormalAtual = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains("get")).SingleOrDefault();
+                    var linhaNormalAtual = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains(" get")).SingleOrDefault();
 
 
                     var linhaPropriedadePesquisa = this.RetornarLinhaPropridade(linhasPropriedadePesquisa, propriedadeNormal);
@@ -172,7 +172,7 @@ namespace Snebur.VisualStudio
                             var linhaPropriedade = linhasPropriedade[posicaoLinhaPesquisa];
 
                             var posicaoLinha = linhas.IndexOf(linhaPropriedade);
-                            var fim = linhaPropriedadePesquisa.IndexOf("get");
+                            var fim = linhaPropriedadePesquisa.IndexOf(" get");
                             var inicioPropriedade = linhaPropriedadePesquisa.Substring(0, fim).TrimEnd();
 
                             string linhaPropriedadeAtribuir;
@@ -251,7 +251,7 @@ namespace Snebur.VisualStudio
                 foreach (var propriedadeTipoComplexo in prorpiedadesTiposCompleto)
                 {
                     var nomeCampoPrivado = this.RetornarNomeCampoPrivado(propriedadeTipoComplexo.Name);
-                    var linhaCampoPrivado = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains("get")).SingleOrDefault();
+                    var linhaCampoPrivado = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains(" get")).SingleOrDefault();
 
                     var linhaPropriedadePesquisa = this.RetornarLinhaPropridade(linhasPropriedadePesquisa, propriedadeTipoComplexo);
                     if (linhaPropriedadePesquisa != null)
@@ -264,7 +264,7 @@ namespace Snebur.VisualStudio
                             var linhaPropriedade = linhasPropriedade[posicaoLinhaPesquisa];
                             var posicaoLinha = linhas.IndexOf(linhaPropriedade);
 
-                            var fim = linhaPropriedadePesquisa.IndexOf("get");
+                            var fim = linhaPropriedadePesquisa.IndexOf(" get");
                             var inicioPropriedade = linhaPropriedadePesquisa.Substring(0, fim);
                             inicioPropriedade = inicioPropriedade.TrimEnd();
 
@@ -296,7 +296,7 @@ namespace Snebur.VisualStudio
                 foreach (var propriedadeRelacao in propriedadesRelacao)
                 {
                     var nomeCampoPrivado = this.RetornarNomeCampoPrivado(propriedadeRelacao.Name);
-                    var linhaCampo = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains("get")).SingleOrDefault();
+                    var linhaCampo = linhas.Where(x => x.Contains(" " + nomeCampoPrivado + ";") && !x.Contains(" get")).SingleOrDefault();
 
                     var linhaPropriedade = this.RetornarLinhaPropridade(linhasPropriedade, propriedadeRelacao);
                     if (linhaPropriedade != null)
@@ -305,7 +305,7 @@ namespace Snebur.VisualStudio
                             !linhaPropriedade.Contains(NOME_METODO_RETORNAR_VALOR_PROPRIEDADE))
                         {
                             var posicaoLinha = linhas.IndexOf(linhaPropriedade);
-                            var fim = linhaPropriedade.IndexOf("get");
+                            var fim = linhaPropriedade.IndexOf(" get");
                             var inicioPropriedade = linhaPropriedade.Substring(0, fim);
 
                             var linhaPropriedadeAtribuir = String.Format("{0} get => this.{1}(this.{2}); set => this.{3}(this.{2}, this.{2} = value); }}",
