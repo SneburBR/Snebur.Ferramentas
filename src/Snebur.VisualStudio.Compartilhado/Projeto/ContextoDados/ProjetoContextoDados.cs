@@ -1,4 +1,6 @@
-﻿using Snebur.Utilidade;
+﻿using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,13 +19,48 @@ namespace Snebur.VisualStudio
 
         private const string REGION_CONSTRUTOR_CONSULTAS_TS = "//#region Construtor Consultas";
 
+        public List<Type> TodosTipos { get; }
+
+        public string CaminhoProjetoEntidades { get; }
+
+
         public ProjetoContextoDados(ProjetoViewModel projetoVM,
                                     ConfiguracaoProjetoContextoDados configuracaoProjeto,
                                     FileInfo arquivoProjeto,
                                     string caminhoConfiguracao) :
                                     base(projetoVM, configuracaoProjeto, arquivoProjeto, caminhoConfiguracao)
         {
+            this.CaminhoProjetoEntidades = this.RetornarCaminhosProjetoEntidades();
+            this.CaminhoAssembly = this.RetornarCaminhoAssemblyEntidades();
+            this.TodosTipos = this.RetornarTodosTipo();
+            ;
+        }
 
+        private string RetornarCaminhosProjetoEntidades()
+        {
+            var caminhoAssemblyEntidades = this.ConfiguracaoProjeto.CaminhoAssemblyEntidades;
+            if (String.IsNullOrWhiteSpace(caminhoAssemblyEntidades))
+            {
+                return Path.GetFullPath(Path.Combine(this.CaminhoProjeto, $"../{this.ConfiguracaoProjeto.NamespaceEntidades}"));
+            }
+
+            if (Path.IsPathRooted(caminhoAssemblyEntidades))
+            {
+                return caminhoAssemblyEntidades;
+            }
+            return Path.GetFullPath(Path.Combine(this.CaminhoProjeto, caminhoAssemblyEntidades));
+
+        }
+
+        private string RetornarCaminhoAssemblyEntidades()
+        {
+            var namespaceEntidades = this.ConfiguracaoProjeto.NamespaceEntidades;
+            var caminhoProjetoCsProj = Path.Combine(this.CaminhoProjetoEntidades, $"{namespaceEntidades}.csproj");
+            var tipoProjeto = TipoCsProjUtil.RetornarTipoCsProjet(caminhoProjetoCsProj);
+            return AjudanteAssembly.RetornarCaminhoAssembly(tipoProjeto,
+                                                           this.CaminhoProjetoEntidades,
+                                                           namespaceEntidades,
+                                                           true);
         }
 
         protected override void AtualizarInterno()
@@ -160,11 +197,36 @@ namespace Snebur.VisualStudio
                     //public AtividadesUsuario: Snebur.AcessoDados.IConsultaEntidade<PhotosApp.Entidades.AtividadeUsuario>;
                     //public DbSet<AtividadeUsuario> AtividadesUsuario { get; set; }
 
-
-                    var comentar = linha.TrimStart().StartsWith("//") ? "//" : "";
+                    var isComentar = linha.TrimStart().StartsWith("//");
+                    var comentar = isComentar ? "//" : "";
                     var nomeConsulta = linha.Substring(linha.IndexOf(">") + 1, linha.IndexOf("{") - linha.IndexOf(">") - 1).Trim();
-                    var nomeTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
-                    var linhaTS = $"{espacoBranco}{comentar}public readonly {nomeConsulta} : Snebur.AcessoDados.IConsultaEntidade<{this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}>;";
+                    var caminhoTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
+
+
+                    if (!isComentar)
+                    {
+                        var nomeTipoEntidade = caminhoTipoEntidade.Contains(".") ? Path.GetExtension(caminhoTipoEntidade).Substring(1)
+                                                                                 : caminhoTipoEntidade;
+
+                        var tiposEntidade = this.TodosTipos.Where(x => x.Name == nomeTipoEntidade).
+                                                        Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
+                        if (tiposEntidade.Count > 1)
+                        {
+                            throw new Exception($"Mais de um tipo de entidade encontrado para o nome {caminhoTipoEntidade}");
+                        }
+                        if (tiposEntidade.Count == 0)
+                        {
+                            throw new Exception($"Nenhum tipo de entidade encontrado para o nome {caminhoTipoEntidade}");
+                        }
+
+                        var tipoEntidade = tiposEntidade[0];
+                        if (TipoUtil.TipoPossuiAtributo(tipoEntidade, nameof(IgnorarClasseTSAttribute)))
+                        {
+                            continue;
+                        }
+                    }
+
+                    var linhaTS = $"{espacoBranco}{comentar}public readonly {nomeConsulta} : Snebur.AcessoDados.IConsultaEntidade<{caminhoTipoEntidade}>;";
                     linhasTS.Add(linhaTS);
                 }
                 else
@@ -193,9 +255,7 @@ namespace Snebur.VisualStudio
 
         private List<string> RetornarLinhasConstrutorConsultaTS(List<string> linhasConsultaEntity)
         {
-
             var linhasTS = new List<string>();
-
             var espacoBranco = "            ";
             linhasTS.Add(String.Format("{0}{1}", espacoBranco, REGION_CONSTRUTOR_CONSULTAS_TS));
             linhasTS.Add("\n");
@@ -204,14 +264,37 @@ namespace Snebur.VisualStudio
             {
                 if (linha.Contains("DbSet"))
                 {
-                    var comentar = linha.TrimStart().StartsWith("//") ? "//" : "";
+                    var isComentar = linha.TrimStart().StartsWith("//");
+                    var comentar = isComentar ? "//" : "";
                     // this.AtividadesUsuario = new Snebur.AcessoDados.ConstrutorConsultaEntidade<PhotosApp.Entidades.AtividadeUsuario>(this, PhotosApp.Entidades.AtividadeUsuario.GetType() as r.TipoBaseDominio);
                     //public DbSet<AtividadeUsuario> AtividadesUsuario { get; set; }
 
                     var nomeConsulta = linha.Substring(linha.IndexOf(">") + 1, linha.IndexOf("{") - linha.IndexOf(">") - 1).Trim();
-                    var nomeTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
+                    var caminhoTipoEntidade = linha.Substring(linha.IndexOf("<") + 1, linha.IndexOf(">") - linha.IndexOf("<") - 1).Trim();
 
-                    var linhaTS = $"{espacoBranco}{comentar}this.{nomeConsulta} = new Snebur.AcessoDados.ConstrutorConsultaEntidade<{this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}>(this, {this.ConfiguracaoProjeto.NamespaceEntidades}.{nomeTipoEntidade}.GetType() as r.TipoEntidade); ";
+                    var nomeTipoEntidade = caminhoTipoEntidade.Contains(".") ? Path.GetExtension(caminhoTipoEntidade).Substring(1) 
+                                                                             : caminhoTipoEntidade;
+                    var tiposEntidade = this.TodosTipos.Where(x => x.Name == nomeTipoEntidade).
+                                                        Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
+
+                    if (!isComentar)
+                    {
+                        if (tiposEntidade.Count > 1)
+                        {
+                            throw new Exception($"Mais de um tipo de entidade encontrado para o nome {caminhoTipoEntidade}");
+                        }
+                        if (tiposEntidade.Count == 0)
+                        {
+                            throw new Exception($"Nenhum tipo de entidade encontrado para o nome {caminhoTipoEntidade}");
+                        }
+
+                        var tipoEntidade = tiposEntidade[0];
+                        if (TipoUtil.TipoPossuiAtributo(tipoEntidade, nameof(IgnorarClasseTSAttribute)))
+                        {
+                            continue;
+                        }
+                    }
+                    var linhaTS = $"{espacoBranco}{comentar}this.{nomeConsulta} = new Snebur.AcessoDados.ConstrutorConsultaEntidade<{caminhoTipoEntidade}>(this, {caminhoTipoEntidade}.GetType() as r.TipoEntidade); ";
                     linhasTS.Add(linhaTS);
                 }
                 else

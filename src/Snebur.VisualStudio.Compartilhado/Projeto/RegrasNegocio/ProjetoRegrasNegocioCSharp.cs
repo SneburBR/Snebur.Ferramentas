@@ -326,15 +326,14 @@ namespace Snebur.VisualStudio
         //{
 
         //}
-
-
-
-        private List<Type> RetornarTodosTipo()
+         
+        protected override List<Type> RetornarTodosTipo()
         {
-            if (!File.Exists(this.CaminhoAssembly))
+            if (!this.IsExisteDll)
             {
                 throw new FileNotFoundException(this.CaminhoAssembly);
             }
+
             var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
             try
             {

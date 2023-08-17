@@ -11,9 +11,8 @@ namespace Snebur.VisualStudio
 {
     public class ConfiguracaoProjetoContextoDados : ConfiguracaoProjeto
     {
- 
-
         public string NamespaceEntidades { get; set; }
+        public string CaminhoAssemblyEntidades { get; set; }
 
         public string CaminhoContextoDadosEntity { get; set; }
 

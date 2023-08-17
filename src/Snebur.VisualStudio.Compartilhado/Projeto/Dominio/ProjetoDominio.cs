@@ -10,17 +10,11 @@ namespace Snebur.VisualStudio
 {
     public partial class ProjetoDominio : BaseProjeto<ConfiguracaoProjetoDominio>
     {
-        public bool IsProjetoSneburDominio { get; set; }
+
 
         public List<Type> TodosTipos { get; }
 
-        public bool IsExisteDll
-        {
-            get
-            {
-                return File.Exists(this.CaminhoAssembly);
-            }
-        }
+      
 
         public ProjetoDominio(ProjetoViewModel projetoVM, 
                               ConfiguracaoProjetoDominio configuracaoProjeto,
@@ -101,32 +95,6 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private List<Type> RetornarTodosTipo()
-        {
-            if (this.IsExisteDll)
-            {
-                if (this.IsProjetoSneburDominio)
-                {
-                    return AjudanteAssembly.TiposSneburDominio;
-                }
-                else
-                {
-                    try
-                    {
-                        var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
-                        return assembly.GetAccessibleTypes().Where(x => x != null && x.IsPublic).ToList();
-                    }
-                    catch (ReflectionTypeLoadException e)
-                    {
-                        return e.Types.Where(x => x != null && x.IsPublic).ToList();
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-            }
-            return new List<Type>();
-        }
+       
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
@@ -38,7 +39,7 @@ namespace Snebur.VisualStudio
                                                                                    this.CaminhoAssemblyInfo);
 
         public string CaminhoAssemblyInfo { get; }
-        public string CaminhoAssembly { get; }
+        public virtual string CaminhoAssembly { get; protected set; }
 
         public string NomeAssembly
         {
@@ -228,7 +229,7 @@ namespace Snebur.VisualStudio
     public abstract class BaseProjeto<TConfiguracaoProjeto> : BaseProjeto where TConfiguracaoProjeto : ConfiguracaoProjeto
     {
         public new TConfiguracaoProjeto ConfiguracaoProjeto { get; }
-
+        public bool IsProjetoSneburDominio { get; set; }
         public List<string> NomesProjetoDepedencia => this.ConfiguracaoProjeto.ProjetoDepedencia;
 
 
@@ -244,6 +245,36 @@ namespace Snebur.VisualStudio
         protected override TConfiguracao RetornarConfiguracaoProjeto<TConfiguracao>()
         {
             return this.ConfiguracaoProjeto as TConfiguracao;
+        }
+
+        public bool IsExisteDll => File.Exists(this.CaminhoAssembly);
+        
+        protected virtual List<Type> RetornarTodosTipo()
+        {
+            if (this.IsExisteDll)
+            {
+                if (this.IsProjetoSneburDominio)
+                {
+                    return AjudanteAssembly.TiposSneburDominio;
+                }
+                else
+                {
+                    try
+                    {
+                        var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
+                        return assembly.GetAccessibleTypes().Where(x => x != null && x.IsPublic).ToList();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        return e.Types.Where(x => x != null && x.IsPublic).ToList();
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return new List<Type>();
         }
     }
 }
