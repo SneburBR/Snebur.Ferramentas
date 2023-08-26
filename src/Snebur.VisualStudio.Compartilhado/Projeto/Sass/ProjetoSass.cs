@@ -333,7 +333,8 @@ namespace Snebur.VisualStudio
             return arquivo.Name.EndsWith(NOME_ARQUIVO_VARIAVEIS); // && arquivo.Name != NOME_ARQUIVO_VARIAVEIS;
         }
 
-        public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao)
+        public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao, 
+                                                                   string nomeProjeto)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
             var configuracoes = JsonUtil.Deserializar<List<ConfiguracaoProjetoSass>>(json, EnumTipoSerializacao.Javascript).
@@ -355,7 +356,8 @@ namespace Snebur.VisualStudio
             if (configuracoes.Count > 1)
             {
                 LogVSUtil.Alerta("--------------  compilerconfig.json----------------------");
-                throw new Exception("Mais de uma configuracao de Estilo no projeto, verificar compilerconfig.json, outros projetos IsPersonalizado");
+                LogVSUtil.LogErro("Mais de uma configuração de Estilo no projeto, verificar compilerconfig.json, defina IsIgnorar para as configurações personalizadas  ");
+               return configuracoes.Where(x => x.inputFile.Contains(nomeProjeto, System.Globalization.CompareOptions.OrdinalIgnoreCase)).FirstOrDefault();
             }
             return configuracoes.SingleOrDefault();
         }

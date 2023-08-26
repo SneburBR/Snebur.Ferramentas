@@ -44,7 +44,7 @@ namespace AtualizarIconesMaterial
 
         private static HashSet<(string name, string pascalCase, string snakeCase)> RetornarIconesDoHtml()
         {
-            var caminhoHtml = "Html.html";
+            var caminhoHtml = "Html-31-07-2023.html";
             if (!File.Exists(caminhoHtml))
             {
                 throw new FileNotFoundException(caminhoHtml);
@@ -59,18 +59,32 @@ namespace AtualizarIconesMaterial
                 var buttons = document.DocumentNode.Descendants("button");
                 foreach (var button in buttons)
                 {
-                    var spans = button.Descendants("span");
-                    if (spans.Count() == 2)
+                    var spans = button.ChildNodes.Where(x => x.Name == "span" && x.InnerText.Trim().Length > 0).ToList();
+                    if(spans.Count()== 2)
                     {
-                        var snakeCase = spans.First().InnerHtml.Trim();
-                        var name = spans.Last().InnerHtml.Trim();
-
+                        var snakeCase = spans.First().InnerText.Trim();
+                        var name = spans.Last().InnerText.Trim();
                         if (IsSnakeCaseValido(name, snakeCase))
                         {
                             var pascalCase = FormatarPascalCase(name);
                             retorno.Add((name, pascalCase, snakeCase));
                         }
+
                     }
+
+
+                    //var spans = spanFirst.Descendants("span");
+                    //if (spans.Count() == 2)
+                    //{
+                    //    var snakeCase = spans.First().InnerHtml.Trim();
+                    //    var name = spans.Last().InnerHtml.Trim();
+
+                    //    if (IsSnakeCaseValido(name, snakeCase))
+                    //    {
+                    //        var pascalCase = FormatarPascalCase(name);
+                    //        retorno.Add((name, pascalCase, snakeCase));
+                    //    }
+                    //}
                 }
             }
             return retorno;

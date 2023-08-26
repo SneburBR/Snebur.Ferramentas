@@ -341,7 +341,8 @@ namespace Snebur.VisualStudio
                 var caminhoConfiguracao = Path.Combine(caminhoProjeto, ConstantesProjeto.CONFIGURACAO_SASS);
                 if (File.Exists(caminhoConfiguracao))
                 {
-                    var configuracaoSass = ProjetoSass.RetornarConfiguracao(caminhoConfiguracao);
+                    var nomeProjeto = projetoVS.Name;
+                    var configuracaoSass = ProjetoSass.RetornarConfiguracao(caminhoConfiguracao, nomeProjeto);
                     if (!configuracaoSass.IsIgnorar)
                     {
                         var projetoVM = new ProjetoViewModel(projetoVS.FullPath,

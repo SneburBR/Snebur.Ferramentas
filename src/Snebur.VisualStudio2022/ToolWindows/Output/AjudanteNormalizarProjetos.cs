@@ -269,7 +269,7 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                         if (File.Exists(caminhoConfiguracaoSass))
                         {
                             LogVSUtil.Log(String.Format("Projeto sass encontrado : {0} ", projetoVS.Name));
-                            var configuracaoSass = ProjetoSass.RetornarConfiguracao(caminhoConfiguracaoSass);
+                            var configuracaoSass = ProjetoSass.RetornarConfiguracao(caminhoConfiguracaoSass, projetoVS.Name);
                             if (configuracaoSass != null && !configuracaoSass.IsIgnorar)
                             {
                                 projetos.Add(new ProjetoSass(projetoVM,

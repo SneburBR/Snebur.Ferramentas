@@ -83,19 +83,7 @@ namespace Snebur.VisualStudio
             return String.Join(",", parametros.Select(x => String.Format("{0} : {1}", x.Name, this.RetornarCaminhoTipoParametro(x))));
         }
 
-        private object RetornarCaminhoTipoParametro(ParameterInfo parametro)
-        {
-            var atributoTipoTS = parametro.GetCustomAttributes().Where(x => x.GetType().Name == nameof(TipoTSAttribute)).SingleOrDefault();
-            if (atributoTipoTS != null)
-            {
-                var nomePropriedade = ReflexaoUtil.RetornarNomePropriedade<TipoTSAttribute>(x => x.CaminhoTipoTS);
-                var propriedade = atributoTipoTS.GetType().GetProperty(nomePropriedade);
-                var caminhoTipo = propriedade.GetValue(atributoTipoTS);
-                return caminhoTipo;
-
-            }
-            return TipoUtil.RetornarCaminhoTipoTS(parametro.ParameterType);
-        }
+       
 
         #endregion
     }

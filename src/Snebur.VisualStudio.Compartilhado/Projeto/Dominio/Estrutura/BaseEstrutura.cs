@@ -10,6 +10,7 @@ using Snebur.Utilidade;
 using Snebur.Reflexao;
 using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
+using System.Reflection;
 
 namespace Snebur.VisualStudio
 {
@@ -47,10 +48,8 @@ namespace Snebur.VisualStudio
             var tipo = valor.GetType();
             if (ReflexaoUtil.TipoRetornaColecao(tipo))
             {
-
                 throw new NotImplementedException();
                 // return String.Format(" new {0}();", this.CaminhoTipo);
-
             }
 
             tipo = ReflexaoUtil.RetornarTipoSemNullable(tipo);
@@ -141,6 +140,20 @@ namespace Snebur.VisualStudio
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
+        }
+
+        protected string RetornarCaminhoTipoParametro(ParameterInfo parametro)
+        {
+            var atributoTipoTS = parametro.GetCustomAttributes().Where(x => x.GetType().Name == nameof(TipoTSAttribute)).SingleOrDefault();
+            if (atributoTipoTS != null)
+            {
+                var nomePropriedade = ReflexaoUtil.RetornarNomePropriedade<TipoTSAttribute>(x => x.CaminhoTipoTS);
+                var propriedade = atributoTipoTS.GetType().GetProperty(nomePropriedade);
+                var caminhoTipo = propriedade.GetValue(atributoTipoTS);
+                return caminhoTipo?.ToString();
+
+            }
+            return TipoUtil.RetornarCaminhoTipoTS(parametro.ParameterType);
         }
     }
 }
