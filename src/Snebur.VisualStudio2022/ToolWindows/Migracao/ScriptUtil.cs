@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Snebur.BancoDados;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur.BancoDados;
-using Snebur.Utilidade;
 using static Snebur.VisualStudio.ScriptGrupoArquivos;
 
 namespace Snebur.VisualStudio
@@ -36,12 +31,11 @@ namespace Snebur.VisualStudio
             var nomeBancoDados = ScriptUtil.RetornarNomeBancoDados(nomeConnectionString);
             var sql = $"select 1 FROM sys.databases where name = '{nomeBancoDados}'";
             var conexao = new Conexao(connecionStringBancoMaster);
-            return ConverterUtil.ParaBoolean(conexao.RetornarValorScalar(sql));
-
+            return conexao.RetornarValorScalar<bool>(sql);
         }
+
         public static string RetornarDiretorioBancoDados(string nomeConnectionString)
         {
-
             var connecionStringBancoMaster = ScriptUtil.RetornarConnectionStringBancoMastar(nomeConnectionString);
             var nomeBancoDados = ScriptUtil.RetornarNomeBancoDados(nomeConnectionString);
 

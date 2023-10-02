@@ -5,7 +5,6 @@ using Snebur.Dominio;
 using Snebur.Dominio.Atributos;
 using Snebur.Linq;
 using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -31,8 +30,8 @@ namespace Snebur.VisualStudio
         private static bool IsInicializado = false;
 
         public static readonly DependencyProperty ProjetoSelecionadoProperty = DependencyProperty.Register("ProjetoSelecionado", typeof(Project), typeof(MigrationWindowControl), new PropertyMetadata(MigrationWindowControl.ProjetoSelecionadoAlterado));
-
-        public ObservableCollection<Project> Projetos { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Project> ProjetosMigracao { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Project> ProjetosEntidades { get; set; } = new ObservableCollection<Project>();
         public ObservableCollection<FileInfo> ArquivosSql { get; set; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<LogMensagemViewModel> Logs { get; set; } = new ObservableCollection<LogMensagemViewModel>();
 
@@ -115,16 +114,29 @@ namespace Snebur.VisualStudio
             await this.OcuparAsync();
             try
             {
-                this.Projetos.Clear();
+                this.ProjetosMigracao.Clear();
+                this.ProjetosEntidades.Clear();
 
                 var projetos = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
-                foreach (var p in projetos)
+                foreach (var p in projetos.Where(x => x.Name.Contains("Migracao")).OrderBy(x => x.Name))
                 {
-                    this.Projetos.Add(p);
+                    this.ProjetosMigracao.Add(p);
                 }
 
-                this.CmbProjetoMigracao.SelectedItem ??= this.Projetos.Where(x => x.Name.Contains("Migracao") && x.Name != "Snebur.AcessoDados.Migracao").FirstOrDefault();
-                this.CmbProjetosEntidades.SelectedItem ??= this.Projetos.Where(x => x.Name.Contains("Entidades")).LastOrDefault();
+                foreach (var p in projetos.Where(x => x.Name.Contains("Entidade")).OrderBy(x => x.Name))
+                {
+                    this.ProjetosEntidades.Add(p);
+                }
+
+                if (this.CmbProjetoMigracao.SelectedItem == null)
+                {
+                    var projetoMigracao = this.ProjetosMigracao.Where(x => x.Name != "Snebur.AcessoDados.Migracao").FirstOrDefault();
+                    if (projetoMigracao != null)
+                    {
+                        this.CmbProjetoMigracao.SelectedItem = projetoMigracao;
+                        this.SelecionarProjetoEntidades(projetoMigracao);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -156,6 +168,8 @@ namespace Snebur.VisualStudio
                                 this.ArquivosSql.Add(arquivo);
                             }
                         }
+
+                        this.SelecionarProjetoEntidades(projetoSelecionado);
                     }
                     catch (Exception ex)
                     {
@@ -166,6 +180,26 @@ namespace Snebur.VisualStudio
             catch (Exception ex)
             {
                 this.LogErro(ex.Message);
+            }
+        }
+
+        private void SelecionarProjetoEntidades(Project projetoMigracao)
+        {
+            var nomeProjetoEntidades = projetoMigracao?.Name.Replace(".Migracao", ".Entidades").
+                                                                     Replace(".Net48", String.Empty);
+            var projetoEntidades = this.ProjetosEntidades.Where(x => x.Name == nomeProjetoEntidades).FirstOrDefault();
+            if (projetoEntidades != null)
+            {
+                this.CmbProjetosEntidades.SelectedItem = projetoEntidades;
+            }
+            else
+            {
+                this.CmbProjetosEntidades.SelectedItem ??= this.ProjetosEntidades.Where(x => x.Name.Contains("Entidades")).LastOrDefault();
+            }
+
+            if (this.AmbienteSelecionado == null)
+            {
+                this.AmbienteSelecionado = this.Ambientes.Where(x => x.AmbienteServidor == EnumAmbienteServidor.Interno).FirstOrDefault();
             }
         }
 
@@ -197,10 +231,12 @@ namespace Snebur.VisualStudio
                     this.VersaoAtual = null;
                     this.ProjetoEntidadesSelecionado = projetoEntidade;
                     var isCompilar = this.ChkIsCompilar.IsChecked ?? false;
+                    var isNormalizarScript = this.ChkIsNormalizarScript.IsChecked ?? false;
 
                     await this.IniciarGeracaoScriptAsync(projetoMigracao,
                                                          projetoEntidade,
-                                                         isCompilar);
+                                                         isCompilar,
+                                                         isNormalizarScript);
                 }
 
             }
@@ -328,7 +364,8 @@ namespace Snebur.VisualStudio
 
         private async Task IniciarGeracaoScriptAsync(Project projetoMigracao,
                                                      Project projetoEntidades,
-                                                     bool isCompilar)
+                                                     bool isCompilar,
+                                                     bool isNormalizarScript)
         {
             try
             {
@@ -354,7 +391,11 @@ namespace Snebur.VisualStudio
 
                 this.Log(" -- Iniciando assistente de migração. isso pode demorar um pouco. ");
 
-                await this.IniciarGeracaoScriptInternoAsync(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
+                await this.IniciarGeracaoScriptInternoAsync(projetoMigracao,
+                                                            projetoEntidades,
+                                                            migrador,
+                                                            assemblyMigracao,
+                                                            isNormalizarScript);
 
             }
             catch (Exception ex)
@@ -371,7 +412,8 @@ namespace Snebur.VisualStudio
         private async Task IniciarGeracaoScriptInternoAsync(Project projetoMigracao,
                                                             Project projetoEntidades,
                                                             DbMigrator migrador,
-                                                            Assembly assemblyMigracao)
+                                                            Assembly assemblyMigracao,
+                                                            bool isNormalizarScript)
         {
             //ThreadHelper.ThrowIfNotOnUIThread();
             try
@@ -430,7 +472,7 @@ namespace Snebur.VisualStudio
                     DiretorioUtil.CriarDiretorio(caminhoPastaScripts);
                     var caminhoScript = Path.Combine(caminhoPastaScripts, nomeArquivo);
 
-                    var scriptAtualizado = this.RetornarScriptAtualizado(script);
+                    var scriptAtualizado = this.RetornarScriptAtualizado(script, isNormalizarScript);
                     var scriptsGrupoArquivos = ScriptGrupoArquivos.RetonarScripts(scriptAtualizado.ListaGrupoArquivos, this.NomeConnectionString);
                     var scriptFinal = String.Concat(String.Join(Environment.NewLine, scriptsGrupoArquivos), Environment.NewLine, scriptAtualizado.Script);
 
@@ -454,7 +496,7 @@ namespace Snebur.VisualStudio
 
                     this.Log(this.Scripts);
                     this.Log(this.ScriptsTransacao);
-                    
+
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                     this.BtnExecutar.IsEnabled = true;
@@ -477,8 +519,8 @@ namespace Snebur.VisualStudio
             var pastaMigrations = await SolutionUtil.GetPhysicalFolderAsync(projetoMigracao.Children, "migrations");
             if (pastaMigrations != null)
             {
-                var pastaScripts =   await SolutionUtil.GetPhysicalFolderAsync(pastaMigrations.Children, "scripts") ;
-                if(pastaScripts!= null)
+                var pastaScripts = await SolutionUtil.GetPhysicalFolderAsync(pastaMigrations.Children, "scripts");
+                if (pastaScripts != null)
                 {
                     var item = await SolutionUtil.GetPhysicalFolderAsync(pastaScripts.Children, caminhoScript);
                     if (item == null)
@@ -572,8 +614,16 @@ namespace Snebur.VisualStudio
 
         #region Atualizando script
 
-        private ScriptAtualizado RetornarScriptAtualizado(string script)
+        private ScriptAtualizado RetornarScriptAtualizado(string script, bool isNormalizarScript)
         {
+            if (!isNormalizarScript)
+            {
+                return new ScriptAtualizado
+                {
+                    ListaGrupoArquivos = new HashSet<string>(),
+                    Script = script
+                };
+            }
             AjudanteAssembly.Inicializar();
 
             var assembly = AjudanteAssemblyEx.RetornarAssembly(this.ProjetoEntidadesSelecionado);
@@ -625,9 +675,13 @@ namespace Snebur.VisualStudio
             };
         }
 
-        private string RetornarNomeGrupoArquivo(List<Type> tiposEntidade, EnumTipoGrupo tipoGrupo, string linha)
+        private string RetornarNomeGrupoArquivo(List<Type> tiposEntidade,
+                                                EnumTipoGrupo tipoGrupo,
+                                                string linha)
         {
-            var nomeTabela = linha.Split('.')[1].Split(']')[0].Replace("[", String.Empty);
+            var nomeTabela = linha.IndexOf('.') >= 0
+                        ? linha.Split('.')[1].Split(']')[0].Replace("[", String.Empty)
+                        : null;
             var tipo = tiposEntidade.Where(x => x.Name == nomeTabela).SingleOrDefault();
             if (tipo != null)
             {
@@ -713,6 +767,7 @@ namespace Snebur.VisualStudio
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             this.Logs.Add(new LogMensagemViewModel(mensagem, tipo));
+            await ItensControlUtil.ScrollToBottonAsync(this.ItemsControl);
         }
 
         #endregion
@@ -774,15 +829,19 @@ namespace Snebur.VisualStudio
 
                 AjudanteAssembly.Inicializar();
                 AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
+
                 if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao &&
                     this.CmbProjetosEntidades.SelectedItem is Project projetoEntidade &&
                     this.AmbienteSelecionado != null)
                 {
-
                     this.Logs.Clear();
                     this.ProjetoEntidadesSelecionado = projetoEntidade;
 
-                    await this.ExecutarAtualizarPendenteAsync(projetoMigracao, projetoEntidade);
+                    var isNormalizarScript = this.ChkIsNormalizarScript.IsChecked ?? false;
+
+                    await this.ExecutarAtualizarPendenteAsync(projetoMigracao,
+                                                              projetoEntidade,
+                                                              isNormalizarScript);
                 }
 
             }
@@ -796,7 +855,9 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private async Task ExecutarAtualizarPendenteAsync(Project projetoMigracao, Project projetoEntidades)
+        private async Task ExecutarAtualizarPendenteAsync(Project projetoMigracao,
+                                                          Project projetoEntidades,
+                                                          bool isNormalizarScript)
         {
 
             await this.CompilarAsync(projetoEntidades, projetoMigracao);
@@ -836,7 +897,11 @@ namespace Snebur.VisualStudio
 
                 this.Log(" -- Iniciando assistente de migração. isso pode demorar um pouco. ");
 
-                await this.IniciarGeracaoScriptInternoAsync(projetoMigracao, projetoEntidades, migrador, assemblyMigracao);
+                await this.IniciarGeracaoScriptInternoAsync(projetoMigracao,
+                                                            projetoEntidades,
+                                                            migrador,
+                                                            assemblyMigracao,
+                                                            isNormalizarScript);
 
 
 
@@ -863,7 +928,9 @@ namespace Snebur.VisualStudio
                 {
                     this.CriarNovoBancoDados();
                 }
-                var conexao = new Conexao(this.NomeConnectionString);
+
+                var connectionString = ConfigurationManager.ConnectionStrings[this.NomeConnectionString].ConnectionString;
+                var conexao = new Conexao(connectionString);
 
                 foreach (var script in this.Scripts)
                 {
