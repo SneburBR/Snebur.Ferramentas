@@ -123,6 +123,7 @@
     </Compile>
     <Compile Include="ToolWindows\Output\TsNewStringFormatUtil.cs" />
     <Compile Include="Utilidade\Ex\AjudanteAssemblyEx.cs" />
+    <Compile Include="Utilidade\ItensControlUtil.cs" />
     <Compile Include="Utilidade\LogVS.cs" />
     <Compile Include="Utilidade\ProjetoDteUtil.cs" />
     <Compile Include="Utilidade\Repositorio.cs" />

@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Snebur.Dominio;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Snebur.Dominio;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -32,6 +31,10 @@ namespace Snebur.VisualStudio
                 {
                     foreach (var parametro in parametros)
                     {
+                        if(parametro.GetCustomAttributes(true).Any(x => x.GetType().Name == AjudanteAssembly.NomeTipoIgnorarParametroTS))
+                        {
+                            continue;
+                        }
                         parametrosConstrutor.Add(new EstruturaParametroConstrutor(parametro));
                     }
                 }

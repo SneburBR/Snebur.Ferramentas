@@ -36,8 +36,10 @@ namespace Snebur.VisualStudio
         public static readonly string NomeTipoInterfaceIArquivo = nameof(IArquivo);
         public static readonly string NomeTipoInterfaceIBaseServico = nameof(IBaseServico);
 
+
         public static readonly string NomeTipoIgnorarClasseTS = nameof(IgnorarClasseTSAttribute);
         public static readonly string NomeTipoIgnorarConstrutorTS = nameof(IgnorarConstrutorTSAttribute);
+        public static readonly string NomeTipoIgnorarParametroTS = nameof(IgnorarParametroTSAttribute);
         public static readonly string NomeTipoIgnorarEnumTS = nameof(IgnorarEnumTSAttribute);
         public static readonly string NomeTipoIgnorarInterfaceTS = nameof(IgnorarInterfaceTSAttribute);
         public static readonly string NomeTipoIgnorarGlobalizacao = nameof(IgnorarGlobalizacaoAttribute);
