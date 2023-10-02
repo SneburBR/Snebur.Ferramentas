@@ -633,16 +633,18 @@ namespace Snebur.VisualStudio.Commands
                     {
                         { "sn-click", new AtributoArgumento("sn-click", "ui.UIEventArgs") },
                         { "sn-enter", new AtributoArgumento("sn-enter", "ui.UIEventArgs") },
-                        { "sn-click-async", new AtributoArgumento("sn-click-async", "ui.UIEventArgs", true) },
+                        //{ "sn-click-async", new AtributoArgumento("sn-click-async", "ui.UIEventArgs", true) },
 
                         { "sn-item-click", new AtributoArgumento("sn-click", "ui.UIEventArgs") },
                         { "sn-valor-modificando", new AtributoArgumento("sn-valor-modificando", "ui.UIValorAlteradoEventArgs") },
                         { "sn-valor-alterado", new AtributoArgumento("sn-valor-alterado", "ui.UIValorAlteradoEventArgs") },
                         { "sn-selecionar-arquivos", new AtributoArgumento("sn-selecionar-arquivo", "ui.SelecionarArquivosEventoArgs") },
+                        { "sn-arrastar-arquivos", new AtributoArgumento("sn-arrastar-arquivos", "ui.SelecionarArquivosEventoArgs") },
                         { "sn-item-selecionado-alterado", new AtributoArgumento("sn-item-selecionado-alterado", "ui.UIValorAlteradoEventArgs") },
                         { "sn-texto-pesquisa", new AtributoArgumento("sn-texto-pesquisa", "ui.TextoPesquisaEventArgs") },
                         { "sn-linha-detalhes-expandida", new AtributoArgumento("sn-linha-datalhes-expandida", "ui.LinhaDetalhesExpandidaEventArgs") },
                         { "sn-conteudo-expandido", new AtributoArgumento("sn-conteudo-expandido", "ui.ConteudoExpandidoEventArgs") },
+                        { "sn-ordenacao-coluna-alterada", new AtributoArgumento("sn-ordenacao-coluna-alterada", "ui.OrdenacaoColunaAlteradaEventArgs") },
 
                         { "sn-navegar", new AtributoArgumento("sn-navegar",EnumAcao.ProcurarControle) },
                         { "sn-controle", new AtributoArgumento("sn-controle",EnumAcao.ProcurarControle) },
