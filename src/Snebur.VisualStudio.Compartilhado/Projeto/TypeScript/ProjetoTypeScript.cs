@@ -4,6 +4,7 @@ using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace Snebur.VisualStudio
         public static string NOME_PROPRIEDADE_CAMINHO_TIPO { get; } = ReflexaoUtil.RetornarNomePropriedade<Snebur.Dominio.ICaminhoTipo>(x => x.__CaminhoTipo);
         public static string NOME_ARQUIVO_APLICACAO_CONFIG = "Aplicacao.Config.ts";
         private const string NOME_PROPRIEDADE_VERSAO_SCRIPT = "VersaoScript";
-         
+
         public string CaminhosDiretorioTypeScripts { get; }
         public string CaminhoAplicacaoConfig { get; }
         public string CaminhoHtmlReferencias { get; }
@@ -362,11 +363,15 @@ namespace Snebur.VisualStudio
 
         private void SalvarTSConfig(ConfiguracaoProjetoTypeScript tsconfig)
         {
-            var json = JsonUtil.Serializar(tsconfig, EnumTipoSerializacao.Javascript, true);
+            var json = JsonUtil.Serializar(tsconfig, EnumTipoSerializacao.Javascript,
+                                           cultureInfo: CultureInfo.InstalledUICulture,
+                                           isIdentar: true,
+                                           isPrepararSerializacao: false);
+
             ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
         }
-          
+
         private int RetornarPrioridadeProjeto(FileInfo arquivo)
         {
             if (arquivo.Directory.FullName.Contains(this.CaminhoProjeto))
@@ -513,7 +518,7 @@ namespace Snebur.VisualStudio
             return "null";
 
         }
-         
+
         private string RetornarHtml(FileInfo arquivo)
         {
             var html = File.ReadAllText(arquivo.FullName, Encoding.UTF8);
