@@ -85,7 +85,7 @@ namespace Snebur.VisualStudio
                 var caminhoAbsoluto = Path.GetFullPath(Path.Combine(this.CaminhoProjeto, dominioDependente.Caminho));
                 if (!File.Exists(caminhoAbsoluto))
                 {
-                    throw new FileNotFoundException(dominioDependente.Caminho);
+                    throw new FileNotFoundException(caminhoAbsoluto);
                 }
 
                 if (!AjudanteAssembly.AssemblyCaminhos.ContainsKey(dominioDependente.Nome))
