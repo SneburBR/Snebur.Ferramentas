@@ -1,18 +1,13 @@
-﻿using System;
+﻿using Snebur.Utilidade;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
     internal static class PublicacaoUtil
     {
-       
-
         public static Task PublicarVersaoAsync(EnumTipoProjeto tipoProjeto,
                                                string caminhoProjeto,
                                                Stopwatch tempo)
@@ -60,6 +55,7 @@ namespace Snebur.VisualStudio
                 {
                     caminhoPublicacao = Path.Combine(caminhoPublicacao, versao.ToString());
                 }
+
                 DiretorioUtil.CriarDiretorio(caminhoProjeto);
 
 
@@ -76,14 +72,12 @@ namespace Snebur.VisualStudio
                                         caminhoPublicacao);
                     }
                 }
+                var caminhoPublicacaoBuild = infoPublicacao.RetornarCaminhoPublicacaoBuild(versao, caminhoPublicacao);
+
+
 
                 if (infoPublicacao.BuildJsOptions != null)
                 {
-                    //var caminhoPublicacaoBuild = Path.Combine(caminhoPublicacao, ExtensaoContantes.PASTA_BUILD, versao.ToString());
-                    var caminhoPublicacaoBuild = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ?
-                                                                           Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, versao.ToString()) :
-                                                                           Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
-
                     PublicacaoUtil.AplicarJsOptions(infoPublicacao,
                                                     caminhoProjeto,
                                                     caminhoPublicacao,
@@ -91,13 +85,28 @@ namespace Snebur.VisualStudio
                                                     versao);
                 }
 
-
-                if (tipoProjeto == EnumTipoProjeto.Typescript)
+                if (infoPublicacao.IsZiparBin)
                 {
-                    var prefixoLastVersion = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ? String.Empty :
-                                                                                                       $"{infoPublicacao.NomePastaBuild.ToLower()}-";
-                    File.WriteAllText(Path.Combine(caminhoPublicacao, $"{prefixoLastVersion}last-version.txt"), versao.ToString());
+                    var nomeArquivo = infoPublicacao.RetornarNomeArquivo(versao);
+                    var caminhoDestino = Path.Combine(caminhoPublicacaoBuild, nomeArquivo);
+
+                    ZipUtil.CompactarPasta(caminhoPublicacaoBuild, caminhoDestino, true);
+
+                    //DiretorioUtil.ExcluirTodosArquivo(caminhoPublicacao,
+                    //                                  isIncluirSubDiretorios: true,
+                    //                                  isIgnorarErro: false,
+                    //                                  isForcar: true,
+                    //                                  ignorarArquvos: new string[] { nomeArquivo });
                 }
+
+
+                //if (tipoProjeto == EnumTipoProjeto.Typescript)
+                //{
+                var prefixoLastVersion = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ? String.Empty :
+                                                                                                   $"{infoPublicacao.NomePastaBuild.ToLower()}-";
+
+                File.WriteAllText(Path.Combine(caminhoPublicacao, $"{prefixoLastVersion}last-version.txt"), versao.ToString());
+                //}
 
                 if (File.Exists(infoPublicacao.ExecutarProcessoDepois))
                 {
@@ -116,6 +125,11 @@ namespace Snebur.VisualStudio
             return null;
 
 
+        }
+
+        private static object PublicarArquivos(string caminhoProjeto, EnumTipoProjeto tipoProjeto)
+        {
+            throw new NotImplementedException();
         }
 
         private static void AplicarJsOptions(PublicacaoConfig infoPublicacao,
@@ -193,13 +207,15 @@ namespace Snebur.VisualStudio
                                             Version versao,
                                             string caminhoPublicacao)
         {
+            var caminhoBuild = infoPublicacao.RetornarCaminhoPublicacaoBuild(versao, caminhoPublicacao);
+
             switch (infoPasta.TipoPasta)
             {
                 case EnumTipoPasta.Bin:
 
-                    var caminhoBin = tipoProjeto == EnumTipoProjeto.Desktop ||
-                                     tipoProjeto == EnumTipoProjeto.ExtensaoVisualStudio ? caminhoPublicacao :
-                                                                                           Path.Combine(caminhoPublicacao, "bin");
+                    var caminhoBin = tipoProjeto == EnumTipoProjeto.Desktop || tipoProjeto == EnumTipoProjeto.ExtensaoVisualStudio
+                                                    ? caminhoBuild
+                                                    : Path.Combine(caminhoBuild, "bin");
 
                     if (infoPublicacao.ArquivosBin?.Count() > 0)
                     {
@@ -210,17 +226,14 @@ namespace Snebur.VisualStudio
                     }
                     else
                     {
-                        CopiarDiretorio(infoPublicacao,
-                                        infoPasta.Caminho,
-                                        caminhoBin);
+                        CopiarTodosArquivos(infoPublicacao,
+                                            infoPasta.Caminho,
+                                             caminhoBin);
                     }
 
                     break;
-                case EnumTipoPasta.Build:
 
-                    var caminhoBuild = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ?
-                                            Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, versao.ToString()) :
-                                            Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, infoPublicacao.NomePastaBuild, versao.ToString());
+                case EnumTipoPasta.Build:
 
                     CopriarArquivos(infoPublicacao,
                                     infoPasta.Caminho,
@@ -230,12 +243,14 @@ namespace Snebur.VisualStudio
                     break;
 
                 case EnumTipoPasta.Web:
-
+                     
                     CopriarArquivos(infoPublicacao,
                                     infoPasta.Caminho,
-                                    caminhoPublicacao,
+                                    caminhoBuild,
                                     infoPublicacao.ArquivosWeb);
+
                     break;
+
                 default:
 
                     throw new Erro("Tipo de pasta não suportado");
@@ -288,7 +303,7 @@ namespace Snebur.VisualStudio
         //    }
         //}
 
-        private static void CopiarDiretorio(PublicacaoConfig publicacaoConfig,
+        private static void CopiarTodosArquivos(PublicacaoConfig publicacaoConfig,
                                             string diretorioOrigem,
                                             string diretorioDestino)
         {
