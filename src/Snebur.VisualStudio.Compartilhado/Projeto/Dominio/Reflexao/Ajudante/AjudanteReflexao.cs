@@ -38,7 +38,7 @@ namespace Snebur.VisualStudio
                 return AjudanteReflexao.RetornarDeclaracaoTipoBaseDominio(tipo);
             }
 
-            if (ReflexaoUtil.TipoRetornaColecao(tipo))
+            if (ReflexaoUtil.IsTipoRetornaColecao(tipo))
             {
                 return AjudanteReflexao.RetornarDeclaracaoTipoColecao(tipo);
             }

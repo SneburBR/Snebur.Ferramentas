@@ -146,8 +146,8 @@ namespace Snebur.VisualStudio
                 AjudanteAssembly.TipoIgnorarEnumTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarEnumTS);
                 AjudanteAssembly.TipoInterfaceTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarInterfaceTS);
                 AjudanteAssembly.TipoIgnorarGlobalizacao = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarGlobalizacao);
-                AjudanteAssembly.TipoIgnorarPropriedadeTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarPropriedadeTS);
-                AjudanteAssembly.TipoIgnorarPropriedadeTSReflexao = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarPropriedadeTSReflexao);
+                //AjudanteAssembly.TipoIgnorarPropriedadeTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarPropriedadeTS);
+                //AjudanteAssembly.TipoIgnorarPropriedadeTSReflexao = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarPropriedadeTSReflexao);
                 AjudanteAssembly.TipoIgnorarMetedoTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarMetodoTS);
                 AjudanteAssembly.TipoIgnorarTSReflexao = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoIgnorarTSReflexao);
                 AjudanteAssembly.TipoParametroOpcionalTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoParametroOpcionalTS);
@@ -202,6 +202,9 @@ namespace Snebur.VisualStudio
 
         public static Dictionary<string, string[]> AssemblyCaminhos => LazyUtil.RetornarValorLazyComBloqueio(ref _assemblyCaminhos, RetornarAssemblyCaminhos);
 
+        public static string CaminhoProjetoEntidades { get; set; }
+        public static string NomeAssemblyEntidades { get; set; }
+
         public static Dictionary<string, string[]> RetornarAssemblyCaminhos()
         {
             return new Dictionary<string, string[]> {
@@ -228,6 +231,25 @@ namespace Snebur.VisualStudio
                       nome.StartsWith("PresentationUI") ||
                       nome.StartsWith("Microsoft")))
                 {
+                    if(e.RequestingAssembly!= null)
+                    {
+                        var assmeblyRequestingName = new AssemblyName(e.RequestingAssembly.FullName);
+                        if (assmeblyRequestingName.Name == NomeAssemblyEntidades)
+                        {
+                            var diretorioProjeto = Path.GetDirectoryName(CaminhoProjetoEntidades);
+                            var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_DOMINIO);
+                            if (File.Exists(caminhoConfiguracaoDominio))
+                            {
+                                var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
+                                var depedencia = configuracaoDominio.DominiosDepentendes.Where(x => x.Nome == nome).SingleOrDefault();
+                                if(depedencia!= null)
+                                {
+                                    var caminhoDll = CaminhoUtil.RetornarCaminhoAbsoluto(depedencia.Caminho, diretorioProjeto);
+                                    return RetornarAssembly(caminhoDll);
+                                }
+                            }
+                        }
+                    }
                     var erro = new Exception(String.Format("Não foi encontrado o caminho para {0}", nome));
                     LogVSUtil.LogErro(erro);
                 }
@@ -249,7 +271,7 @@ namespace Snebur.VisualStudio
             return null;
 
         }
-
+         
         private static Dictionary<string, Assembly> ArmazenamentoDllCarregadas = new Dictionary<string, Assembly>();
         private static object bloqueio = new object();
 
@@ -294,7 +316,7 @@ namespace Snebur.VisualStudio
         //                                   configuracaoProjeto.NomeAssembly);
         //}
         public static string RetornarCaminhoAssembly(EnumTipoCsProj tipoCsProj,
-                                                     string caminhoProjeto,
+                                                     string diretorioProjeto,
                                                      string nomeAssembly,
                                                      bool isIgnorarErro = false)
         {
@@ -305,7 +327,7 @@ namespace Snebur.VisualStudio
             var nomeArquivoDll = $"{nomeAssembly}.dll";
             var nomeArquivoExe = $"{nomeAssembly}.exe";
             //var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
-            var diretorioBin = Path.Combine(caminhoProjeto, "bin");
+            var diretorioBin = Path.Combine(diretorioProjeto, "bin");
             var diretorioDebug = Path.Combine(diretorioBin, "Debug");
             if(tipoCsProj == EnumTipoCsProj.MicrosoftSdk)
             {
@@ -369,6 +391,30 @@ namespace Snebur.VisualStudio
                 
             }
             return null;
+        }
+
+        public static Assembly RetornarAssemblyFromCaminhoProjeto(string caminhoProjeto, 
+                                                                   string nomeAssembly,
+                                                                   bool isIgnorarErro)
+        {
+            var tipoProjet = TipoCsProjUtil.RetornarTipoCsProjet(caminhoProjeto);
+            var diretorioPrjeto = Path.GetDirectoryName(caminhoProjeto);
+            var caminhoAssembly = RetornarCaminhoAssembly(tipoProjet,
+                                                          diretorioPrjeto, 
+                                                          nomeAssembly,
+                                                          isIgnorarErro);
+
+            if (File.Exists(caminhoAssembly))
+            {
+                return RetornarAssembly(caminhoAssembly);
+            }
+
+            if (isIgnorarErro)
+            {
+                return null;
+            }
+            throw new FileNotFoundException(caminhoAssembly);
+            
         }
 
         public static void Clear()
