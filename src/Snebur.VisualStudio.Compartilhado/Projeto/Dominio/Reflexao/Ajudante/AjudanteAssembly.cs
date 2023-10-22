@@ -43,6 +43,7 @@ namespace Snebur.VisualStudio
         public static readonly string NomeTipoIgnorarEnumTS = nameof(IgnorarEnumTSAttribute);
         public static readonly string NomeTipoIgnorarInterfaceTS = nameof(IgnorarInterfaceTSAttribute);
         public static readonly string NomeTipoIgnorarGlobalizacao = nameof(IgnorarGlobalizacaoAttribute);
+        public static readonly string NomeTipoIgnorarPropriedade = nameof(IgnorarPropriedadeAttribute);
         public static readonly string NomeTipoIgnorarPropriedadeTS = nameof(IgnorarPropriedadeTSAttribute);
         public static readonly string NomeTipoIgnorarPropriedadeTSReflexao = nameof(IgnorarPropriedadeTSReflexaoAttribute);
         public static readonly string NomeTipoIgnorarMetodoTS = nameof(IgnorarMetodoTSAttribute);
@@ -80,7 +81,7 @@ namespace Snebur.VisualStudio
         public static Type TipoIgnorarEnumTS { get; private set; }
         public static Type TipoInterfaceTS { get; private set; }
         public static Type TipoIgnorarGlobalizacao { get; private set; }
-        public static Type TipoIgnorarPropriedadeTS { get; private set; }
+        //public static Type TipoIgnorarPropriedadeTS { get; private set; }
         public static Type TipoIgnorarPropriedadeTSReflexao { get; private set; }
         public static Type TipoIgnorarMetedoTS { get; private set; }
         public static Type TipoIgnorarTSReflexao { get; private set; }

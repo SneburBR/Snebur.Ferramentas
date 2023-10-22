@@ -23,7 +23,7 @@ namespace Snebur.VisualStudio
         {
             var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.Estaticas, true);
             propriedades = propriedades.Where(x => x.GetGetMethod().IsStatic && x.GetSetMethod().IsStatic).ToList();
-            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS)).ToList();
+            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => IsAtributoIgnorarPropriedade(k.GetType().Name))).ToList();
             return propriedades;
         }
 
@@ -50,7 +50,7 @@ namespace Snebur.VisualStudio
             }
            
 
-            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS)).
+            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => IsAtributoIgnorarPropriedade(k.GetType().Name))).
                                         Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == nameof(PropriedadeTSEspecializadaAttribute))).ToList();
 
             return propriedades;
@@ -88,7 +88,7 @@ namespace Snebur.VisualStudio
                                                  x.Name == "__PropriedadesAlteradas" ||
                                                  x.Name == "__NomeTipoEntidade");
             //propriedades = propriedades.Where(x => !x.GetSetMethod().IsAbstract && !x.GetGetMethod().IsAbstract).ToList();
-            //remover propriedes overrides
+            //remover propriedades overrides
 
             query = query.Where(x =>
             {
@@ -119,8 +119,14 @@ namespace Snebur.VisualStudio
         {
             var propriedades = ReflexaoUtil.RetornarPropriedades(tipo, AjudantePropriedades.PropriedadesInterface, true);
             propriedades = propriedades.Where(x => PropriedadeUtil.PossuiAtributo(x, AjudanteAssembly.NomeTipoAtributoProprieadeInterface)).ToList();
-            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS)).ToList();
+            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => IsAtributoIgnorarPropriedade( k.GetType().Name))).ToList();
             return propriedades;
+        }
+
+        public static bool IsAtributoIgnorarPropriedade(string nomeAtributo)
+        {
+            return nomeAtributo == AjudanteAssembly.NomeTipoIgnorarPropriedade ||
+                   nomeAtributo == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS;
         }
     }
 }

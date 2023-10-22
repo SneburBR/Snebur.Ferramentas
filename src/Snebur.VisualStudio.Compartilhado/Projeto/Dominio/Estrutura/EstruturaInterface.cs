@@ -30,7 +30,7 @@ namespace Snebur.VisualStudio
             linhas.Add("{");
 
             var propriedades = ReflexaoUtil.RetornarPropriedades(this.Tipo, true);
-            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTS)).ToList();
+            propriedades = propriedades.Where(x => !x.GetCustomAttributes().Any(k => AjudantePropriedades.IsAtributoIgnorarPropriedade(k.GetType().Name))).ToList();
              
             foreach (var propriedade in propriedades)
             {

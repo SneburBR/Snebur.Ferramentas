@@ -46,7 +46,7 @@ namespace Snebur.VisualStudio
             }
 
             var tipo = valor.GetType();
-            if (ReflexaoUtil.TipoRetornaColecao(tipo))
+            if (ReflexaoUtil.IsTipoRetornaColecao(tipo))
             {
                 throw new NotImplementedException();
                 // return String.Format(" new {0}();", this.CaminhoTipo);

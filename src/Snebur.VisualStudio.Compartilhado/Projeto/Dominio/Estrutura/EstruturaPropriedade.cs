@@ -55,7 +55,7 @@ namespace Snebur.VisualStudio
         }
         public string RetornarValorPadraoTypeScript()
         {
-            if (ReflexaoUtil.TipoRetornaColecao(this.Tipo))
+            if (ReflexaoUtil.IsTipoRetornaColecao(this.Tipo))
             {
                 return String.Format(" new {0}()", this.CaminhoTipo);
             }
