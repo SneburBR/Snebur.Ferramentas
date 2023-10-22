@@ -14,8 +14,12 @@ namespace Snebur.VisualStudio
                 try
                 {
                     Border border = (Border)VisualTreeHelper.GetChild(itemsControl, 0);
-                    ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
-                    scrollViewer.ScrollToBottom();
+                    if(VisualTreeHelper.GetChild(border, 0) is ScrollViewer scrollViewer)
+                    {
+                        scrollViewer.ScrollToBottom();
+                    }
+                    //ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+                    
                 }
                 catch
                 {

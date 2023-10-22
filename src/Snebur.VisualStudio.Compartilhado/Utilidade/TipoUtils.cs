@@ -118,7 +118,7 @@ namespace Snebur.VisualStudio
                 return TipoUtil.RetornarNomeTipoPrimarioTypeScript(tipo);
             }
 
-            if (ReflexaoUtil.TipoRetornaColecao(tipo))
+            if (ReflexaoUtil.IsTipoRetornaColecao(tipo))
             {
                 var tipoItemLista = ReflexaoUtil.RetornarTipoGenericoColecao(tipo);
                 if (tipo.IsGenericType)
@@ -320,7 +320,7 @@ namespace Snebur.VisualStudio
                 return String.Empty;
             }
 
-            if (ReflexaoUtil.TipoRetornaColecao(tipo))
+            if (ReflexaoUtil.IsTipoRetornaColecao(tipo))
             {
                 return String.Empty;
 

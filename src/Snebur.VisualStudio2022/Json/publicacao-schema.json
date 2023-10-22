@@ -21,6 +21,9 @@
     "isCriarPastaVersao": {
       "type": "boolean"
     },
+    "isZiparBin": {
+      "type": "boolean"
+    },
     "builds": {
       "type": "array",
       "description": "Caminho dos arquivos (compilados js ou css)",

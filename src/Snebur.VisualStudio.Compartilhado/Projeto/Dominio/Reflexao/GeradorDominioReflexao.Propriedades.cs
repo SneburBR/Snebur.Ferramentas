@@ -108,7 +108,7 @@ namespace Snebur.VisualStudio
                 return AjudanteAssembly.PropriedadeChavePrimariaEntidade;
             }
 
-            var propriedadesChavePrimaria = ReflexaoUtil.RetornarPropriedades(tipoEntidade, false).Where(x => ReflexaoUtil.PropriedadePossuiAtributo(x, tipoKeyAttribute)).ToList();
+            var propriedadesChavePrimaria = ReflexaoUtil.RetornarPropriedades(tipoEntidade, false).Where(x => ReflexaoUtil.IsPropriedadePossuiAtributo(x, tipoKeyAttribute)).ToList();
             if (propriedadesChavePrimaria.Count == 0)
             {
                 throw new Erro(String.Format("Não foi encontrada a propriedade chave primária em {0}", tipoEntidade.Name));
