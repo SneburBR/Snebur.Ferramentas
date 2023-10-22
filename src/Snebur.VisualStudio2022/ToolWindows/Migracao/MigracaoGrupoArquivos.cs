@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Snebur.Dominio;
+using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur.Dominio;
-using Snebur.Dominio.Atributos;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
@@ -18,8 +15,20 @@ namespace Snebur.VisualStudio
         //public const string CAMINHO_BANCO_DADOS = @"C:\Program Files\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQL\DATA\";
         //public const string CAMINHO_BANCO_DADOS = @"C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\";
 
-
         public static List<string> RetonarScripts(Assembly assemblyEntidades, string nomeConnectionString)
+        {
+            try
+            {
+                return RetonarScriptsInterno(assemblyEntidades, nomeConnectionString);
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro(ex);
+                return new List<string>();
+            }
+
+        }
+        private static List<string> RetonarScriptsInterno(Assembly assemblyEntidades, string nomeConnectionString)
         {
 
 
@@ -38,8 +47,20 @@ namespace Snebur.VisualStudio
             return RetonarScripts(nomesGrupoArquivos, nomeConnectionString);
         }
 
-
         public static List<string> RetonarScripts(HashSet<string> nomesGrupoArquivo, string nomeConnectionString)
+        {
+            try
+            {
+                return RetonarScriptsInterno(nomesGrupoArquivo, nomeConnectionString);
+            }
+            catch (Exception ex)
+            {
+                LogVSUtil.LogErro(ex);
+                return new List<string>();
+            }
+
+        }
+        private static List<string> RetonarScriptsInterno(HashSet<string> nomesGrupoArquivo, string nomeConnectionString)
         {
             var construtor = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings[nomeConnectionString].ConnectionString);
             var nomeBancoDados = construtor.InitialCatalog;
@@ -49,18 +70,18 @@ namespace Snebur.VisualStudio
 
             foreach (var grupoArquivo in nomesGrupoArquivo)
             {
-                if(grupoArquivo!= null)
+                if (grupoArquivo != null)
                 {
                     var nomeGrupoArquivo = TextoUtil.RetornarPrimeiraLetraMaiuscula(grupoArquivo);
                     scripts.AddRange(ScriptGrupoArquivos.RetornarScriptsAdicioanarFileGroup(diretorioBancoDados, nomeBancoDados, nomeGrupoArquivo));
                 }
-                
+
             }
             return scripts;
         }
 
-        private static List<string> RetornarScriptsAdicioanarFileGroup(string diretorioBancoDados, 
-                                                                       string nomeBancoDados, 
+        private static List<string> RetornarScriptsAdicioanarFileGroup(string diretorioBancoDados,
+                                                                       string nomeBancoDados,
                                                                        string nomeGrupoArquivo)
         {
             var sqls = new List<string>();
@@ -90,7 +111,7 @@ namespace Snebur.VisualStudio
                              + $"\n TO FILEGROUP [{nomeGrupoArquivo}]; ";
         }
 
-        
+
 
         public class BancoCaminho
         {

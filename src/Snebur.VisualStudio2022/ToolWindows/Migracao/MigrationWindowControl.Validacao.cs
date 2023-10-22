@@ -5,6 +5,7 @@ using Snebur.Linq;
 using Snebur.Utilidade;
 using Snebur.VisualStudio.Reflexao;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -43,6 +44,9 @@ namespace Snebur.VisualStudio
 
                 var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
                 var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
+
+                AjudanteAssembly.NomeAssemblyEntidades = new AssemblyName(assemblyEntidades.FullName).Name;
+                AjudanteAssembly.CaminhoProjetoEntidades =  projetoEntidades.FullPath;
 
                 var tiposEntidade = assemblyEntidades.GetAccessibleTypes().Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
 
@@ -178,9 +182,12 @@ namespace Snebur.VisualStudio
             try
             {
                 object[] parametros = this.RetornarParametrosDoConstrutor(tipoEntidade);
+
                 return Activator.CreateInstance(tipoEntidade, parametros);
+
+
             }
-            catch(Exception)
+            catch (Exception)
             {
                 this.LogErro($"Falha ao criar instancia da entidade {tipoEntidade.Name}, verificar se a mesma possui um construtor em parâmetros");
                 throw;
@@ -189,9 +196,28 @@ namespace Snebur.VisualStudio
 
         private object[] RetornarParametrosDoConstrutor(Type tipoEntidade)
         {
-            var construtor = tipoEntidade.GetConstructors().OrderBy(x => x.GetParameters().Length).First();
+            tipoEntidade.Assembly.ModuleResolve += this.Assembly_ModuleResolve;
+            var construtor = tipoEntidade.GetConstructors().OrderBy(x =>
+            {
+                try
+                {
+                    return x.GetParameters().Length;
+                }
+                catch
+                {
+                    return Int32.MaxValue;
+                }
+
+            }).First();
+
             var parametros = construtor.GetParameters();
             return new object[parametros.Length];
+        }
+
+        private Module Assembly_ModuleResolve(object sender,
+                                             ResolveEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ValidarPropriedade(Type tipoEntidade,
@@ -270,7 +296,7 @@ namespace Snebur.VisualStudio
                 }
             }
 
-            if (ReflexaoUtil.TipoRetornaColecao(propriedade.PropertyType) && propriedade.PropertyType.IsGenericType)
+            if (ReflexaoUtil.IsTipoRetornaColecao(propriedade.PropertyType) && propriedade.PropertyType.IsGenericType)
             {
                 var tipoItemEntidade = propriedade.PropertyType.GetGenericArguments().First();
                 if (TipoUtil.TipoIgualOuSubTipo(tipoItemEntidade, typeof(Entidade)))
@@ -357,7 +383,7 @@ namespace Snebur.VisualStudio
             }
             if (!tipoEntidade.IsAbstract)
             {
-                if (ReflexaoUtil.TipoRetornaColecao(propriedade.PropertyType) && propriedade.PropertyType.IsGenericType)
+                if (ReflexaoUtil.IsTipoRetornaColecao(propriedade.PropertyType) && propriedade.PropertyType.IsGenericType)
                 {
                     var tipoItem = propriedade.PropertyType.GetGenericArguments().First();
                     if (TipoUtil.TipoIgualOuSubTipo(tipoItem, typeof(Entidade)))

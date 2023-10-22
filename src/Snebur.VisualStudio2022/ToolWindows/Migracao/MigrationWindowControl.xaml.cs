@@ -379,8 +379,15 @@ namespace Snebur.VisualStudio
                 await WorkThreadUtil.SwitchToWorkerThreadAsync();
 
                 var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
-                var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
-                var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
+                var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
+
+                AjudanteAssembly.NomeAssemblyEntidades = new AssemblyName(assemblyEntidades.FullName).Name;
+                AjudanteAssembly.CaminhoProjetoEntidades = projetoEntidades.FullPath;
+
+                var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().
+                                                        Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).
+                                                        SingleOrDefault();
+
                 if (tipoConfiguracao == null)
                 {
                     throw new Exception($"Não foi encontrado a configuração do 'DbMigrationsConfiguration' no projeto {projetoMigracao.Name}");
@@ -626,8 +633,12 @@ namespace Snebur.VisualStudio
             }
             AjudanteAssembly.Inicializar();
 
-            var assembly = AjudanteAssemblyEx.RetornarAssembly(this.ProjetoEntidadesSelecionado);
-            var todosTipos = assembly.GetAccessibleTypes().ToList();
+            var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(this.ProjetoEntidadesSelecionado);
+
+            AjudanteAssembly.NomeAssemblyEntidades = new AssemblyName(assemblyEntidades.FullName).Name;
+            AjudanteAssembly.CaminhoProjetoEntidades = this.ProjetoEntidadesSelecionado.FullPath;
+
+            var todosTipos = assemblyEntidades.GetAccessibleTypes().ToList();
             var tiposEntidade = todosTipos.Where(x => TipoUtil.TipoIgualOuSubTipo(x, typeof(Entidade))).ToList();
 
             var linhas = script.ToLines();
@@ -867,7 +878,11 @@ namespace Snebur.VisualStudio
 
 
             var assemblyMigracao = AjudanteAssemblyEx.RetornarAssembly(projetoMigracao);
-            var assemblyEntidade = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
+            var assemblyEntidades = AjudanteAssemblyEx.RetornarAssembly(projetoEntidades);
+
+            AjudanteAssembly.NomeAssemblyEntidades = new AssemblyName(assemblyEntidades.FullName).Name;
+            AjudanteAssembly.CaminhoProjetoEntidades = projetoEntidades.FullPath;
+
             var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).SingleOrDefault();
             if (tipoConfiguracao == null)
             {
@@ -1030,6 +1045,8 @@ namespace Snebur.VisualStudio
                     this.AmbienteSelecionado != null)
                 {
                     await this.OcuparAsync();
+
+                    
 
                     this.ScriptsTransacao.Clear();
                     this.VersaoAtual = null;
