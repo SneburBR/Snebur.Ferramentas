@@ -72,6 +72,7 @@ namespace Snebur.VisualStudio
                                         caminhoPublicacao);
                     }
                 }
+
                 var caminhoPublicacaoBuild = infoPublicacao.RetornarCaminhoPublicacaoBuild(versao, caminhoPublicacao);
 
 
@@ -108,6 +109,8 @@ namespace Snebur.VisualStudio
                 File.WriteAllText(Path.Combine(caminhoPublicacao, $"{prefixoLastVersion}last-version.txt"), versao.ToString());
                 //}
 
+                EscrevaESVersao(caminhoProjeto, caminhoPublicacao);
+
                 if (File.Exists(infoPublicacao.ExecutarProcessoDepois))
                 {
                     try
@@ -123,15 +126,31 @@ namespace Snebur.VisualStudio
                 return caminhoPublicacao;
             }
             return null;
-
-
         }
 
-        private static object PublicarArquivos(string caminhoProjeto, EnumTipoProjeto tipoProjeto)
+        private static void EscrevaESVersao(string caminhoProjeto, string caminhoPublicacao)
         {
-            throw new NotImplementedException();
-        }
+            var caminhoTS = Path.Combine(caminhoProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
+            if (File.Exists(caminhoTS))
+            {
+                var tsconfig = JsonUtil.TryDeserializar<ConfiguracaoProjetoTypeScript>(ArquivoUtil.TryLerTexto(caminhoTS), EnumTipoSerializacao.Javascript);
+                if (tsconfig != null)
+                {
+                    var esversion = tsconfig.CompilerOptions.target;
+                    var caminhoESVersion = Path.Combine(caminhoPublicacao, $"{esversion}.txt");
+                    try
+                    {
+                        File.WriteAllText(caminhoESVersion, esversion);
+                    }
+                    catch(Exception ex)
+                    {
+                        LogVSUtil.LogErro(ex);
+                    }
+                }
 
+            }
+        }
+ 
         private static void AplicarJsOptions(PublicacaoConfig infoPublicacao,
                                             string caminhoProjeto,
                                             string caminhoPublicacao,
@@ -243,7 +262,7 @@ namespace Snebur.VisualStudio
                     break;
 
                 case EnumTipoPasta.Web:
-                     
+
                     CopriarArquivos(infoPublicacao,
                                     infoPasta.Caminho,
                                     caminhoBuild,
