@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
@@ -209,13 +210,7 @@ namespace Snebur.VisualStudio
             //}
             //this.NotificarPropriedadeAlterada(nameof(this.VersaoProjeto));
         }
-
-        private void Dispose()
-        {
-            //this.ProjetoVS = null;
-            this.DispensarInerno();
-        }
-
+         
         public static string RetornarChave(string caminhoProjeto)
         {
             if(Path.GetExtension(caminhoProjeto).Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
@@ -223,6 +218,11 @@ namespace Snebur.VisualStudio
                 caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
             }
             return ArquivoUtil.NormalizarCaminhoArquivo(caminhoProjeto).ToLower();
+        }
+        public void Dispose()
+        {
+            //this.ProjetoVS = null;
+            this.DispensarInerno();
         }
     }
 

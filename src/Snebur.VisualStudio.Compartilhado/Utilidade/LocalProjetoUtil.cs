@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
@@ -24,6 +26,34 @@ namespace Snebur.VisualStudio
             return await BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjetoAsync(projetoVS,
                                                                                                 caminhoProjeto,
                                                                                                 isLowerCase);
+        }
+
+        private static bool IsSalvar(string caminhoArquivo, string conteudo)
+        {
+            if (!File.Exists(caminhoArquivo))
+            {
+                return true;
+            }
+            var conteudoAtual = ArquivoUtil.LerTexto(caminhoArquivo, true);
+            return !TextoUtil.IsIgual(conteudoAtual, conteudo, true, true);
+        }
+
+        public static void SalvarDominio(string caminho, string conteudo)
+        {
+            if (IsSalvar(conteudo, caminho))
+            {
+                LogVSUtil.Log("Salvando domínio: " + Path.GetFileName(conteudo));
+                File.WriteAllText(caminho, conteudo, new UTF8Encoding(true));
+            }
+        }
+
+        public static string RetornarChave(string caminhoProjeto)
+        {
+            if (Path.GetExtension(caminhoProjeto).Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
+            {
+                caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
+            }
+            return ArquivoUtil.NormalizarCaminhoArquivo(caminhoProjeto).ToLower();
         }
     }
 }

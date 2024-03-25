@@ -90,17 +90,10 @@ namespace Snebur.VisualStudio
                     linhas.InsertRange(posicaoInicioRegionAutomatico, linhasMetodos);
 
                     var novoContexto = String.Join(Environment.NewLine, linhas);
-                    if (novoContexto.Trim() != conteudo.Trim())
-                    {
-                        ArquivoUtil.SalvarTexto(caminhoServico, novoContexto);
-                    }
+                    LocalProjetoUtil.SalvarDominio(caminhoServico, novoContexto);
                 }
-
-
             }
         }
-
-    
 
         private int RetornarPosicaoInicioRegionAutomatico(List<string> linhas, string caminhoServico)
         {
@@ -129,31 +122,30 @@ namespace Snebur.VisualStudio
             return linhas.IndexOf(fimInicioRegionAutomatico);
         }
         #region Métodos privados
-
-        
-
-        private List<Type> RetornarTodosTipo()
+         
+        protected override List<Type> RetornarTodosTipo()
         {
-            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
-            var diretorio = Path.GetDirectoryName(this.CaminhoAssembly);
-            AppDomain.CurrentDomain.AssemblyResolve += (object sender, ResolveEventArgs args) =>
-            {
-                var nome = args.Name.Split(',').First();
-                var caminho = Path.Combine(diretorio, $"{nome}.dll");
-                if (File.Exists(caminho))
-                {
-                    return AjudanteAssembly.RetornarAssembly(caminho);
-                }
-                return null;
-
-            };
-            //assembly.ModuleResolve += (object sender, ResolveEventArgs e) =>
+            return base.RetornarTodosTipo();
+            //var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
+            //var diretorio = Path.GetDirectoryName(this.CaminhoAssembly);
+            //AppDomain.CurrentDomain.AssemblyResolve += (object sender, ResolveEventArgs args) =>
             //{
+            //    var nome = args.Name.Split(',').First();
+            //    var caminho = Path.Combine(diretorio, $"{nome}.dll");
+            //    if (File.Exists(caminho))
+            //    {
+            //        return AjudanteAssembly.RetornarAssembly(caminho);
+            //    }
+            //    return null;
 
             //};
+            ////assembly.ModuleResolve += (object sender, ResolveEventArgs e) =>
+            ////{
 
-            var xx = assembly.DefinedTypes;
-            return assembly.GetAccessibleTypes().ToList();
+            ////};
+
+            //var xx = assembly.DefinedTypes;
+            //return assembly.GetAccessibleTypes().ToList();
         }
 
         public static ConfiguracaoProjetoServico RetornarConfiguracao(string caminhoConfiguracao)

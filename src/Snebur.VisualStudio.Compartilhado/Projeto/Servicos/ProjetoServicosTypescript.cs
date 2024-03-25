@@ -108,10 +108,7 @@ namespace Snebur.VisualStudio
                     linhas.InsertRange(posicaoInicioRegionAutomatico, linhasMetodos);
 
                     var novoContexto = String.Join(Environment.NewLine, linhas);
-                    if (novoContexto.Trim() != conteudo.Trim())
-                    {
-                        ArquivoUtil.SalvarTexto(caminhoServico, novoContexto);
-                    }
+                    LocalProjetoUtil.SalvarDominio(caminhoServico, novoContexto);
                 }
             }
         }

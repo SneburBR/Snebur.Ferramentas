@@ -112,8 +112,12 @@ namespace Snebur.VisualStudio
             }
 
             var conteudoNET = String.Join("\n", linhasContextoDadosNET);
-            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosNET, conteudoNET);
+
+            LocalProjetoUtil.SalvarDominio(caminhoAbsolutoContextoDadosNET, conteudoNET);
+             
         }
+
+       
 
         //private void SalvarContextoNETCliente(List<string> linhasConsultaEntity)
         //{
@@ -161,7 +165,7 @@ namespace Snebur.VisualStudio
 
             var conteudoTS = String.Join("\n", linhasContextoDadosTS);
 
-            ArquivoUtil.SalvarArquivoTexto(caminhoAbsolutoContextoDadosTS, conteudoTS);
+            LocalProjetoUtil.SalvarDominio(caminhoAbsolutoContextoDadosTS, conteudoTS);
         }
 
         private List<string> RetornarLinhasConsultaNET(List<string> linhasConsultaEntity)

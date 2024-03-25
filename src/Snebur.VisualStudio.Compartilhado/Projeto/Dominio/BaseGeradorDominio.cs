@@ -52,7 +52,7 @@ namespace Snebur.VisualStudio
                 sb.AppendLine(this.RetornarConteudoTypeScript());
 
                 var conteudoTypeScript = FormatarDocumentoUtil.RetornarConteudoFormatado(sb.ToString(), false);
-                ArquivoUtil.SalvarArquivoTexto(this.CaminhoArquivoDestino, conteudoTypeScript);
+                LocalProjetoUtil.SalvarDominio(this.CaminhoArquivoDestino, conteudoTypeScript);
             }
         }
 

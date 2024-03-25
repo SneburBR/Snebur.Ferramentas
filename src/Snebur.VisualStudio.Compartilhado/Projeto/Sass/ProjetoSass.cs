@@ -114,7 +114,7 @@ namespace Snebur.VisualStudio
                         var novoConteudo = String.Join(System.Environment.NewLine, linhas);
                         if (novoConteudo.Trim() != conteudo.Trim())
                         {
-                            ArquivoUtil.SalvarArquivoTexto(arquivoShtml.FullName, novoConteudo);
+                            LocalProjetoUtil.SalvarDominio(arquivoShtml.FullName, novoConteudo);
                         }
                     }
                 }

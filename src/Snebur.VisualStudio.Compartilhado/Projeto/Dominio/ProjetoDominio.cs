@@ -10,8 +10,6 @@ namespace Snebur.VisualStudio
 {
     public partial class ProjetoDominio : BaseProjeto<ConfiguracaoProjetoDominio>
     {
-
-
         public List<Type> TodosTipos { get; }
 
       

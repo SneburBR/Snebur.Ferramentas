@@ -69,7 +69,7 @@ namespace Snebur.VisualStudio
 
 
             var conteudo = sb.ToString();
-            ArquivoUtil.SalvarTexto(caminhoExtensao, conteudo);
+            LocalProjetoUtil.SalvarDominio(caminhoExtensao, conteudo);
 
         }
 

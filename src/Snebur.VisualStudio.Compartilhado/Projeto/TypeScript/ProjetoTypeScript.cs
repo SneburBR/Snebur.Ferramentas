@@ -451,7 +451,7 @@ namespace Snebur.VisualStudio
             var conteudo = sb.ToString();
 
             var caminhoRepositorioHtmlReferencia = this.CaminhoHtmlReferencias;
-            ArquivoUtil.SalvarArquivoTexto(caminhoRepositorioHtmlReferencia, conteudo);
+            LocalProjetoUtil.SalvarDominio(caminhoRepositorioHtmlReferencia, conteudo);
         }
 
         private string RetornarDeclaracaoTiposUI(string namespaceReflexao)
