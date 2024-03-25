@@ -284,25 +284,27 @@ namespace Snebur.VisualStudio
 
         #endregion
 
-        private List<Type> RetornarTodosTipo()
+        protected override List<Type> RetornarTodosTipo()
         {
-            if (!File.Exists(this.CaminhoAssembly))
-            {
-                throw new FileNotFoundException(this.CaminhoAssembly);
-            }
-            var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
-            try
-            {
-                return assembly.GetAccessibleTypes().Where(x => !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
-            }
-            catch (ReflectionTypeLoadException e)
-            {
-                return e.Types.Where(x => x != null && !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return base.RetornarTodosTipo();
+
+            //if (!File.Exists(this.CaminhoAssembly))
+            //{
+            //    throw new FileNotFoundException(this.CaminhoAssembly);
+            //}
+            //var assembly = AjudanteAssembly.RetornarAssembly(this.CaminhoAssembly);
+            //try
+            //{
+            //    return assembly.GetAccessibleTypes().Where(x => !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
+            //}
+            //catch (ReflectionTypeLoadException e)
+            //{
+            //    return e.Types.Where(x => x != null && !x.IsDefined(typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), false)).ToList();
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
 
         }
 
