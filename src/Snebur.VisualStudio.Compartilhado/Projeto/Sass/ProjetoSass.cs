@@ -27,21 +27,21 @@ namespace Snebur.VisualStudio
         private readonly List<FileInfo> TodosArquivos;
         private FileInfo ArquivoMixins { get; }
         private string CaminhoRepositorioSass { get; }
-         
+
         private const string PREFIXO_SEM_IMPORTACAO = "_";
         private const string PREFIXO_CORES = "--";
 
         private HashSet<string> PrefixosReservado { get; } = new HashSet<string> { PREFIXO_SEM_IMPORTACAO, PREFIXO_SEM_IMPORTACAO };
-         
-        public ProjetoSass(ProjetoViewModel projetoVM, 
+
+        public ProjetoSass(ProjetoViewModel projetoVM,
                              ConfiguracaoProjetoSass configuracaoProjeto,
                              FileInfo arquivoProjeto, string caminhoConfiguracao) :
-                             base(projetoVM, 
+                             base(projetoVM,
                                   configuracaoProjeto,
-                                  arquivoProjeto, 
+                                  arquivoProjeto,
                                   caminhoConfiguracao)
         {
-             
+
             this.ArquivoEstiloReferenciaSass = new FileInfo(Path.GetFullPath(Path.Combine(this.CaminhoProjeto, this.ConfiguracaoProjeto.inputFile)));
             this.ArquivoEstiloCompilado = new FileInfo(Path.GetFullPath(Path.Combine(this.CaminhoProjeto, this.ConfiguracaoProjeto.outputFile)));
             this.ArquivoEstiloCompiladoMinificado = this.RetornarArquivoMinificado();
@@ -49,7 +49,7 @@ namespace Snebur.VisualStudio
             this.ArquivoMixins = new FileInfo(Path.Combine(this.CaminhoRepositorioSass, NOME_ARQUIVO_MIXINS_SIMPLES));
             this.ArquivoVariaveis = new FileInfo(Path.Combine(this.CaminhoRepositorioSass, NOME_ARQUIVO_VARIAVEIS));
 
-            this.TodosArquivos = LocalProjetoUtil.RetornarTodosArquivosAsync(this.ProjetoViewModel.ProjetoVS, 
+            this.TodosArquivos = LocalProjetoUtil.RetornarTodosArquivosAsync(this.ProjetoViewModel.ProjetoVS,
                                                                              this.CaminhoProjeto, true).
                                                   GetAwaiter().
                                                   GetResult().
@@ -85,7 +85,7 @@ namespace Snebur.VisualStudio
 
         private void AtualizarLinkEstiloProjeto()
         {
-            var arquivosSHTML = this.TodosArquivos.Where(x=> x.Extension == ConstantesProjeto.EXTENSAO_CONTROLE_SHTML).ToList();
+            var arquivosSHTML = this.TodosArquivos.Where(x => x.Extension == ConstantesProjeto.EXTENSAO_CONTROLE_SHTML).ToList();
             var arquivosEstilo = this.RetornarArquivosEstilo();
             foreach (var arquivoShtml in arquivosSHTML)
             {
@@ -111,11 +111,9 @@ namespace Snebur.VisualStudio
                             linhas.Insert(posicaoCabecalhoFim, linhaEstilo);
                         }
 
-                        var novoConteudo = String.Join(System.Environment.NewLine, linhas);
-                        if (novoConteudo.Trim() != conteudo.Trim())
-                        {
-                            LocalProjetoUtil.SalvarDominio(arquivoShtml.FullName, novoConteudo);
-                        }
+                        var novoConteudo = String.Join(Environment.NewLine, linhas);
+                        LocalProjetoUtil.SalvarDominio(arquivoShtml.FullName, novoConteudo);
+
                     }
                 }
             }
@@ -139,7 +137,7 @@ namespace Snebur.VisualStudio
             var parcial = linha.Substring(linha.IndexOf(procurarhref) + procurarhref.Length);
             var aspa = parcial[0];
             parcial = parcial.Substring(1);
-            var caminho = parcial.Substring(0, Math.Max( parcial.IndexOf(aspa), 0));
+            var caminho = parcial.Substring(0, Math.Max(parcial.IndexOf(aspa), 0));
             if (Uri.TryCreate(caminho, UriKind.RelativeOrAbsolute, out Uri url))
             {
                 caminho = url.IsAbsoluteUri ? url.AbsolutePath : caminho;
@@ -317,7 +315,7 @@ namespace Snebur.VisualStudio
         {
             return arquivo.Name.EndsWith(ConstantesProjeto.EXTENSAO_CONTROLE_SHTML_SCSS);
         }
-         
+
         private bool IsArquivoSassPersonalizado(FileInfo arquivo)
         {
             return arquivo.Name.ToLower().EndsWith(NOME_ARQUIVO_PERSONALIZADO);  //&& arquivo.Name != NOME_ARQUIVO_MIXINS_SIMPLES;
@@ -333,7 +331,7 @@ namespace Snebur.VisualStudio
             return arquivo.Name.EndsWith(NOME_ARQUIVO_VARIAVEIS); // && arquivo.Name != NOME_ARQUIVO_VARIAVEIS;
         }
 
-        public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao, 
+        public static ConfiguracaoProjetoSass RetornarConfiguracao(string caminhoConfiguracao,
                                                                    string nomeProjeto)
         {
             var json = File.ReadAllText(caminhoConfiguracao, UTF8Encoding.UTF8);
@@ -341,7 +339,7 @@ namespace Snebur.VisualStudio
                                  Where(x => Path.GetExtension(x.inputFile) == ".scss").ToList();
 
             if (configuracoes.Count == 0)
-            {   
+            {
                 LogVSUtil.LogErro("--------------  compilerconfig.json----------------------");
                 throw new Exception("Nenhuma configuração encontrada");
             }
@@ -357,7 +355,7 @@ namespace Snebur.VisualStudio
             {
                 LogVSUtil.Alerta("--------------  compilerconfig.json----------------------");
                 LogVSUtil.LogErro("Mais de uma configuração de Estilo no projeto, verificar compilerconfig.json, defina IsIgnorar para as configurações personalizadas  ");
-               return configuracoes.Where(x => x.inputFile.Contains(nomeProjeto, System.Globalization.CompareOptions.OrdinalIgnoreCase)).FirstOrDefault();
+                return configuracoes.Where(x => x.inputFile.Contains(nomeProjeto, System.Globalization.CompareOptions.OrdinalIgnoreCase)).FirstOrDefault();
             }
             return configuracoes.SingleOrDefault();
         }

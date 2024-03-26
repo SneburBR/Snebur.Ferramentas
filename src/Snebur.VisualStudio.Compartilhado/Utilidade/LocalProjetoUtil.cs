@@ -40,10 +40,10 @@ namespace Snebur.VisualStudio
 
         public static void SalvarDominio(string caminho, string conteudo)
         {
-            if (IsSalvar(conteudo, caminho))
+            if (IsSalvar(caminho, conteudo))
             {
-                LogVSUtil.Log("Salvando domínio: " + Path.GetFileName(caminho));
-                File.WriteAllText(caminho, conteudo, new UTF8Encoding(true));
+                LogVSUtil.Alerta("Atualizando domínio: " + Path.GetFileName(caminho));
+                File.WriteAllText(caminho, conteudo, Encoding.UTF8);
             }
         }
 

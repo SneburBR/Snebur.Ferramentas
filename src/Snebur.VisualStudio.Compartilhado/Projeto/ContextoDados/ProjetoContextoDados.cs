@@ -111,8 +111,7 @@ namespace Snebur.VisualStudio
                 }
             }
 
-            var conteudoNET = String.Join("\n", linhasContextoDadosNET);
-
+            var conteudoNET = String.Join(Environment.NewLine, linhasContextoDadosNET);
             LocalProjetoUtil.SalvarDominio(caminhoAbsolutoContextoDadosNET, conteudoNET);
              
         }
@@ -163,7 +162,7 @@ namespace Snebur.VisualStudio
             linhasContextoDadosTS.RemoveRange(posicaoInicioConstrutorConsultaTS, posicaoFimConstrutorConsultaTS + 1);
             linhasContextoDadosTS.InsertRange(posicaoInicioConstrutorConsultaTS, this.RetornarLinhasConstrutorConsultaTS(linhasConsultaEntity));
 
-            var conteudoTS = String.Join("\n", linhasContextoDadosTS);
+            var conteudoTS = String.Join(Environment.NewLine, linhasContextoDadosTS);
 
             LocalProjetoUtil.SalvarDominio(caminhoAbsolutoContextoDadosTS, conteudoTS);
         }

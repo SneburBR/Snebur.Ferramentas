@@ -339,15 +339,8 @@ namespace Snebur.VisualStudio
 
 
                 linhas.InsertRange(posicaoPrivadas, linhasCampoPrivado);
-
-                var novoConteudo = String.Join("\n", linhas);
-
-                if (!TextoUtil.IsIgual(novoConteudo, conteuto, true, true))
-                {
-                    LogVSUtil.Log("Salvando domínio: " + Path.GetFileName(caminhoArquivo));
-                    File.WriteAllText(caminhoArquivo, novoConteudo, new UTF8Encoding(true));
-                    //return;
-                }
+                var novoConteudo = String.Join(Environment.NewLine, linhas);
+                LocalProjetoUtil.SalvarDominio(caminhoArquivo, novoConteudo);
             }
         }
 
