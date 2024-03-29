@@ -114,8 +114,8 @@ namespace Snebur.VisualStudio
             var caminhoArquivo = Path.Combine(caminhoDiretorio, nomeArquivo);
             if (!File.Exists(caminhoArquivo))
             {
-                var conteudoTypeScript = this.RetornarConteudoAtributoPartialTypeScript(tipoAtributo);
-                ArquivoUtil.SalvarArquivoTexto(caminhoArquivo, conteudoTypeScript);
+                var conteudo = this.RetornarConteudoAtributoPartialTypeScript(tipoAtributo);
+                LocalProjetoUtil.SalvarDominio(caminhoArquivo, conteudo);
             }
         }
 

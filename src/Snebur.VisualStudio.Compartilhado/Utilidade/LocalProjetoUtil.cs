@@ -42,7 +42,7 @@ namespace Snebur.VisualStudio
         {
             if (IsSalvar(caminho, conteudo))
             {
-                LogVSUtil.Alerta("Atualizando domínio: " + Path.GetFileName(caminho));
+                LogVSUtil.Alerta("Salvando arquivo: " + Path.GetFileName(caminho));
                 File.WriteAllText(caminho, conteudo, Encoding.UTF8);
             }
         }

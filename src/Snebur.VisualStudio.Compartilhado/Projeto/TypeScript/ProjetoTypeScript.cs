@@ -368,7 +368,7 @@ namespace Snebur.VisualStudio
                                            isIdentar: true,
                                            isPrepararSerializacao: false);
 
-            ArquivoUtil.SalvarArquivoTexto(this.CaminhoConfiguracao, json);
+            LocalProjetoUtil.SalvarDominio(this.CaminhoConfiguracao, json);
             LogVSUtil.Log("Arquivo de tsconfig atualizado com sucesso.");
         }
 

@@ -187,8 +187,8 @@ namespace Snebur.VisualStudio
             linhas.RemoveRange(inicio + 1, fim - inicio - 1);
             linhas.InsertRange(inicio + 1, linhasArquivo);
 
-            var conteudo = String.Join("\n", linhas);
-            ArquivoUtil.SalvarArquivoTexto(caminhoArquivoDestino, conteudo);
+            var conteudo = String.Join(Environment.NewLine, linhas);
+            LocalProjetoUtil.SalvarDominio(caminhoArquivoDestino, conteudo);
 
             if (isImportarVariaveisMixins)
             {
@@ -226,8 +226,8 @@ namespace Snebur.VisualStudio
 
                     if (existeAlteracao)
                     {
-                        var conteudo = String.Join("\n", linhas);
-                        ArquivoUtil.SalvarArquivoTexto(arquivoSass.FullName, conteudo);
+                        var conteudo = String.Join(Environment.NewLine, linhas);
+                        LocalProjetoUtil.SalvarDominio(arquivoSass.FullName, conteudo);
                     }
                 }
             }
