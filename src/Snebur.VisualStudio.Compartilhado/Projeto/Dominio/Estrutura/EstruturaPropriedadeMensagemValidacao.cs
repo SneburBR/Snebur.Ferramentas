@@ -21,8 +21,10 @@ namespace Snebur.VisualStudio
         private string RetornarNomePropriedadeIdentificadorMensagemValidacao()
         {
             var nomePropriedade = this.Propriedade.Name;
-            var partes = new List<string>();
-            partes.Add("IDENTIFICADOR");
+            var partes = new List<string>
+            {
+                "IDENTIFICADOR"
+            };
             var len = nomePropriedade.Length;
             var posicaoUltimaDivisao = 0;
             var fim = 0;
@@ -37,8 +39,6 @@ namespace Snebur.VisualStudio
                     {
                         partes.Add(parte);
                     }
-                    
-
                     posicaoUltimaDivisao = i;
                 }
             }

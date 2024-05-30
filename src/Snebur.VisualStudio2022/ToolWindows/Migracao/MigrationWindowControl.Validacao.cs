@@ -231,7 +231,8 @@ namespace Snebur.VisualStudio
             {
                 if (TipoUtil.TipoIgualOuSubTipo(propriedade.PropertyType, typeof(Entidade)))
                 {
-                    if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(ChaveEstrangeiraAttribute)))
+                    if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(ChaveEstrangeiraAttribute))  &&
+                        !PropriedadeUtil.PossuiAtributo(propriedade, typeof(ChaveEstrangeiraRelacaoUmUmAttribute)))
                     {
                         if (!propriedade.IsOverride())
                         {
@@ -278,7 +279,8 @@ namespace Snebur.VisualStudio
                     }
 
                     if (!PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoPaiAttribute)) &&
-                        !PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoUmUmAttribute)))
+                        !PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoUmUmAttribute)) &&
+                        !PropriedadeUtil.PossuiAtributo(propriedade, typeof(RelacaoUmUmReversaAttribute)))
                     {
                         if (!propriedade.IsOverride())
                         {

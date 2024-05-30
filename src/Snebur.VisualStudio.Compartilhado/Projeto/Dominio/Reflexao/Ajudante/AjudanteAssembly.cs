@@ -300,7 +300,6 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-
                     var bytes = File.ReadAllBytes(caminhoReflexao);
                     var assemly = Assembly.Load(bytes);
                     return assemly;
