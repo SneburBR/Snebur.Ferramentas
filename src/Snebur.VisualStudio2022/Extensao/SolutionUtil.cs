@@ -10,7 +10,7 @@ namespace Snebur.VisualStudio
     public static class SolutionUtil
     {
         private static bool _isDefinidoProjetoInicializacao = false;
-        private static string[] IgrnorarPastas = new string[] { "build", "bin", "obj", ".vs", ".git" };
+        private static string[] IgrnorarPastas = new string[] { "wwwroot", "build", "bin", "obj", ".vs", ".git" };
 
         public static async Task DefinirProjetosInicializacaoAsync()
         {

@@ -4,10 +4,14 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <LangVersion>latest</LangVersion>
     <TargetFrameworkProfile />
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -103,10 +107,6 @@
     <Compile Include="Json\JsonSchemaSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\OutputWindowCommand.cs" />
-    <Compile Include="Publicacao\BuildjsOptions.cs" />
-    <Compile Include="Publicacao\EnumTipoPasta.cs" />
-    <Compile Include="Publicacao\InfoVersao.cs" />
-    <Compile Include="Publicacao\PublicacaoConfig.cs" />
     <Compile Include="ToolWindows\Migracao\AjudanteRetornarProximaMigracao.cs" />
     <Compile Include="ToolWindows\Migracao\AmbienteViewModel.cs" />
     <Compile Include="ToolWindows\Migracao\MigrationWindowControl.Validacao.cs" />
@@ -131,7 +131,6 @@
     <Compile Include="Utilidade\LogVSUtil.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtilEx.cs" />
     <Compile Include="Utilidade\ProjetoUtil.cs" />
-    <Compile Include="Publicacao\PublicacaoUtil.cs" />
     <Compile Include="Utilidade\VsThreadUtil.cs" />
     <Compile Include="ViewModels\LogMensagemViewModel.cs" />
     <Compile Include="VisualStudio2022Package.cs" />
@@ -290,7 +289,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

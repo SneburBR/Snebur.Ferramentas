@@ -267,7 +267,7 @@ namespace Snebur.VisualStudio
 
             //private static readonly string[] PastarIgnorar = new string[] { "build", "pr" };
 
-            private static readonly HashSet<string> PastarIgnorar = new() { "build", "packages",
+            private static readonly HashSet<string> PastarIgnorar = new() { "wwwroot", "build", "packages",
                                                                         "node_modules", ".vs",
                                                                         ".git", "test",
                                                                         "tests","lib", "obj",
