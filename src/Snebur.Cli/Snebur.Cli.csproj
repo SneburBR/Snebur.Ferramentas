@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!--<TargetFramework>net7.0</TargetFramework>-->
+		<TargetFramework>net8.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>Snebur.Cli</RootNamespace>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
+		<AssemblyName>sn</AssemblyName>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj" />
+		<ProjectReference Include="..\Snebur.VisualStudio.Compartilhado\Snebur.VisualStudio.Compartilhado.csproj" />
+		
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+	  <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+	</ItemGroup>
+
+</Project>

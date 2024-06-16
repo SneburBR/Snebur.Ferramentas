@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Snebur.VisualStudio.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "--get-zid"
+    },
+    "zid-get-zid": {
+      "commandName": "Project",
+      "commandLineArgs": "zid --get-zid 10"
+    },
+    "zid-get-id": {
+      "commandName": "Project",
+      "commandLineArgs": "zid --get-id 669662"
+    }
+  }
+}
