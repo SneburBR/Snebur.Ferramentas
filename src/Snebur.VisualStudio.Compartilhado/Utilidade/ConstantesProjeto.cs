@@ -1,6 +1,7 @@
 ﻿//futuramente vamos normalizar os Error, passando um parametro da mapeamento do arquivo e linha
 //detalhes aqui https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
 
+using Snebur.Publicacao;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ namespace Snebur.VisualStudio
 {
     public static class ConstantesProjeto
     {
-        public const string PASTA_BUILD = "build";
+        public const string PASTA_WWWROOT_BUILD = ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD;
         public const string PASTA_SRC = "src";
 
         public const string EXTENSAO_ESTILO = ".css";

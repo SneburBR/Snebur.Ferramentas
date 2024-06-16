@@ -328,6 +328,7 @@ namespace Snebur.VisualStudio
             //var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
             var diretorioBin = Path.Combine(diretorioProjeto, "bin");
             var diretorioDebug = Path.Combine(diretorioBin, "Debug");
+            
             if(tipoCsProj == EnumTipoCsProj.MicrosoftSdk)
             {
                 diretorioDebug = Path.Combine(diretorioDebug, "net48");
@@ -357,7 +358,6 @@ namespace Snebur.VisualStudio
                 LogVSUtil.Alerta(mensagemErro);
                 return caminhoDll;
             }
-
             throw new FileNotFoundException(mensagemErro);
         }
 

@@ -147,7 +147,7 @@ namespace Snebur.VisualStudio
             Func<FileInfo, int> funcaoRetornarPrioridade)
         {
             //var caminhoScriptps = Path.GetDirectoryName(Path.Combine(caminhoProjeto, configuracao.compilerOptions.outFile));
-            var caminhoScripts = Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD);
+            var caminhoScripts = Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD);
             var arquivosTS = new List<BaseArquivoTypeScript>();
             foreach (var caminhoArquivo in arquivos)
             {

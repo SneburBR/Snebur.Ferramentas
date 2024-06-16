@@ -24,8 +24,8 @@ namespace Snebur.VisualStudio
                                                                                     bool isLowerCase)
         {
             return await BaseAplicacaoVisualStudio.Instancia.RetornarTodosArquivosProjetoAsync(projetoVS,
-                                                                                                caminhoProjeto,
-                                                                                                isLowerCase);
+                                                                                               caminhoProjeto,
+                                                                                               isLowerCase);
         }
 
         private static bool IsSalvar(string caminhoArquivo, string conteudo)

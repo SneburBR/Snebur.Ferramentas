@@ -29,7 +29,7 @@ namespace Snebur.VisualStudio
                         if (projetoDepedencia != null)
                         {
                             var caminhoScriptDebug = Path.Combine(projeto.CaminhoProjeto,
-                                                                  ConstantesPublicacao.NOME_PASTA_BUILD,
+                                                                  ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD,
                                                                   projetoDepedencia.ArquivoScriptCompilado.Name);
                             if (projetoDepedencia != null)
                             {

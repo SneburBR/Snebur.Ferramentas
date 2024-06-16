@@ -139,10 +139,7 @@ namespace Snebur.VisualStudio
                     await this.CompilarAsync();
                 }
                 this._isNormalizando = true;
-
-                
                 await WorkThreadUtil.SwitchToWorkerThreadAsync();
-              
                 this.AtualizarInterno();
                  
                 this.IsNormalizado = true;
