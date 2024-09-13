@@ -54,6 +54,7 @@ namespace Snebur.VisualStudio
             var itens = obj.ProjectItemRenames.Select(x => x.SolutionItem);
             _ = this.ItensRenomeadosAsync(itens);
         }
+
         private void ProjectItemsEvents_AfterRemoveProjectItems(AfterRemoveProjectItemEventArgs obj)
         {
             if (this._isRemovendoArquivo)
@@ -62,6 +63,7 @@ namespace Snebur.VisualStudio
             }
             _ = this.ArquivoRemovidosAsync(obj.ProjectItemRemoves);
         }
+
         private void ProjectItemsEvents_AfterAddProjectItems(IEnumerable<SolutionItem> itens)
         {
             if (this._isAdicionarArquivo)
@@ -70,6 +72,7 @@ namespace Snebur.VisualStudio
             }
             _ = this.ItensAdicionadoAsync(itens);
         }
+
         private async Task ArquivoRemovidosAsync(ProjectItemRemoveDetails[] projectItemRemoves)
         {
             var projetos = projectItemRemoves.Select(x => x.Project).Distinct(); ;
@@ -124,21 +127,8 @@ namespace Snebur.VisualStudio
 
             var projetosTS = new HashSet<ProjetoTypeScript>();
             var arquivos = itens.Select(x => new FileInfo(x.FullPath));
-            var arquivosControles = ArquivoControleUtil.RetornarArquivosControle(arquivos);
-
-            var arquivosCodigoComum = arquivos.Where(x => x.Extension.Equals(EXTENSAO_TYPESCRIPT) && !ArquivoControleUtil.IsArquivoControle(x));
-
-            var arquivosControlesNormalizados = this.RetornarArquivosControlesNormalizados(arquivosControles);
-            foreach (var arquivo in arquivosControles)
-            {
-                if (arquivo.Exists)
-                {
-                    var projetoTS = await this.AgruparArquivoAsync(arquivo);
-                    projetosTS.AddIsNotNull(projetoTS);
-                }
-            }
-
-            foreach (var arquivo in arquivosCodigoComum)
+             
+            foreach (var arquivo in arquivos)
             {
                 if (arquivo.Exists)
                 {
@@ -146,6 +136,7 @@ namespace Snebur.VisualStudio
                     projetosTS.AddIsNotNull(projetoTS);
                 }
             }
+
             await this.NormalizarProjetosAsync(projetosTS);
         }
 
