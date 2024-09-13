@@ -16,6 +16,8 @@ namespace Snebur.VisualStudio
         public PropertyInfo PropriedadeRelacaoChaveEstrangeira { get; }
         public bool IsPropriedadeIsAtivo { get; private set; }
 
+        public bool IsPropriedadeDescricaoIsDeletado { get; private set; }
+
         private bool IsCampoProtected;
 
         //public string NomePropriedadeAtribuir { get; set; }
@@ -45,6 +47,10 @@ namespace Snebur.VisualStudio
             this.IsPropriedadeIsAtivo = TipoUtil.TipoSubTipo(propriedade.DeclaringType, typeof(Entidade)) &&
                                         TipoUtil.TipoImplementaInterface(propriedade.DeclaringType, typeof(IAtivo)) &&
                                         this.NomePropriedade == nameof(IAtivo.IsAtivo);
+
+            this.IsPropriedadeDescricaoIsDeletado = TipoUtil.TipoSubTipo(propriedade.DeclaringType, typeof(Entidade)) &&
+                                         TipoUtil.TipoImplementaInterface(propriedade.DeclaringType, typeof(IDeletado)) &&
+                                         (this.NomePropriedade == "Descricao" || this.NomePropriedade == "Nome");
 
         }
 
@@ -81,6 +87,10 @@ namespace Snebur.VisualStudio
                 else if (this.IsPropriedadeIsAtivo)
                 {
                     linhas.Add($"{tabInicial}{TAB}return this.RetornarValorPropriedadeIsAtivo(this.{this.NomeVariavelPrivada});");
+                }
+                else if (this.IsPropriedadeDescricaoIsDeletado)
+                {
+                    linhas.Add($"{tabInicial}{TAB}return this.RetornarDescricaoComDeletado(this.{this.NomeVariavelPrivada});");
                 }
                 else
                 {

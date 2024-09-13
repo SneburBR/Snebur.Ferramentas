@@ -14,12 +14,15 @@ namespace Snebur.VisualStudio
         private string RetornarConteudoAtributosPropriedade(PropertyInfo propriedade)
         {
             var declaracaoProprieade = AjudanteReflexao.RetornarDeclaracaoPropriedade(propriedade);
+
             var sb = new StringBuilder();
             var atributos = this.RetornarAtributosPropriedade(propriedade);
+
             foreach (var atributo in atributos)
             {
                 var caminhoAtributo = this.RetornarCaminhoAtributo(atributo);
-                var parametrosAtributo = this.RetornarValoresParametrosAtributo(atributo);
+                var parametrosAtributo = this.RetornarValoresParametrosAtributo(atributo, propriedade);
+
                 sb.AppendLine($"{declaracaoProprieade}.Atributos.Add(new {caminhoAtributo}({parametrosAtributo}));");
             }
             return sb.ToString();
@@ -28,12 +31,21 @@ namespace Snebur.VisualStudio
         private List<Attribute> RetornarAtributosPropriedade(PropertyInfo propriedade)
         {
             var atributos = propriedade.GetCustomAttributes().Where(x => x.GetType().Name != AjudanteAssembly.NomeTipoIgnorarAtributoTS).ToList();
-            atributos = atributos.Where(x => TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(ValidationAttribute)) ||
-                                             TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(ForeignKeyAttribute)) ||
-                                             TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(KeyAttribute)) ||
-                                             TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(ScaffoldColumnAttribute)) ||
-                                             TipoUtil.TipoIgualOuSubTipo(x.GetType(), AjudanteAssembly.TipoBaseAtributoDominio)).ToList();
-            return atributos;
+
+            return atributos.Where(x=> IsAtributoDominio(x))
+                            .ToList();
+
+        }
+
+        private bool IsAtributoDominio(Attribute atributo)
+        {
+            var tipoAtrubibuto = atributo.GetType();
+            return TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, typeof(ValidationAttribute)) ||
+                   TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, typeof(ForeignKeyAttribute)) ||
+                   TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, typeof(KeyAttribute)) ||
+                   TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, typeof(ScaffoldColumnAttribute)) ||
+                   TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, AjudanteAssembly.TipoBaseAtributoDominio) ||
+                   TipoUtil.TipoIgualOuSubTipo(tipoAtrubibuto, typeof(KeyAttribute));
         }
     }
 }

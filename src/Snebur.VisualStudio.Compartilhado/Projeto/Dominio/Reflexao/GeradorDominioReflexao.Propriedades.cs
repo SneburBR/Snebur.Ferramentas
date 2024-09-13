@@ -95,7 +95,7 @@ namespace Snebur.VisualStudio
             var propriedadeChavePrimaria = this.RetornarPropriedadeChavePrimaria(tipoEntidade);
             var declaracaoTipoDeclarado = AjudanteReflexao.RetornarDeclaracaoTipoBaseDominio(tipoEntidade);
             var declaracaoPropriedadeChavePrimaria = AjudanteReflexao.RetornarDeclaracaoPropriedade(propriedadeChavePrimaria);
-            sb.AppendLine(String.Format("{0}.PropriedadeChavePrimaria = {1};", declaracaoTipoDeclarado, declaracaoPropriedadeChavePrimaria));
+            sb.AppendLine($"{declaracaoTipoDeclarado}.SetPropriedadeChavePrimaria({declaracaoPropriedadeChavePrimaria});");
             return sb.ToString();
         }
 

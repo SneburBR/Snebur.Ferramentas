@@ -65,7 +65,8 @@ namespace Snebur.VisualStudio
             var isAbstrato = tipo.IsAbstract;
             var isImplementaIDeletado = TipoUtil.TipoImplementaInterface(tipo, typeof(IDeletado));
             var isImplementaIAtivo = TipoUtil.TipoImplementaInterface(tipo, typeof(IAtivo));
-            var retorno = $"const {declaracaoTipoEntidade} = new Snebur.Reflexao.TipoEntidade({construtorBaseDominio}, \"{tipo.Name}\", \"{_namespace}\",\"{assemblyQualifiedName}\",{declaracaoTipoBaseDominioBase}, {isAbstrato.ToString().ToLower()}, {isImplementaIDeletado.ToString().ToLower()}, {isImplementaIAtivo.ToString().ToLower()});";
+            var isIdentity = TipoUtil.IsTipoEntitidadeIdentity(tipo);
+            var retorno = $"const {declaracaoTipoEntidade} = new Snebur.Reflexao.TipoEntidade({construtorBaseDominio}, \"{tipo.Name}\", \"{_namespace}\",\"{assemblyQualifiedName}\",{declaracaoTipoBaseDominioBase}, {isAbstrato.ToString().ToLower()}, {isImplementaIDeletado.ToString().ToLower()}, {isImplementaIAtivo.ToString().ToLower()},{isIdentity.ToString().ToLower()});";
 
             return retorno;
         }

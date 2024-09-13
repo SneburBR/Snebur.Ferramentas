@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Snebur.Reflexao;
+using Snebur.Utilidade;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using Snebur.Reflexao;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
+using System.Reflection;
 
 namespace Snebur.VisualStudio
 {
@@ -42,11 +43,10 @@ namespace Snebur.VisualStudio
 
                 if (TipoUtil.TipoIgual(tipoAtributo, typeof(KeyAttribute)))
                 {
-                    return "Snebur.Dominio.Atributos.ChavePrimaria";
+                    return "Snebur.Dominio.Atributos.ChavePrimariaAttribute";
                 }
 
-                throw new ErroOperacaoInvalida($"Atributo não suportado pelo Dominio TS. '{atributo.GetType().Name}'");
-
+                throw new ErroOperacaoInvalida($"Atributo não suportado pelo Domínio TS. '{atributo.GetType().Name}'");
             }
             else
             {
@@ -54,20 +54,27 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private string RetornarValoresParametrosAtributo(Attribute atributo)
+        private string RetornarValoresParametrosAtributo(Attribute atributo, PropertyInfo propriedade = null)
         {
             var tipoAtributo = atributo.GetType();
-            var propriedades = ReflexaoUtil.RetornarPropriedades(tipoAtributo, false);
-            var parametrosConstrutor = AjudanteReflexao.RetornarParametrosConstrutor(tipoAtributo);
             var valores = new List<string>();
 
+            if (TipoUtil.TipoIgual(tipoAtributo, typeof(KeyAttribute)))
+            {
+                var isEntity = this.IsChavePrimariaIdentity(propriedade, atributo);
+                return isEntity ? "true" : "false";
+            }
+
+            var propriedades = ReflexaoUtil.RetornarPropriedades(tipoAtributo, false);
+            var parametrosConstrutor = AjudanteReflexao.RetornarParametrosConstrutor(tipoAtributo);
+            
             foreach (var parametro in parametrosConstrutor)
             {
                 var propriedadeReferenteParametro = propriedades.Where(x => x.Name.Equals(parametro.NomeParametro, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
                 if (propriedadeReferenteParametro == null)
                 {
                     //valores.Add("null");
-                    throw new Exception(String.Format("Não foi encontrado uma propriedade para parametro do atributo {0} - {1}", tipoAtributo.Name, parametro.NomeParametro));
+                    throw new Exception(String.Format("Não foi encontrado uma propriedade para parâmetro do atributo {0} - {1}", tipoAtributo.Name, parametro.NomeParametro));
                 }
                 else
                 {
@@ -76,6 +83,28 @@ namespace Snebur.VisualStudio
                 }
             }
             return String.Join(",", valores);
+        }
+
+        private bool IsChavePrimariaIdentity(PropertyInfo propriedade, 
+                                             Attribute atributo)
+        {
+            if(propriedade == null)
+            {
+                LogVSUtil.LogErro($"A atributo KeyAttribute não possui propriedade associada em {this.GetType().Name}");
+                return false;
+            }
+            var atributoDatabaseGeneratedAttribute = propriedade.GetCustomAttributes().
+                                                       Where(x => TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(DatabaseGeneratedAttribute)))
+                                                      .FirstOrDefault();
+
+            if(atributoDatabaseGeneratedAttribute == null)
+            {
+                return true;
+            }
+
+            var atributoDatabaseGeneratedAttributeTipado = (DatabaseGeneratedAttribute)atributoDatabaseGeneratedAttribute;
+            return atributoDatabaseGeneratedAttributeTipado.DatabaseGeneratedOption != DatabaseGeneratedOption.None;
+ 
         }
 
         private string RetornarValorParametroAtributoPropriedade(object valor)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Snebur.Linq;
 using Snebur.Publicacao;
 
 namespace Snebur.VisualStudio
@@ -22,14 +23,17 @@ namespace Snebur.VisualStudio
 
         internal static IEnumerable<string> RetornarCaminhosClassesBase(ConfiguracaoProjetoTypeScript configuracaoProjetoTypeScript, string caminhoProjeto)
         {
-            var caminhosClassesBase = new List<string>();
+            var caminhosClassesBase = new HashSet<string>();
             if (configuracaoProjetoTypeScript.Depedencias?.Count > 0)
             {
                 foreach (var chaveValor in configuracaoProjetoTypeScript.Depedencias)
                 {
                     var nomeProjeto = chaveValor.Key;
                     var caminhoParcial = chaveValor.Value;
+
                     var caminhoDefinicacao = Path.GetFullPath(Path.Combine(caminhoProjeto, caminhoParcial));
+                    var caminhoDefinicacaoProjeto = Path.Combine(Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD, Path.GetFileName(caminhoParcial)));
+
                     var fi = new FileInfo(caminhoDefinicacao);
                     if (!fi.Exists)
                     {
@@ -42,6 +46,16 @@ namespace Snebur.VisualStudio
                     using (var projetoDepedencia = new ProjetoTSDepdencia(nomeProjeto, caminhoDefinicacao))
                     {
                         caminhosClassesBase.AddRange(projetoDepedencia.RetornarCaminhosClassesBase());
+                    }
+
+                    if (File.Exists(caminhoDefinicacaoProjeto))
+                    {
+                        caminhosClassesBase.AddRange(TypescriptDefinicaoUtil.RetornarCaminhosClasses(caminhoDefinicacaoProjeto));
+                    }
+ 
+                    if (File.Exists(caminhoDefinicacaoProjeto))
+                    {
+                        caminhosClassesBase.AddRange(TypescriptDefinicaoUtil.RetornarCaminhosClasses(caminhoDefinicacaoProjeto));
                     }
                 }
             }

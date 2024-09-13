@@ -24,6 +24,7 @@ namespace Snebur.VisualStudio
         public static readonly string NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_TIPO_COMPLEXO = "NotificarValorPropriedadeAlteradaTipoCompleto";
         public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE = "RetornarValorPropriedade";
         public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_IS_ATIVO = "RetornarValorPropriedadeIsAtivo";
+        public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_DESCRICAO_IS_DELETADO = "RetornarDescricaoComDeletado";
         public static readonly string NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA = "RetornarValorPropriedadeChaveEstrangeira";
 
         public void AtualizarAtribuirPropriedades()
@@ -36,7 +37,6 @@ namespace Snebur.VisualStudio
             var filtros = EnumFiltroPropriedadeCampo.IgnorarChavePrimaria |
                           EnumFiltroPropriedadeCampo.IgnorarPropriedadeProtegida |
                           EnumFiltroPropriedadeCampo.IgnorarTipoBase;
-
 
 
             var dicionarioArquivos = Directory.GetFiles(this.CaminhoProjeto, "*.cs", SearchOption.AllDirectories).
@@ -132,8 +132,11 @@ namespace Snebur.VisualStudio
 
                 proproriedadesChaveEstrangeiras = proproriedadesChaveEstrangeiras.Where(x => x.propriedadeChavaEtrangeira != null).ToList();
 
-                var isImplementarIAtivo = TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) &&
+                var isImplementaIAtivo = TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) &&
                                            TipoUtil.TipoImplementaInterface(tipoBaseDominio, typeof(IAtivo));
+
+                var isImplementaIDeletado= TipoUtil.TipoSubTipo(tipoBaseDominio, typeof(Entidade)) &&
+                                           TipoUtil.TipoImplementaInterface(tipoBaseDominio, typeof(IDeletado));
 
                 var propriedadesNormal = new List<PropertyInfo>();
                 propriedadesNormal.AddRange(propriedadesCampos);
@@ -157,13 +160,14 @@ namespace Snebur.VisualStudio
                         {
                             throw new Exception($"Existe mais um propriedade  estrangeira para {propriedadeNormal.Name} em {propriedadeNormal.DeclaringType.Name}");
                         }
-
-
-
+                         
                         var (propriedadeRelacao, propriedadeChavaEtrangeira) = itens.SingleOrDefault();
+                        var nomeMetodoRetornarValorPropriedade = this.RetornarNomeMetodoRetornarValorPropriedade(propriedadeChavaEtrangeira, 
+                                                                                                                 propriedadeNormal, 
+                                                                                                                 isImplementaIAtivo,
+                                                                                                                 isImplementaIDeletado);
 
-                        var nomeMetodoRetornarValorPropriedade = this.RetornarNomeMetodoRetornarValorPropriedade(isImplementarIAtivo, propriedadeChavaEtrangeira, propriedadeNormal);
-                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementarIAtivo, propriedadeNormal, propriedadeChavaEtrangeira);
+                        var nomeMetodoNotificarValorPropriedadeAlterada = this.RetornarNomeMetodoNotificarValorPropriedadeAlterada(isImplementaIAtivo, propriedadeNormal, propriedadeChavaEtrangeira);
                         // campo comum
                         if (!linhaPropriedadePesquisa.Contains(NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA) ||
                             !linhaPropriedadePesquisa.Contains(nomeMetodoRetornarValorPropriedade))
@@ -183,7 +187,7 @@ namespace Snebur.VisualStudio
                                 linhaPropriedadeAtribuir = $"{inicioPropriedade} get => this.{NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA}" +
                                                                                         $"(this.{nomeCampoPrivado}, this.{propriedadeRelacao.Name}); " +
                                                                                         $"set => this.{NOME_METODO_NOTIFICAR_PROPRIEDADE_ALTERADA_CHAVE_ESTRANGEIRA}" +
-                                                                                         $"(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value, \"{propriedadeRelacao.Name}\", this.{propriedadeRelacao.Name}); }}";
+                                                                                        $"(this.{nomeCampoPrivado}, this.{nomeCampoPrivado} = value, \"{propriedadeRelacao.Name}\", this.{propriedadeRelacao.Name}); }}";
 
                             }
                             else
@@ -344,13 +348,20 @@ namespace Snebur.VisualStudio
             }
         }
 
-        private string RetornarNomeMetodoRetornarValorPropriedade(bool isImplementarIAtivo,
-                                                                  PropertyInfo propriedadeChavaEtrangeira,
-                                                                  PropertyInfo propriedadeCampo)
+        private string RetornarNomeMetodoRetornarValorPropriedade( PropertyInfo propriedadeChavaEtrangeira,
+                                                                   PropertyInfo propriedadeCampo,
+                                                                   bool isImplementaIAtivo,
+                                                                   bool isImplementaIDeletado)
         {
-            if (isImplementarIAtivo && propriedadeCampo.Name == nameof(IAtivo.IsAtivo))
+            if (isImplementaIAtivo && propriedadeCampo.Name == nameof(IAtivo.IsAtivo))
             {
                 return NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_IS_ATIVO;
+            }
+
+            if (isImplementaIDeletado &&
+                (propriedadeCampo.Name == "Descricao" || propriedadeCampo.Name == "Nome"))
+            {
+                return NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_DESCRICAO_IS_DELETADO;
             }
 
             return (propriedadeChavaEtrangeira != null) ? NOME_METODO_RETORNAR_VALOR_PROPRIEDADE_CHAVE_ESTRANGEIRA :
@@ -462,7 +473,8 @@ namespace Snebur.VisualStudio
 
         }
 
-        private string RetornarLinhaPropridade(List<string> linhasPropriedade, PropertyInfo propriedadeCampo)
+        private string RetornarLinhaPropridade(List<string> linhasPropriedade, 
+                                                PropertyInfo propriedadeCampo)
         {
             var procuraNomePropriedade = " " + propriedadeCampo.Name + " ";
             var possiveisLinhaPropriedade = linhasPropriedade.Where(x => x.Contains(procuraNomePropriedade)).ToList();

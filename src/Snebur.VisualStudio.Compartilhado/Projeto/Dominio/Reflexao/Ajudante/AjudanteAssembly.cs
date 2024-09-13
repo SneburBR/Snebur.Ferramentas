@@ -352,12 +352,13 @@ namespace Snebur.VisualStudio
                 return caminhoBinDll;
             }
 
-            var mensagemErro = $"Não foi encontrada a DLL debug do projeto {nomeAssembly} - caminhos : {caminhoDll}, \r\n{caminhoBinDll} ";
+            var mensagemErro = $"Não foi encontrada a DLL debug do projeto {nomeAssembly} - caminhos : {caminhoDll}, \r\n{caminhoBinDll}, Verifique se projecto foi compilado. ";
             if (isIgnorarErro)
             {
                 LogVSUtil.Alerta(mensagemErro);
                 return caminhoDll;
             }
+            LogVSUtil.LogErro(mensagemErro);
             throw new FileNotFoundException(mensagemErro);
         }
 
