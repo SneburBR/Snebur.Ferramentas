@@ -219,7 +219,7 @@ namespace Snebur.VisualStudio
                         }
                         if (tiposEntidade.Count == 0)
                         {
-                            throw new Exception($"Nenhum tipo de entidade encontrado para o nome {caminhoTipoEntidade}");
+                            throw new Exception($"Nenhum tipo de entidade encontrado para o nome {caminhoTipoEntidade}, Verifique o nome do domínio das entidades em contextodados.json ");
                         }
 
                         var tipoEntidade = tiposEntidade[0];

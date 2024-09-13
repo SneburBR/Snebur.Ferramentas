@@ -50,7 +50,7 @@ namespace Snebur.VisualStudio
                 {
                     if (propriedade == null)
                     {
-                        throw new Exception(String.Format("Não foi encontrada um propriedade para o parametro {0} na classe {1} ", parametroConstrutor.NomeParametro, this.Tipo.Name));
+                        throw new Exception($"Não foi encontrada a propriedade {parametroConstrutor.NomeParametro} -  para o parâmetro {parametroConstrutor.NomeParametro} na classe {this.Tipo.Name}. Declare essa propriedade  para classe possa ser compatível com TS ");
                     }
                     linhas.Add(String.Format("{0}{1}this.{2} = {3};", tabInicial, TAB, propriedade.NomePriprieadePrivada, parametroConstrutor.NomeParametro));
                 }
@@ -59,7 +59,6 @@ namespace Snebur.VisualStudio
             linhas.Add(String.Format("{0}}}", tabInicial));
             linhas.Add("");
             return linhas;
-
         }
 
         private (string parametrosConstrutorTS, string parametrosSuperTS) RetornarParametrosConstrutor(List<EstruturaParametroConstrutor> parametrosConstrutor)
