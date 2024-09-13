@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Snebur.AcessoDados;
+using Snebur.Dominio;
 using Snebur.Reflexao;
 using Snebur.Utilidade;
 
@@ -448,7 +450,32 @@ namespace Snebur.VisualStudio
 
 
         }
-      
 
+        internal static bool IsTipoEntitidadeIdentity(Type tipo)
+        {
+            if(TipoSubTipo(tipo, typeof(Entidade)))
+            {
+                var propriedade = tipo.GetProperties()
+                                      .Where(x => x.CustomAttributes.Any(k => k.AttributeType.Name == nameof(KeyAttribute)))
+                                      .FirstOrDefault();
+
+                if(propriedade== null)
+                {
+                    throw new Exception($"Não foi encontrada a propriedade chave primária em {tipo.Name}");
+                }
+
+                var atributoDatabaseGeneratedAttribute = propriedade.GetCustomAttributes()
+                                                           .Where(x => TipoUtil.TipoIgualOuSubTipo(x.GetType(), typeof(DatabaseGeneratedAttribute)))
+                                                           .FirstOrDefault();
+
+                if(atributoDatabaseGeneratedAttribute== null)
+                {
+                    return true;
+                }
+
+                return  ((DatabaseGeneratedAttribute)atributoDatabaseGeneratedAttribute).DatabaseGeneratedOption != DatabaseGeneratedOption.None;
+            }
+            return false;
+        }
     }
 }
