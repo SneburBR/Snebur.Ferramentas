@@ -1,4 +1,5 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿using Bogus.DataSets;
+using Community.VisualStudio.Toolkit;
 using Snebur.BancoDados;
 using Snebur.Depuracao;
 using Snebur.Dominio;
@@ -66,9 +67,6 @@ namespace Snebur.VisualStudio
             this.InitializeComponent();
             this.DataContext = this;
             this.Loaded += this.This_Loaded;
-
-            //this.Foreground = Repositorio.BrushWindowText;
-            //this.Background = Repositorio.BrushBackground;
         }
 
         private async void This_Loaded(object sender, RoutedEventArgs e)
@@ -140,7 +138,7 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro(ex);
+                this.LogErro(ex);
             }
             finally
             {
@@ -173,7 +171,7 @@ namespace Snebur.VisualStudio
                     }
                     catch (Exception ex)
                     {
-                        LogVSUtil.LogErro(ex);
+                        this.LogErro(ex);
                     }
                 }
             }
@@ -213,31 +211,53 @@ namespace Snebur.VisualStudio
         {
             try
             {
-                var isAtualizado = await this.AtualizandoConnectionStringEmTempoExecucaoAsync();
-                if (!isAtualizado) { return; }
+                var projetoMigracao = (Project)this.CmbProjetoMigracao.SelectedItem;
+                var projetoEntidade = (Project)this.CmbProjetosEntidades.SelectedItem;
+                var ambienteSelecionado = this.AmbienteSelecionado;
 
-                AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
-                if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao &&
-                    this.CmbProjetosEntidades.SelectedItem is Project projetoEntidade &&
-                    this.AmbienteSelecionado != null)
+                if (projetoMigracao == null)
                 {
-                    await this.OcuparAsync();
-                    await this.OcuparAsync();
-
-                    this.Logs.Clear();
-                    this.ScriptsTransacao.Clear();
-                    this.Scripts.Clear();
-
-                    this.VersaoAtual = null;
-                    this.ProjetoEntidadesSelecionado = projetoEntidade;
-                    var isCompilar = this.ChkIsCompilar.IsChecked ?? false;
-                    var isNormalizarScript = this.ChkIsNormalizarScript.IsChecked ?? false;
-
-                    await this.IniciarGeracaoScriptAsync(projetoMigracao,
-                                                         projetoEntidade,
-                                                         isCompilar,
-                                                         isNormalizarScript);
+                    this.LogErro("Selecione o projeto de migração");
+                    return;
                 }
+                if (projetoEntidade == null)
+                {
+                    this.LogErro("Selecione o projeto de entidades");
+                    return;
+                }
+
+                if (ambienteSelecionado == null)
+                {
+                    this.LogErro("Selecione o ambiente do servidor");
+                    return;
+                }
+
+                var isAtualizado = await this.AtualizandoConnectionStringEmTempoExecucaoAsync();
+                if (!isAtualizado)
+                {
+                    this.LogErro($"Não foi possível atualizar a connection string {ambienteSelecionado}");
+                    return;
+                }
+
+                this.AtualizarAssemblyDominiosDependentes(projetoEntidade);
+                AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
+
+                await this.OcuparAsync();
+
+                this.Logs.Clear();
+                this.ScriptsTransacao.Clear();
+                this.Scripts.Clear();
+
+                this.VersaoAtual = null;
+                this.ProjetoEntidadesSelecionado = projetoEntidade;
+                var isCompilar = this.ChkIsCompilar.IsChecked ?? false;
+                var isNormalizarScript = this.ChkIsNormalizarScript.IsChecked ?? false;
+
+                await this.IniciarGeracaoScriptAsync(projetoMigracao,
+                                                     projetoEntidade,
+                                                     isCompilar,
+                                                     isNormalizarScript);
+
 
             }
             catch (Exception ex)
@@ -246,6 +266,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
+                AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
                 await this.DesocuparAsync();
             }
         }
@@ -324,7 +345,7 @@ namespace Snebur.VisualStudio
         {
             if (this.AmbienteSelecionado == null)
             {
-                LogVSUtil.LogErro("Selecione um ambiente do servidor");
+                this.LogErro("Selecione um ambiente do servidor");
                 return null;
             }
 
@@ -337,29 +358,6 @@ namespace Snebur.VisualStudio
                 EnumAmbienteServidor.Producao => "connectionStrings.Producao.config",
                 _ => throw new Erro($"O ambiente {ambiente} não é suportado"),
             };
-        }
-
-        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-        {
-            try
-            {
-                var projeto = this.ProjetoEntidadesSelecionado;
-                if (projeto != null)
-                {
-                    var nomeProjeto = projeto.Name;
-                    if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
-                    {
-                        var caminhoProjeto = new FileInfo(projeto.FullPath).Directory.FullName;
-                        var caminhoDllAssembly = AjudanteAssemblyEx.RetornarCaminhoAssembly(projeto);
-                        return AjudanteAssembly.RetornarAssembly(caminhoDllAssembly);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogVSUtil.Alerta(ex.Message);
-            }
-            return null;
         }
 
         private async Task IniciarGeracaoScriptAsync(Project projetoMigracao,
@@ -384,9 +382,10 @@ namespace Snebur.VisualStudio
                 AjudanteAssembly.NomeAssemblyEntidades = new AssemblyName(assemblyEntidades.FullName).Name;
                 AjudanteAssembly.CaminhoProjetoEntidades = projetoEntidades.FullPath;
 
-                var tipoConfiguracao = assemblyMigracao.GetAccessibleTypes().
-                                                        Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration))).
-                                                        SingleOrDefault();
+
+                var tipoConfiguracao = this.RetornarTipoConfiguracao(assemblyMigracao);
+
+
 
                 if (tipoConfiguracao == null)
                 {
@@ -407,13 +406,36 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro(ex);
+                this.LogErro(ex);
             }
             finally
             {
                 _ = this.DesocuparAsync();
             }
 
+        }
+
+        private Type RetornarTipoConfiguracao(Assembly assemblyMigracao)
+        {
+            var tiposAssembly = assemblyMigracao.GetAccessibleTypes();
+            var tipoConfiguracao = tiposAssembly.Where(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration)))
+                                                .SingleOrDefault();
+
+            if (tipoConfiguracao != null)
+            {
+                return tipoConfiguracao;
+            }
+            var tiposCarregados = assemblyMigracao.GetLoadableTypes();
+
+
+            tipoConfiguracao = tiposCarregados.FirstOrDefault(x => x.IsSubclassOf(typeof(DbMigrationsConfiguration)) ||
+                                                                   x.IsSubclassOf(typeof(DbMigrationsConfiguration<>)));
+
+            if (tipoConfiguracao == null)
+            {
+                throw new Exception($"Não foi encontrado a configuração do 'DbMigrationsConfiguration' no projeto {assemblyMigracao.FullName}");
+            }
+            return tipoConfiguracao;
         }
 
         private async Task IniciarGeracaoScriptInternoAsync(Project projetoMigracao,
@@ -750,12 +772,24 @@ namespace Snebur.VisualStudio
             this.Log(mensagem, EnumTipoLog.Normal);
         }
 
-        private void LogErro(string mensagem)
+        private void LogErro(Exception ex)
+        {
+            var descricaoErro = ErroUtil.RetornarDescricaoDetalhadaErro(ex);
+            this.LogErro(descricaoErro, false);
+            LogVSUtil.LogErro(ex);
+
+        }
+        private void LogErro(string mensagem, bool isLogErroVS = true)
         {
             var linhas = mensagem.ToLines();
             foreach (var linha in linhas)
             {
                 this.Log(linha, EnumTipoLog.Erro);
+            }
+
+            if (isLogErroVS)
+            {
+                LogVSUtil.LogErro(mensagem);
             }
         }
 
@@ -773,6 +807,7 @@ namespace Snebur.VisualStudio
         {
             _ = this.LogAsync(mensagem, tipo);
         }
+
 
         private async Task LogAsync(string mensagem, EnumTipoLog tipo)
         {
@@ -813,7 +848,7 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro(ex);
+                this.LogErro(ex);
             }
             finally
             {
@@ -839,12 +874,15 @@ namespace Snebur.VisualStudio
                 }
 
                 AjudanteAssembly.Inicializar();
-                AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
+              
 
                 if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao &&
                     this.CmbProjetosEntidades.SelectedItem is Project projetoEntidade &&
                     this.AmbienteSelecionado != null)
                 {
+                    this.AtualizarAssemblyDominiosDependentes(projetoEntidade);
+                    AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
+
                     this.Logs.Clear();
                     this.ProjetoEntidadesSelecionado = projetoEntidade;
 
@@ -862,6 +900,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
+                AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
                 _ = this.DesocuparAsync();
             }
         }
@@ -1038,15 +1077,16 @@ namespace Snebur.VisualStudio
 
                 AjudanteAssembly.Inicializar();
 
-
-                AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
                 if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao &&
                     this.CmbProjetosEntidades.SelectedItem is Project projetoEntidade &&
                     this.AmbienteSelecionado != null)
                 {
+                    this.AtualizarAssemblyDominiosDependentes(projetoEntidade);
+                    AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
+
                     await this.OcuparAsync();
 
-                    
+
 
                     this.ScriptsTransacao.Clear();
                     this.VersaoAtual = null;
@@ -1062,10 +1102,11 @@ namespace Snebur.VisualStudio
             }
             catch (Exception ex)
             {
-                LogVSUtil.LogErro(ex);
+                this.LogErro(ex);
             }
             finally
             {
+                AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
                 await this.DesocuparAsync();
             }
 
@@ -1145,5 +1186,70 @@ namespace Snebur.VisualStudio
         #endregion
 
 
+        #region Assembly Resolve
+
+        private void AtualizarAssemblyDominiosDependentes(Project projeto)
+        {
+            var diretorioProjeto =Path.GetDirectoryName(projeto.FullPath);
+
+            var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_DOMINIO);
+            if (File.Exists(caminhoConfiguracaoDominio))
+            {
+                var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
+                foreach (var dominioDependente in configuracaoDominio.DominiosDepentendes)
+                {
+                    var caminhoAbsoluto = Path.GetFullPath(Path.Combine(diretorioProjeto, dominioDependente.Caminho));
+                    if (!File.Exists(caminhoAbsoluto))
+                    {
+                        throw new FileNotFoundException(caminhoAbsoluto);
+                    }
+
+                    if (!AjudanteAssembly.AssemblyCaminhos.ContainsKey(dominioDependente.Nome))
+                    {
+                        AjudanteAssembly.AssemblyCaminhos.Add(dominioDependente.Nome, new string[] { caminhoAbsoluto });
+                    }
+                }
+            }
+        }
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            try
+            {
+                var projeto = this.ProjetoEntidadesSelecionado;
+                if (projeto != null)
+                {
+                    var nomeProjeto = projeto.Name;
+                    if (args.Name.StartsWith(nomeProjeto, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var caminhoProjeto = new FileInfo(projeto.FullPath).Directory.FullName;
+                        var caminhoDllAssembly = AjudanteAssemblyEx.RetornarCaminhoAssembly(projeto);
+                        return AjudanteAssembly.RetornarAssembly(caminhoDllAssembly);
+                    }
+
+                    var nomeAssembly = args.Name.Split(',')[0];
+                    if (AjudanteAssembly.AssemblyCaminhos.ContainsKey(nomeAssembly))
+                    {
+                        var caminhosDll = AjudanteAssembly.AssemblyCaminhos[nomeAssembly];
+                        foreach (var caminhoDll in caminhosDll)
+                        {
+                            if (File.Exists(caminhoDll))
+                            {
+                                return AjudanteAssembly.RetornarAssembly(caminhoDll);
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogErro(ex);
+            }
+            return null;
+        }
+
+       
+
+        #endregion
     }
 }
