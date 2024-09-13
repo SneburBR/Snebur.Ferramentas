@@ -38,11 +38,19 @@ namespace Snebur.VisualStudio
             return !TextoUtil.IsIgual(conteudoAtual, conteudo, true, true);
         }
 
-        public static void SalvarDominio(string caminho, string conteudo)
+        public static void SalvarDominio(string caminho,
+                                         string conteudo)
         {
             if (IsSalvar(caminho, conteudo))
             {
-                LogVSUtil.Alerta("Salvando arquivo: " + Path.GetFileName(caminho));
+                var nomeArquivo = Path.GetFileName(caminho);
+                var nomeAtual = new FileInfo(caminho).GetCurrentFilaName();
+                if (nomeArquivo != nomeAtual)
+                {
+                    LogVSUtil.Alerta($"Case sensitive detectado: {nomeArquivo}, corrigo para -> {nomeAtual}");
+                    caminho = Path.Combine(Path.GetDirectoryName(caminho), nomeAtual);
+                }
+                LogVSUtil.Alerta("Salvando arquivo: " + caminho);
                 File.WriteAllText(caminho, conteudo, Encoding.UTF8);
             }
         }
