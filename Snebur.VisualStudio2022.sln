@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{0716
 		scripts\vs-as-admin.ps1 = scripts\vs-as-admin.ps1
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snebur.AcessoDados.Migracao", "..\Snebur.Framework\src\AcessoDados\src\AcessoDados.Migracao\Snebur.AcessoDados.Migracao.csproj", "{2A529EA7-0BA2-491F-B35E-711B40675EB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Apresentacao|Any CPU = Apresentacao|Any CPU
@@ -159,6 +161,22 @@ Global
 		{0A9FDF23-0ED7-44D8-BC4B-F7B1ABA5550C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0A9FDF23-0ED7-44D8-BC4B-F7B1ABA5550C}.Release|x86.ActiveCfg = Release|Any CPU
 		{0A9FDF23-0ED7-44D8-BC4B-F7B1ABA5550C}.Release|x86.Build.0 = Release|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Apresentacao|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Apresentacao|Any CPU.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Apresentacao|x86.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Apresentacao|x86.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug Ap|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug Ap|Any CPU.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug Ap|x86.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug Ap|x86.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +189,7 @@ Global
 		{820D2C85-872F-4740-B7E6-0EE35A3C8E32} = {96C60D73-AB37-4C45-86F8-FF76A76001AB}
 		{887586D8-D630-411D-96A9-3CE87707BD26} = {FD12E131-36F3-47AC-851B-3E67938CAA25}
 		{0A9FDF23-0ED7-44D8-BC4B-F7B1ABA5550C} = {96C60D73-AB37-4C45-86F8-FF76A76001AB}
+		{2A529EA7-0BA2-491F-B35E-711B40675EB0} = {FD12E131-36F3-47AC-851B-3E67938CAA25}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3E60AF1-E265-4F83-8390-0556D8DE6B41}

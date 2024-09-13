@@ -296,6 +296,10 @@
     <EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados.Migracao\Snebur.AcessoDados.Migracao.csproj">
+      <Project>{2a529ea7-0ba2-491f-b35e-711b40675eb0}</Project>
+      <Name>Snebur.AcessoDados.Migracao</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj">
       <Project>{ae39cd55-5282-48a5-8131-6704c825f26a}</Project>
       <Name>Snebur.AcessoDados</Name>
