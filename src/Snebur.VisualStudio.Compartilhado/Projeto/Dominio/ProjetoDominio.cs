@@ -38,6 +38,7 @@ namespace Snebur.VisualStudio
         protected override void AtualizarInterno()
         {
             this.AtualizarAtribuirPropriedades();
+           
             if (this.IsExisteDll)
             {
                 var geradores = this.RetornarGeradoresDominio();

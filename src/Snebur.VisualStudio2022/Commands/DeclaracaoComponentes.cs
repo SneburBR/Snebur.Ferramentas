@@ -1,13 +1,10 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using HtmlAgilityPack;
-using System;
+using Snebur.Utilidade;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using Snebur.Utilidade;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Snebur.VisualStudio
 {

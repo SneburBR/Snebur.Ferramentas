@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            var diretorio = @"E:\OneDrive\GitHub\SneburBR\Snebur.Pandeco";
+            var diretorio = @"E:\Github\Zyoncore\Sigi\src\Zyoncore.Sigi.FotoAlbum.TS";
             var normalizador = new NormalizadorNomesArquivosApresentacao(diretorio);
             normalizador.Normalizar();
         }

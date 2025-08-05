@@ -56,7 +56,7 @@ namespace Snebur.VisualStudio
         {
             var namespaceEntidades = this.ConfiguracaoProjeto.NamespaceEntidades;
             var caminhoProjetoCsProj = Path.Combine(this.CaminhoProjetoEntidades, $"{namespaceEntidades}.csproj");
-            var tipoProjeto = TipoCsProjUtil.RetornarTipoCsProjet(caminhoProjetoCsProj);
+            var tipoProjeto = ProjetoUtil.RetornarTipoCsProjet(caminhoProjetoCsProj);
             return AjudanteAssembly.RetornarCaminhoAssembly(tipoProjeto,
                                                            this.CaminhoProjetoEntidades,
                                                            namespaceEntidades,

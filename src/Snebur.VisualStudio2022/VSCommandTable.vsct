@@ -91,6 +91,7 @@
 					<ButtonText>Remove domain formating</ButtonText>
 				</Strings>
 			</Button>
+			
 			<Button guid="guidMenuSneburCmdSet" id="NormalizarAllProjectsCommand" priority="0x0101" type="Button">
 				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
 				<Strings>
@@ -104,6 +105,14 @@
 				<Parent guid="guidCtxMenuSneburCmdSet" id="ContextMenuGroup" />
 				<Strings>
 					<ButtonText>Publicar Incrementando Versão</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidCtxMenuSneburCmdSet" id="OpenAppDataCtxMenuCommand" type="Button" priority="0x0100" >
+
+				<Parent guid="guidCtxMenuSneburCmdSet" id="ContextMenuGroup" />
+				<Strings>
+					<ButtonText>Open App Datas</ButtonText>
 				</Strings>
 			</Button>
 		 
@@ -182,6 +191,7 @@
 			<IDSymbol name="ContextMenu" value="0x0201"  />
 			<IDSymbol name="ContextMenuGroup" value="0x0202"  />
 			<IDSymbol name="PublishCtxMenuCommand" value="0x0204" />
+			<IDSymbol name="OpenAppDataCtxMenuCommand" value="0x0208" />
 		</GuidSymbol>
  
 	</Symbols>

@@ -30,7 +30,7 @@ namespace Snebur.VisualStudio
             {
                 await projetoTS.SaveAsync();
 
-                var dte = await DteEx.GetDTEAsync();
+                var dte = await DteUtil.GetDTEAsync();
                 var projetItem = dte.Solution.FindProjectItem(arquivo.FullName);
                 if (projetItem != null)
                 {
@@ -238,7 +238,7 @@ namespace Snebur.VisualStudio
             if (projetoTS != null)
             {
 
-                var dte = await DteEx.GetDTEAsync();
+                var dte = await DteUtil.GetDTEAsync();
                 var projectItemCodigo = dte.Solution.FindProjectItem(arquivo.FullName);
                 if (projectItemCodigo != null)
                 {

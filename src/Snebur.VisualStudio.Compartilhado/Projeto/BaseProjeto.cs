@@ -1,19 +1,14 @@
-﻿using Microsoft.Identity.Client;
-using Snebur.Dominio;
+﻿using Snebur.Dominio;
 using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
-
-
-
     public abstract class BaseProjeto : BaseViewModel
     {
         private bool _isNormalizando;

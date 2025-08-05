@@ -377,3 +377,4 @@ bin/
 *.css
 
 /.bkp
+temp/

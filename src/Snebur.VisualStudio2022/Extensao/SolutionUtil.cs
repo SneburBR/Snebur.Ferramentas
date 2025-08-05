@@ -213,6 +213,10 @@ namespace Snebur.VisualStudio
             }
             return null;
         }
-
+        public static async Task<string> GetCurrentBuildConfigurationAsync()
+        {
+            var dte = await DteUtil.GetDTEAsync();
+            return dte.GetCurrentBuildConfiguration();
+        }
     }
 }

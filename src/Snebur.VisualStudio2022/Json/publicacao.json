@@ -2,7 +2,10 @@
   "$schema": "publicacao-schema.json#",
   "caminhoPulicacao": "c:\\publicacao\\Template\\",
   "nomePastaBuild": null,
+  "caminhoCompilacao": "net48",
+  "caminhosCompilacao": [ "net462", "net48" ],
   "isCriarPastaVersao": true,
+  "isCopiarSource": true,
   "builds": [
     "Snebur.js",
     "Snebur.UI.js",

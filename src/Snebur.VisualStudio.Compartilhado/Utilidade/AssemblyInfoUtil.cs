@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Snebur.Utilidade;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
-using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
 {
@@ -94,7 +93,7 @@ namespace Snebur.VisualStudio
             return null;
         }
 
-        private static void IncrementarVersaoVisk(string caminhoVisk, Version novaVersao)
+        private static void IncrementarVersaoVsik(string caminhoVisk, Version novaVersao)
         {
             if (File.Exists(caminhoVisk))
             {
@@ -119,6 +118,18 @@ namespace Snebur.VisualStudio
             }
         }
 
+        public static void InscrementarVersao(string caminhoProjeto)
+        {
+            var caminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(caminhoProjeto);
+
+            if (!File.Exists(caminhoAssemblyInfo))
+            {
+                LogVSUtil.LogErro($"O arquivo da versão {caminhoAssemblyInfo} não foi encontrado");
+                return;
+            }
+            AssemblyInfoUtil.InscrementarVersao(caminhoProjeto, caminhoAssemblyInfo);
+        }
+
         public static void InscrementarVersao(string caminhoProjeto,
                                               string caminhoAssemblyInfo)
         {
@@ -132,9 +143,10 @@ namespace Snebur.VisualStudio
             var caminhoVisk = Path.Combine(caminhoProjeto, "source.extension.vsixmanifest");
             if (File.Exists(caminhoVisk))
             {
-                IncrementarVersaoVisk(caminhoVisk, novaVersao);
+                IncrementarVersaoVsik(caminhoVisk, novaVersao);
                 return;
             }
+
             if (File.Exists(caminhoAssemblyInfo))
             {
                 var linhas = File.ReadAllLines(caminhoAssemblyInfo, Encoding.UTF8);
@@ -160,6 +172,13 @@ namespace Snebur.VisualStudio
 
         public static string RetornarCaminhoAssemblyInfo(string caminhoProjeto)
         {
+            
+            if (ProjetoUtil.IsProjetoCsCharp(caminhoProjeto))
+            {
+                caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
+            }
+
+
             var caminhoAssembly = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
             if (File.Exists(caminhoAssembly))
             {
@@ -175,6 +194,8 @@ namespace Snebur.VisualStudio
             return null;
             //throw new FileNotFoundException($"Não foi encontrado o arquivo AssemblyInfo.cs\r\n {caminhoAssembly}");
         }
+
+
     }
 
 

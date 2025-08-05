@@ -29,87 +29,72 @@ namespace Snebur.VisualStudio.MenuSnebur
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
+                var buildType = await SolutionUtil.GetCurrentBuildConfigurationAsync();
+                var tipoCompilacao = PublicacaoUtil.RetornarTipoCompilacao(buildType);
+
+                if (tipoCompilacao == EnumTipoCompilacao.Custom)
+                {
+                    LogVSUtil.LogErro("Tipo de compilação não suportado. Utilize Debug ou Release");
+                    return;
+                }
+
                 //var project = await VS.Solutions.GetActiveProjectAsync();
                 if (this.IsProjetoCsCharp(project?.FullPath))
                 {
                     try
                     {
-                        var caminhoProjeto = Path.GetDirectoryName(project.FullPath);
-                        var caminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(caminhoProjeto);
-
-                        if (!File.Exists(caminhoAssemblyInfo))
-                        {
-                            LogVSUtil.LogErro($"O arquivo da versão {caminhoAssemblyInfo} não foi encontrado");
-                            return;
-                        }
-
+                        var nomeProjeto = project.Name;
+                        var caminhoProjeto = project.FullPath;
+                        var diretorioProjeto = Path.GetDirectoryName(project.FullPath);
+                         
                         var tempo = Stopwatch.StartNew();
-                        var tipoProjeto = PublicacaoUtil.RetornarTipoProjeto(caminhoProjeto);
+                        var tipoProjeto = PublicacaoUtil.RetornarTipoProjeto(diretorioProjeto);
 
                         if (tipoProjeto == EnumTipoProjeto.ExtensaoVisualStudio)
                         {
-                            PublicacaoUtil.IncrementarVersaoExtensaoVisualStudio(caminhoProjeto);
+                            VsixUtil.IncrementarVersaoExtensaoVisualStudio(diretorioProjeto);
                         }
                         else
                         {
-                            AssemblyInfoUtil.InscrementarVersao(caminhoProjeto,
-                                                                caminhoAssemblyInfo);
+                            ProjetoUtil.IncrementarVersao(caminhoProjeto, true);
                         }
 
-
-                        //var versao = AssemblyInfoUtil.RetornarVersaoAssemblyInfo(caminhoProjeto, 
-                        //                                                         caminhoAssemblyInfo);
-
-                        var nomeProjeto = Path.GetFileNameWithoutExtension(project.FullPath);
-
-                        if (ProjetoUtil.IsProjetoTypescript(caminhoProjeto))
+                        if (ProjetoUtil.IsProjetoTypescript(diretorioProjeto))
                         {
                             await OutputWindow.NormalizarProjetosReferenciasAsync();
                         }
 
                         GerenciadorProjetos.Instancia.DesativarEventosBuild();
+
                         if (await VS.Build.BuildProjectAsync(project, BuildAction.Build))
                         {
-                            await PublicacaoUtil.PublicarVersaoAsync(tipoProjeto,
-                                                                     caminhoProjeto,
-                                                                     tempo);
+                            var solution = await VS.Solutions.GetCurrentSolutionAsync();
+                            var caminhoSolution = solution.FullPath;
+
+                            await PublicacaoUtil.PublicarVersaoAsync(
+                                nomeProjeto,
+                                tipoProjeto,
+                                tipoCompilacao,
+                                caminhoProjeto,
+                                caminhoSolution,
+                                tempo);
                         }
 
                     }
                     catch (Exception ex)
                     {
                         LogVSUtil.LogErro(ex);
+
+                    }
+                    finally
+                    {
                         GerenciadorProjetos.Instancia.AtivarEventosBuild();
                     }
                 }
             }
 
         }
-
-        private Task NormalizarProjetosReferenciasAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        //protected override IReadOnlyList<ProjectTK> GetItems()
-        //{
-        //    return ThreadHelper.JoinableTaskFactory.Run(async () =>
-        //    {
-        //        var project = await VS.Solutions.GetActiveProjectAsync();
-        //        return new Community.VisualStudio.Toolkit.Project[] { project };
-        //    });
-        //}
-
-        //protected override void BeforeQueryStatus(OleMenuCommand menuItem, EventArgs e,
-        //                                          Community.VisualStudio.Toolkit.Project project)
-        //{
-        //    if (project != null && this.IsProjetoCsCharp(project.FullPath))
-        //    {
-        //        menuItem.Visible = menuItem.Enabled = true;
-        //        return;
-        //    }
-        //}
-
+         
         private bool IsProjetoCsCharp(string fullName)
         {
             if (fullName is not null)

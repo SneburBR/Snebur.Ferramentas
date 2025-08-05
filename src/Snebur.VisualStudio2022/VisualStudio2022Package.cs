@@ -37,13 +37,29 @@ namespace Snebur.VisualStudio
     {
         public static bool IsVsixInialized { get; private set; }
 
-        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        private static bool _isInializing = false;
+
+        protected override async Task InitializeAsync(CancellationToken cancellationToken,
+                                                      IProgress<ServiceProgressData> progress)
         {
-            var app = new AplicacaoVisualStudio();
+            lock(this)
+            {
+                if (_isInializing || IsVsixInialized)
+                {
+                    return;
+                }
+                _isInializing = true;
+            }
+           
+
+            if (AplicacaoVisualStudio.Atual == null)
+            {
+                new AplicacaoVisualStudio();
+            }
 
             await this.RegisterCommandsAsync();
             this.RegisterToolWindows();
-            
+
             try
             {
                 await GerenciadorProjetos.Instancia.InicializarAsync(this);
@@ -61,9 +77,9 @@ namespace Snebur.VisualStudio
                      {
 
                      }
-                     
-                 }, cancellationToken, TaskCreationOptions.None, TaskScheduler.Default);
 
+                 }, cancellationToken, TaskCreationOptions.None, TaskScheduler.Default);
+                SneburVisualStudio2022Package.IsVsixInialized = true;
             }
             catch (Exception ex)
             {
@@ -71,7 +87,10 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                SneburVisualStudio2022Package.IsVsixInialized = true;
+                lock (this)
+                {
+                    _isInializing = false;
+                }
             }
         }
 

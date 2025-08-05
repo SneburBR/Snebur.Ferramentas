@@ -1,5 +1,4 @@
-﻿global using System;
-using Snebur.Cli;
+﻿using System;
 using Snebur.Cli.Zid;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
@@ -11,8 +10,14 @@ namespace Snebur.VisualStudio.Comandos
     {
         static async Task<int> Main(string[] args)
         {
+            var projeto = @"E:\Github\Zyoncore\Sigi.Legacy\src\Zyoncore.Sigi.Control\Zyoncore.Sigi.Control.csproj";
+            var caminhoSolution = @"E:\Github\Zyoncore\Sigi.Legacy\Sigi.Legacy.sln";
+            var destino = @"E:\temp\source";
+
+            //CopiarProjectSourceUtil.Copiar(projeto, caminhoSolution,  destino);
+
             var rootCommand = new RootCommand("Snebur CLI");
-            rootCommand.Handler = CommandHandler.Create(HandleDefault);
+            rootCommand.Handler = CommandHandler.Create((Action)HandleDefault);
 
             var zidCommand = new Command("zid", "Parent command for Zid operations");
             zidCommand.AddCommand(new GetZidCommand());

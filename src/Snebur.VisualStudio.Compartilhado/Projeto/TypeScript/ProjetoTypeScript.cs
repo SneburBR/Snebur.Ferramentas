@@ -251,7 +251,7 @@ namespace Snebur.VisualStudio
                 {
                     var arquivosRestante = String.Join(Environment.NewLine, this.ArquivosTypeScript.Select(x => x.Arquivo.FullName));
                     var mensagem = String.Format("Não possível encontrar o próximo arquivo da fila, Conferir as dependências dos tipos bases e os padrões de nomeclaturas {0}. {1}{2}", this.NomeProjeto, Environment.NewLine, arquivosRestante);
-                    LogVSUtil.LogErro(mensagem);
+                    LogVSUtil.Alerta(mensagem);
                     //throw new Exception(mensagem);
                     proximo = this.ArquivosTypeScript.First();
                 }

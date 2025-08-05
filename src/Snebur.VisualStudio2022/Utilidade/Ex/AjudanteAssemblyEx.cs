@@ -33,7 +33,7 @@ namespace Snebur.VisualStudio
 
             var nomeAssembly = (string)assembly?.Value ?? projeto.Name;
             var caminhoProjeto = new FileInfo(projeto.FileName).Directory.FullName;
-            var tipoCsPro = TipoCsProjUtil.RetornarTipoCsProjet(projeto.FullName) ;
+            var tipoCsPro = ProjetoUtil.RetornarTipoCsProjet(projeto.FullName) ;
             return AjudanteAssembly.RetornarCaminhoAssembly(tipoCsPro,
                                                             caminhoProjeto,
                                                             nomeAssembly);
@@ -48,7 +48,7 @@ namespace Snebur.VisualStudio
 
             var nomeAssembly = assemblyName ?? projeto.Name;
             var caminhoProjeto = new FileInfo(projeto.FullPath).Directory.FullName;
-            var tipoCsPro = TipoCsProjUtil.RetornarTipoCsProjet(projeto.FullPath);
+            var tipoCsPro = ProjetoUtil.RetornarTipoCsProjet(projeto.FullPath);
             return AjudanteAssembly.RetornarCaminhoAssembly(tipoCsPro,
                                                             caminhoProjeto,
                                                             nomeAssembly);

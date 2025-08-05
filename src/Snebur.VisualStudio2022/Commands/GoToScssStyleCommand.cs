@@ -13,7 +13,7 @@ namespace Snebur.VisualStudio
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var dte = await DteEx.GetDTEAsync();
+            var dte = await DteUtil.GetDTEAsync();
             if (dte.ActiveDocument != null)
             {
 
@@ -60,7 +60,7 @@ namespace Snebur.VisualStudio
                 return;
             }
             ArquivoUtil.CriarArquivoTexto(caminhoScss);
-            var dte = await DteEx.GetDTEAsync();
+            var dte = await DteUtil.GetDTEAsync();
             var caminhoLayout = ArquivoControleUtil.RetornarCaminhoShtml(caminhoArquivoAtual);
             var projetoItem = dte.Solution.FindProjectItem(caminhoLayout);
             if (projetoItem == null)

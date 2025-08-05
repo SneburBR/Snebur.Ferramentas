@@ -23,6 +23,7 @@ namespace Snebur.VisualStudio
 
         public const string guidCtxMenuSneburCmdSetString = "679f6e12-e125-4333-96cf-44f7d69f4160";
         public static Guid guidCtxMenuSneburCmdSet = new Guid(guidCtxMenuSneburCmdSetString);
+
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -45,5 +46,6 @@ namespace Snebur.VisualStudio
         public const int ContextMenu = 0x0201;
         public const int ContextMenuGroup = 0x0202;
         public const int PublishCtxMenuCommand = 0x0204;
+        public const int OpenAppDataCtxMenuCommand = 0x0208;
     }
 }

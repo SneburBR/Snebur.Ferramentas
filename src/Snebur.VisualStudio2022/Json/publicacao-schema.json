@@ -15,13 +15,16 @@
       "description": "Nome da lib."
     },
     "nomePastaBuild": {
-      "type": "string",
+      "type": [ "string", "null" ],
       "description": "Nome da pasta"
     },
     "isCriarPastaVersao": {
       "type": "boolean"
     },
     "isZiparBin": {
+      "type": "boolean"
+    },
+    "isCopiarSource": {
       "type": "boolean"
     },
     "builds": {
@@ -46,6 +49,24 @@
         "type": "string"
       }
     },
+    "caminhosCompilacao": {
+      "type": "array",
+      "description": "i.g net48, net6.0, net8.0",
+      "items": {
+        "type": "string",
+        "enum": [
+          "net45",
+          "net48",
+          "net6.0",
+          "net8.0"
+        ]
+      }
+    },
+    "caminhoCompilacao": {
+      "type": "string",
+      "description": "i.g net48, net6.0, net8.0",
+      "enum": [ "net462", "net48", "net6.0", "net8.0" ]
+    },
     "executarProcessoDepois": { "type": "string" },
     "buildJsOptions": {
       "type": "object",
@@ -59,6 +80,20 @@
         "isLibZipAsync": { "type": "boolean" }
       },
       "required": [ "nomeArquivo" ]
+    },
+    "ignorarArquivos": {
+      "type": "array",
+      "description": "Arquivos serão ignorar",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ignorarArquivosRelease": {
+      "type": "array",
+      "description": "Arquivos serão ignorar",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [ "caminhoPulicacao" ],

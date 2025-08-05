@@ -279,7 +279,7 @@ namespace Snebur.VisualStudio
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 var projetos = new List<Project>();
-                var dte = await DteEx.GetDTEAsync();
+                var dte = await DteUtil.GetDTEAsync();
                 var item = dte.Solution.Projects.GetEnumerator();
                 while (item.MoveNext())
                 {

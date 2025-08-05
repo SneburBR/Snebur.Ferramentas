@@ -12,7 +12,7 @@ namespace Snebur.VisualStudio
         public async static Task<IEnumerable<Project>> GetStartupProjectsAsync(this Solutions solutions)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var dte = await DteEx.GetDTEAsync();
+            var dte = await DteUtil.GetDTEAsync();
             if (dte.Solution.IsOpen)
             {
                 try
@@ -36,7 +36,7 @@ namespace Snebur.VisualStudio
                         return projetosInicializacao;
                     }
                 }
-                catch(Exception erro)
+                catch (Exception erro)
                 {
                     LogVSUtil.LogErro(erro);
                 }
@@ -106,7 +106,10 @@ namespace Snebur.VisualStudio
         {
             return documents.OpenAsync(file);
         }
+
+        public static bool IsCSharpProject(this Project project)
+        {
+            return Path.GetExtension(project.FullPath) == ".csproj";
+        }
     }
-
-
 }

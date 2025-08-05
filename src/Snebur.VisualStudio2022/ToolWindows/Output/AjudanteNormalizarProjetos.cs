@@ -141,7 +141,7 @@ namespace Snebur.VisualStudio.ToolWindows.Output
             //{
             //var projetosVS = await ProjetoUtil.RetornarProjetosVisualStudioAsync();
             var todosProjetosVS = await VS.Solutions.GetAllProjectsAsync();
-            var projetosVS = todosProjetosVS.Where(x => x.IsLoaded).ToList();
+            var projetosVS = todosProjetosVS.Where(x => x.IsLoaded  && x.IsCSharpProject()).ToList();
             //var UIH = (EnvDTE.UIHierarchy)dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Object;
 
             foreach (var projetoVS in projetosVS)

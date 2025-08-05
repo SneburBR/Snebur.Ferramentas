@@ -6,7 +6,7 @@
     },
     "zid-get-zid": {
       "commandName": "Project",
-      "commandLineArgs": "zid --get-zid 10"
+      "commandLineArgs": "zid --get-zid 392"
     },
     "zid-get-id": {
       "commandName": "Project",

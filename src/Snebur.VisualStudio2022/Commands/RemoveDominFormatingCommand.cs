@@ -10,7 +10,7 @@ namespace Snebur.VisualStudio.Commands
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var dte = await DteEx.GetDTEAsync();
+            var dte = await DteUtil.GetDTEAsync();
             var document = await VS.Documents.GetActiveDocumentViewAsync();
             var documento = dte.ActiveDocument;
             if (documento != null)

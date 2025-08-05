@@ -31,7 +31,17 @@ namespace Snebur.VisualStudio.Reflexao
 
         private static bool PossuiAtributo(MemberInfo propriedadeOuMetodo, string nomeAtributo)
         {
-            return propriedadeOuMetodo.GetCustomAttributes(false).Any(k => k.GetType().Name == nomeAtributo);
+            try
+            {
+                return propriedadeOuMetodo.GetCustomAttributes(false).Any(k => k.GetType().Name == nomeAtributo);
+            }
+            catch (Exception ex)
+            {
+                var mensagemErro = $"Erro ao verificar se a propriedade  ou método possui o atributo {nomeAtributo}.\r\n" +
+                                   $"MemberPath: '{propriedadeOuMetodo.DeclaringType?.Namespace}.{propriedadeOuMetodo.DeclaringType?.Name}.{propriedadeOuMetodo.Name}'";
+                LogVSUtil.LogErro(mensagemErro, ex);
+                return false;
+            }
         }
 
         public static PropertyInfo RetornarPropriedadeChaveEstrangeira(PropertyInfo propriedade)
@@ -57,31 +67,41 @@ namespace Snebur.VisualStudio.Reflexao
             return null;
         }
 
-
-
         public static Attribute RetornarAtributo(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {
-                return propriedade.GetCustomAttributes(false).Cast<Attribute>().Where(x => x.GetType().Name == tipoAtributo.Name || TipoUtil.TipoIgualOuSubTipo(x.GetType(), tipoAtributo)).SingleOrDefault();
+                return propriedade.GetCustomAttributes(false).Cast<Attribute>()
+                    .Where(x => x.GetType().Name == tipoAtributo.Name || 
+                                TipoUtil.TipoIgualOuSubTipo(x.GetType(), tipoAtributo))
+                    .SingleOrDefault();
             }
             else
             {
-                return propriedade.GetCustomAttributes(false).Cast<Attribute>().Where(x => x.GetType().Name == tipoAtributo.Name).SingleOrDefault();
+                return propriedade.GetCustomAttributes(false).Cast<Attribute>()
+                    .Where(x => x.GetType().Name == tipoAtributo.Name)
+                    .SingleOrDefault();
             }
         }
 
-        public static List<Attribute> RetornarAtributos(MemberInfo propriedade, Type tipoAtributo, bool atributoHerdadoTipo)
+        public static List<Attribute> RetornarAtributos(
+            MemberInfo propriedade, 
+            Type tipoAtributo, 
+            bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
             {
-                return propriedade.GetCustomAttributes(false).Cast<Attribute>().Where(x => x.GetType().Name == tipoAtributo.Name || TipoUtil.TipoIgualOuSubTipo(x.GetType(), tipoAtributo)).ToList();
+                return propriedade.GetCustomAttributes(false).Cast<Attribute>()
+                    .Where(x => x.GetType().Name == tipoAtributo.Name || 
+                                TipoUtil.TipoIgualOuSubTipo(x.GetType(), tipoAtributo))
+                    .ToList();
             }
             else
             {
-                return propriedade.GetCustomAttributes(false).Cast<Attribute>().Where(x => x.GetType().Name == tipoAtributo.Name).ToList();
+                return propriedade.GetCustomAttributes(false).Cast<Attribute>()
+                    .Where(x => x.GetType().Name == tipoAtributo.Name)
+                    .ToList();
             }
         }
- 
     }
 }

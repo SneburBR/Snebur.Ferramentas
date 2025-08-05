@@ -1,26 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!--<TargetFramework>net7.0</TargetFramework>-->
-		<TargetFrameworks>net48;net7.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net48</TargetFrameworks>
 		<RootNamespace>Snebur.VisualStudio.Compartilhado</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Nullable>disable</Nullable>
 		<AssemblyName>Snebur.VisualStudio.Compartilhado</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48' ">
+
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.ComponentModel" />
+		<Reference Include="System.ComponentModel" />
+		<Reference Include="System.ComponentModel.DataAnnotations" />
+
+		<Reference Include="Microsoft.CSharp" />
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core.Net48\Snebur.csproj" />
+
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0' ">
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
+	</ItemGroup>
+
 	<ItemGroup>
-	  <None Remove="Resources\Modelos\AtributoPartial.ts" />
+		<None Remove="Resources\Modelos\AtributoPartial.ts" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
+		<EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
-	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj" />
-	  <ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
-	  <ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj" />
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj" />
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
+		<ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj" />
 	</ItemGroup>
 </Project>

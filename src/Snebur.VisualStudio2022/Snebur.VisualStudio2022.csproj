@@ -61,6 +61,7 @@
     <Compile Include="Commands\AtualizarProjetosSnebur.cs" />
     <Compile Include="Commands\MigrationWindowCommand.cs" />
     <Compile Include="Commands\NormalizarAllProjectsCommand.cs" />
+    <Compile Include="Commands\OpenAppDataCtxMenuCommand.cs" />
     <Compile Include="Commands\PublishCtxMenuCommand.cs" />
     <Compile Include="Commands\Context\ContextoMenuEstilo.cs" />
     <Compile Include="Commands\Context\ContextoMenuOutro.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Extensao\Dispatcher.cs" />
     <Compile Include="Extensao\DTEExtensao.cs" />
     <Compile Include="Extensao\ProjectItemExtensao.cs" />
+    <Compile Include="Extensao\PropertiesExtensao.cs" />
     <Compile Include="Extensao\SolutionsExtension.cs" />
     <Compile Include="Extensao\SolutionUtil.cs" />
     <Compile Include="Extensao\VSEx.cs" />
@@ -107,6 +109,11 @@
     <Compile Include="Json\JsonSchemaSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\OutputWindowCommand.cs" />
+    <Compile Include="source.extension1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Migracao\AjudanteRetornarProximaMigracao.cs" />
     <Compile Include="ToolWindows\Migracao\AmbienteViewModel.cs" />
     <Compile Include="ToolWindows\Migracao\MigrationWindowControl.Validacao.cs" />
@@ -130,15 +137,9 @@
     <Compile Include="Utilidade\CorUtil.cs" />
     <Compile Include="Utilidade\LogVSUtil.cs" />
     <Compile Include="Utilidade\ProjetoTypeScriptUtilEx.cs" />
-    <Compile Include="Utilidade\ProjetoUtil.cs" />
     <Compile Include="Utilidade\VsThreadUtil.cs" />
     <Compile Include="ViewModels\LogMensagemViewModel.cs" />
     <Compile Include="VisualStudio2022Package.cs" />
-    <Compile Include="source.extension.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
-    </Compile>
     <Compile Include="VSCommandTable.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -217,7 +218,7 @@
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
       <Generator>VsixManifestGenerator</Generator>
-      <LastGenOutput>source.extension.cs</LastGenOutput>
+      <LastGenOutput>source.extension1.cs</LastGenOutput>
     </None>
     <Content Include="ItemTemplate\item template categoria.txt" />
   </ItemGroup>

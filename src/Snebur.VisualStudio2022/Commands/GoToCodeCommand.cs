@@ -12,7 +12,7 @@ namespace Snebur.VisualStudio.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                var dte = await DteEx.GetDTEAsync();
+                var dte = await DteUtil.GetDTEAsync();
                 if (dte.ActiveDocument != null)
                 {
                     var nomeArquivo = dte.ActiveDocument.Name;

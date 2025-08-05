@@ -30,44 +30,8 @@ namespace Snebur.VisualStudio
             this.CaminhoProjetoCsProj = caminhoProjetoCsProj;
             this.ProjetoVS = projetoVS;
             
-            this.TipoCsProj = TipoCsProjUtil.RetornarTipoCsProjet(caminhoProjetoCsProj);
+            this.TipoCsProj = ProjetoUtil.RetornarTipoCsProjet(caminhoProjetoCsProj);
         }
-
-    }
-
-    public static class TipoCsProjUtil
-    {
-        public static EnumTipoCsProj RetornarTipoCsProjet(string caminhoProjetoCsProj)
-        {
-            using(var fs =   StreamUtil.OpenRead(caminhoProjetoCsProj))
-            {
-                var xml = new XmlDocument();
-                xml.Load(fs);
-
-                var atributoSdk = xml.GetElementsByTagName("Project")[0].Attributes["Sdk"];
-                if (atributoSdk!= null && atributoSdk.Value == "Microsoft.NET.Sdk")
-                {
-                    return EnumTipoCsProj.MicrosoftSdk;
-                }
-                return EnumTipoCsProj.Tradicional;
-            }
-        }
-
-        //public static EnumTipoCsProj RetornarTipoCsProjet(object projetoVS)
-        //{
-        //    var nomeTipoProjeto = projetoVS.GetType().Name;
-        //    switch (nomeTipoProjeto)
-        //    {
-        //        case "OAProject":
-        //            return EnumTipoCsProj.MicrosoftSdk;
-        //        default:
-
-        //            return EnumTipoCsProj.Tradicional;
-
-        //            //throw new System.Exception("Tipo de projeto não suportado");
-
-        //    }
-        //}
 
     }
 

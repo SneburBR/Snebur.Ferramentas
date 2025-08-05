@@ -43,8 +43,8 @@ namespace Snebur.VisualStudio
 
         private void SolutionEvents_OnAfterLoadProject(Project project)
         {
-            _=SolutionUtil.DefinirProjetosInicializacaoAsync();
-            
+            _ = SolutionUtil.DefinirProjetosInicializacaoAsync();
+
         }
 
         #region Projects Itens
@@ -126,8 +126,9 @@ namespace Snebur.VisualStudio
             }
 
             var projetosTS = new HashSet<ProjetoTypeScript>();
-            var arquivos = itens.Select(x => new FileInfo(x.FullPath));
-             
+            var arquivos = itens.Where(x => x.FullPath != null && x.Type == SolutionItemType.PhysicalFile)
+                                .Select(x => new FileInfo(x.FullPath));
+
             foreach (var arquivo in arquivos)
             {
                 if (arquivo.Exists)
@@ -265,7 +266,7 @@ namespace Snebur.VisualStudio
                 {
                     return;
                 }
-                 
+
                 LogVSUtil.Alerta($"Alterando encoding do arquivo {Path.GetFileName(documentoView.FilePath)} de {encoding?.EncodingName} para UTF-8");
 
                 documentoView.Document.Encoding = Encoding.UTF8;

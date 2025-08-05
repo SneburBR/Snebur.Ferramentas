@@ -97,6 +97,7 @@ namespace NormalizarNomesArquivos
             {
                 return this.RetornarNomeArquivo(nomeApresentacao, nomeApresentacao, nomeApresentacao);
             }
+
             var nomesDistindo = nomes.Distinct().ToList();
             var melhoresNome = nomes.Where(x => Char.IsUpper(x[0]) && x.Any(c => Char.IsLower(c))).Distinct().ToList();
             if (melhoresNome.Count == 1 && nomesDistindo.Count == 1)

@@ -1,7 +1,6 @@
 ﻿using Community.VisualStudio.Toolkit;
 using Snebur.Dominio;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio

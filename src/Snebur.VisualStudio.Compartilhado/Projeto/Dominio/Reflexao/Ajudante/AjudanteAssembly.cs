@@ -397,7 +397,7 @@ namespace Snebur.VisualStudio
                                                                    string nomeAssembly,
                                                                    bool isIgnorarErro)
         {
-            var tipoProjet = TipoCsProjUtil.RetornarTipoCsProjet(caminhoProjeto);
+            var tipoProjet = ProjetoUtil.RetornarTipoCsProjet(caminhoProjeto);
             var diretorioPrjeto = Path.GetDirectoryName(caminhoProjeto);
             var caminhoAssembly = RetornarCaminhoAssembly(tipoProjet,
                                                           diretorioPrjeto, 

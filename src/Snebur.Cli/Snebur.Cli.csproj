@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!--<TargetFramework>net7.0</TargetFramework>-->
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net9.0;net48</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Snebur.Cli</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<Nullable>enable</Nullable>
+		<Nullable>disable</Nullable>
 		<AssemblyName>sn</AssemblyName>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
