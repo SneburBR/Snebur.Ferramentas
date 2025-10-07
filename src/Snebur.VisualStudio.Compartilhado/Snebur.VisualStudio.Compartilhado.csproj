@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!--<TargetFramework>net7.0</TargetFramework>-->
-		<TargetFrameworks>net9.0;net48</TargetFrameworks>
+		<TargetFrameworks>net48</TargetFrameworks>
 		<RootNamespace>Snebur.VisualStudio.Compartilhado</RootNamespace>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Nullable>disable</Nullable>
@@ -21,12 +21,22 @@
 		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core.Net48\Snebur.csproj" />
 
 	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0' ">
-		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
-	</ItemGroup>
+
 
 	<ItemGroup>
 		<None Remove="Resources\Modelos\AtributoPartial.ts" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\Contrato.cs" Link="Depuracao\Contrato.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\EnumTipoLog.cs" Link="Depuracao\EnumTipoLog.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\Mensagem.cs" Link="Depuracao\Mensagem.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemControleAlterado.cs" Link="Depuracao\MensagemControleAlterado.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemEstiloCssAlterado.cs" Link="Depuracao\MensagemEstiloCssAlterado.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemLog.cs" Link="Depuracao\MensagemLog.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemPing.cs" Link="Depuracao\MensagemPing.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemScriptAlterado.cs" Link="Depuracao\MensagemScriptAlterado.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
@@ -36,8 +46,7 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\Snebur.Framework\src\AcessoDados\src\AcessoDados\Snebur.AcessoDados.csproj" />
-		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core\Snebur.csproj" />
-		<ProjectReference Include="..\..\..\Snebur.Framework\src\Depuracao\Snebur.Depuracao.csproj" />
+		<Folder Include="Depuracao\" />
 	</ItemGroup>
+
 </Project>
