@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Snebur.VisualStudio
@@ -14,7 +13,6 @@ namespace Snebur.VisualStudio
         private const string END_REGION = "#endregion";
 
         public List<Type> TodosTipo { get; }
-
 
         public ProjetoServicosDotNet(ProjetoViewModel projetoVM, 
                                      ConfiguracaoProjetoServico configuracaoProjeto,
@@ -72,7 +70,6 @@ namespace Snebur.VisualStudio
                         sb.AppendLine("\t\t{");
                         sb.AppendLine($"\t\t\treturn Task.Factory.StartNew{TipoCSUtil.RetornarNomeTipo(metodo.ReturnType, true)}( ()=>");
                         sb.AppendLine("\t\t\t{");
-
 
                         sb.AppendLine($"\t\t\t\t{retorno} this.{metodo.Name}( { String.Join(",", metodo.GetParameters().Select(x => x.Name))  });");
 

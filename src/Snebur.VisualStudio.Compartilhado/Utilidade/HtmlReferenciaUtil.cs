@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Snebur.Utilidade;
 using System.IO;
-using System.Web;
 using System.Net;
 
 namespace Snebur.VisualStudio
@@ -63,7 +62,6 @@ namespace Snebur.VisualStudio
             var pastas = new List<string>();
             var caminhoProjeto = arquivoTypeScript.CaminhoProjeto;
             var diretorio = arquivoTypeScript.Arquivo.Directory;
-
 
             while (!ArquivoUtil.DiretorioIgual(diretorio.FullName, caminhoProjeto))
             {

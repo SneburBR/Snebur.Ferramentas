@@ -150,7 +150,6 @@ namespace Snebur.VisualStudio
         {
             var sb = new StringBuilder();
 
-
             if (String.IsNullOrEmpty(arquivoTypeScript.CaminhoTipo))
             {
                 throw new Erro("O caminho do tipo não está definido");

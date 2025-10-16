@@ -33,7 +33,6 @@ namespace Snebur.VisualStudio
 
         public bool IsTipoAbstrato => TIPOS_ABSTRATOS.HasFlag(this.TipoArquivoTypeScript);
 
-
         public ArquivoTypeScript(ConfiguracaoProjetoTypeScript configuracaoProjetoTypeScript,
                                  string caminhoProjeto,
                                  FileInfo arquivo,
@@ -79,7 +78,6 @@ namespace Snebur.VisualStudio
                 default:
                     break;
             }
-
 
             var tiposEncontrados = new Dictionary<EnumTipoArquivoTypeScript, int>();
 
@@ -241,7 +239,6 @@ namespace Snebur.VisualStudio
 
                 var nomeTipo = linhaTipo.Split(" ".ToCharArray()).First();
                 nomeTipo = FormatacaoVSUtil.RetornarNomeFormatado(nomeTipo, this.Arquivo);
-
 
                 var nomeArquivoSemExtensao = Path.GetFileNameWithoutExtension(this.Arquivo.Name);
                 if (!nomeArquivoSemExtensao.Equals(nomeArquivoSemExtensao))

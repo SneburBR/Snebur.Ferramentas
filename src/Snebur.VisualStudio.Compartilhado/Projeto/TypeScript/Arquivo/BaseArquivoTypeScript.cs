@@ -33,7 +33,6 @@ namespace Snebur.VisualStudio
 
         public bool IsExisteTipoBase => !String.IsNullOrWhiteSpace(this.CaminhoTipoBase);
 
-
         //public string NomeTipoBase { get; }
 
         //public string NamespaceBase { get; }

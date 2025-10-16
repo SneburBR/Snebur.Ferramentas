@@ -1,6 +1,5 @@
 ﻿using Snebur.Dominio.Atributos;
 using Snebur.Linq;
-using Snebur.Utilidade;
 using Snebur.VisualStudio.Utilidade;
 using System;
 using System.Collections.Generic;
@@ -87,7 +86,6 @@ namespace Snebur.VisualStudio
             var tipoAtributoChaveEstrangeira = this.RetornarSubTiposTipoBase(typeof(ForeignKeyAttribute)).SingleOrDefault();
             var tiposAtributoOcultarColuna = this.RetornarSubTiposTipoBase(typeof(ScaffoldColumnAttribute)).SingleOrDefault();
 
-
             //var tiposAtributoDominioAsync = this.RetornarSubTiposTipoBase(AjudanteAssembly.TipoBaseAtributoDominio).ToList();
             foreach (var tipo in tiposAtributoDominio.ToList())
             {
@@ -133,7 +131,6 @@ namespace Snebur.VisualStudio
 
             return Path.Combine(this.ConfiguracaoDominio.RetornarCaminhoAbsolutoDominioTypeScript(this.CaminhoProjeto), nomeArquivo);
         }
-
 
         #endregion
 

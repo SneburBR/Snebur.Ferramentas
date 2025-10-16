@@ -41,8 +41,8 @@ namespace Snebur.VisualStudio
         {
             get
             {
-                if (this is ProjetoDominio ||
-                    this is ProjetoServicosTypescript || this is ProjetoServicosDotNet)
+                if (/*this is ProjetoDominio ||
+                   */ this is ProjetoServicosTypescript || this is ProjetoServicosDotNet)
                 {
                     return this.NomeProjeto;
                     //return this.NomeProjeto == "Snebur" ? "Zyoncore" : this.NomeProjeto;
@@ -170,8 +170,6 @@ namespace Snebur.VisualStudio
             return BaseAplicacaoVisualStudio.Instancia.CompilarProjetoAsync(this);
         }
 
-
-
         public virtual void InscrementarVersao()
         {
             AssemblyInfoUtil.InscrementarVersao(this.CaminhoProjeto,    
@@ -224,8 +222,6 @@ namespace Snebur.VisualStudio
         public bool IsProjetoSneburDominio { get; set; }
         public List<string> NomesProjetoDepedencia => this.ConfiguracaoProjeto.ProjetoDepedencia;
 
-
-
         public BaseProjeto(ProjetoViewModel projetoVM,
                            TConfiguracaoProjeto configuracaoProjeto,
                            FileInfo arquivoProjeto, string caminhoConfiguracao) :
@@ -270,5 +266,4 @@ namespace Snebur.VisualStudio
         }
     }
 }
-
 

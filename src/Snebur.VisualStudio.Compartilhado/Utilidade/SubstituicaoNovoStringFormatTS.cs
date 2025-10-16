@@ -85,7 +85,6 @@ namespace Snebur.VisualStudio
                     novoStringFormat = $"`{novoStringFormat}`";
                 }
 
-
                 return (expressaoAntigoFormat,
                          novoStringFormat,
                          true);
@@ -148,7 +147,6 @@ namespace Snebur.VisualStudio
             return partes.Select(x => x.Trim()).
                           ToList();
         }
-
 
     }
 }

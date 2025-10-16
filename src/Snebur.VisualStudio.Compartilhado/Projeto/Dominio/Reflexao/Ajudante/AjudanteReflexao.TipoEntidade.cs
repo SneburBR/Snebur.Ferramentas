@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Snebur;
 using Snebur.Dominio;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
-using Snebur.VisualStudio.Utilidade;
 
 namespace Snebur.VisualStudio
 {

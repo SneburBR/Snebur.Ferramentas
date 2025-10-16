@@ -28,8 +28,6 @@ namespace Snebur.VisualStudio
             this.CaminhoProjetoApresentacao = Path.Combine(this.CaminhoProjeto, "Apresentacao");
             this.CaminhoConfiguracao = this.RetornarCaminhoConfiguracaoTypescript();
 
-
-
             this.Configuracao = ProjetoTypeScriptUtil.RetornarConfiguracaoProjetoTypeScript(this.CaminhoConfiguracao);
             this.Arquivos = this.RetornarArquivos();
             this.ArquiviosTypescript = this.RetornarCaminhosArquivoTypescript();

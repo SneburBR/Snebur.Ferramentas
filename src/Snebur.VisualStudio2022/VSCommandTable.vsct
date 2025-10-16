@@ -45,7 +45,7 @@
 				</Strings>
 			</Button>
 
-			<Button guid="guidMenuSneburCmdSet"
+			<!--<Button guid="guidMenuSneburCmdSet"
 					id="SneburMigrationCommand"
 				    priority="0x0100"
 					type="Button">
@@ -55,7 +55,7 @@
 				<Strings>
 					<ButtonText>Snebur Migrations</ButtonText>
 				</Strings>
-			</Button>
+			</Button>-->
 
 			<Button guid="guidMenuSneburCmdSet" id="GoToDefinitionCommand" priority="0x0100" type="Button">
 				<Parent guid="guidMenuSneburCmdSet" id="SneburMenuGroup" />
@@ -170,7 +170,7 @@
 			<IDSymbol name="SneburMenuGroup" value="4128"  />
 			<IDSymbol name="SneburMenu" value="0x1021" />
 			<IDSymbol name="SneburOutputCommand" value="0x0050" />
-			<IDSymbol name="SneburMigrationCommand" value="0x0100" />
+			<!--<IDSymbol name="SneburMigrationCommand" value="0x0100" />-->
 			<IDSymbol name="GoToDefinitionCommand" value="0x0101" />
 			<IDSymbol name="GoToCodeCommand" value="0x0102" />
 			<IDSymbol name="GoToLayoutCommand" value="0x0103" />

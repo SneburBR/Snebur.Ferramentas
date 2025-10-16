@@ -20,7 +20,6 @@ namespace Snebur.VisualStudio
         internal const string PROCURAR_INTERFACE_EXPORT = "export interface ";
         internal const string PROCURAR_EXTENDS = " extends ";
 
-
         internal static IEnumerable<string> RetornarCaminhosClassesBase(ConfiguracaoProjetoTypeScript configuracaoProjetoTypeScript, string caminhoProjeto)
         {
             var caminhosClassesBase = new HashSet<string>();
@@ -80,7 +79,6 @@ namespace Snebur.VisualStudio
             }
         }
 
-
         public static EnumTipoArquivoTypeScript RetornarTipoArquivoTypeScript(string linha)
         {
             var tiposEncontrados = new List<EnumTipoArquivoTypeScript>();
@@ -102,7 +100,6 @@ namespace Snebur.VisualStudio
 
             return tiposEncontrados.OrderByDescending(x => x).First();
         }
-
 
         internal static string RetornarProcurarTipo(EnumTipoArquivoTypeScript tipoArquivoTypescript)
         {

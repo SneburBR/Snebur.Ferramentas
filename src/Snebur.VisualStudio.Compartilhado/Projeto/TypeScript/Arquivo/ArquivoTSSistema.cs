@@ -78,7 +78,6 @@ namespace Snebur.VisualStudio
                 return ArquivoTSSistema.DicionarioSubExtensaoTipoArquivo[this.SubExtensao];
             }
 
-
             foreach (var item in ArquivoTSSistema.DicionarioIniciaComTipoArquivo)
             {
                 var iniciaCom = item.Key;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,7 +16,6 @@ namespace Snebur.VisualStudio
         protected const string METODO_CONTAINS = "Contains";
         
         protected const string EXPRESSAO_NORMALIZADA = @"/*_normalizado__*/";
-
 
         protected static HashSet<string> MetodosIgnorar = new HashSet<string> { ".Any", ".Where(", ".Count", ".Contains", ".OfType", "instanceof", };
 
@@ -130,8 +128,6 @@ namespace Snebur.VisualStudio
             return sb.ToString();
         }
 
-
-
         private List<string> RetornarVariaveis(string epxressaInterna)
         {
             var variaveis = new List<string>();
@@ -172,7 +168,6 @@ namespace Snebur.VisualStudio
             }
             return variaveis;
         }
-
 
         private bool IsOperador(StringReader leitor, char caracter)
         {
@@ -215,7 +210,6 @@ namespace Snebur.VisualStudio
             }
         }
 
-
         private bool IsMetodoEquals(StringReader leitor, char caracter)
         {
             return this.IsMetodo(leitor, caracter, METODO_EQUALS);
@@ -235,8 +229,6 @@ namespace Snebur.VisualStudio
         {
             return this.IsMetodo(leitor, caracter, METODO_CONTAINS);
         }
-
-
 
         private bool IsMetodo(StringReader leitor, char caracter, string metodo)
         {
@@ -259,8 +251,5 @@ namespace Snebur.VisualStudio
             base.Dispose();
         }
     }
-
-
-
 
 }

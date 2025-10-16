@@ -102,7 +102,6 @@ namespace Snebur.VisualStudio
             var namaspaceRaiz = NamespaceRaiz(nomeProjeto);
             return $"{namaspaceRaiz}.Reflexao";
 
-
         }
     }
 }

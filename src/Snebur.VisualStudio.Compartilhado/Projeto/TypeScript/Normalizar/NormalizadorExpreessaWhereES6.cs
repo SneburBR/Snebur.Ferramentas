@@ -39,7 +39,6 @@ namespace Snebur.VisualStudio
         internal override string Normalizar()
         {
 
-
             var expressao = this.Expressao;
             //throw new NotImplementedException("Não foi implementado");
             //var prefixo = ExpressaoUtil.RetornarExpressaoAbreFecha(expressao.Substring(1, expressao.Length - 2));
@@ -67,8 +66,6 @@ namespace Snebur.VisualStudio
 
             }
             throw new Erro("Falha a normalizar a expressao ES2020");
-
-
 
             //if (epxressaInterna.StartsWith("return"))
             //{
@@ -115,8 +112,6 @@ namespace Snebur.VisualStudio
             return sb.ToString();
         }
 
-
-
         private List<string> RetornarVariaveis(string epxressaInterna)
         {
             var variaveis = new List<string>();
@@ -157,7 +152,6 @@ namespace Snebur.VisualStudio
             }
             return variaveis;
         }
-
 
         private bool IsOperador(StringReader leitor, char caracter)
         {
@@ -200,7 +194,6 @@ namespace Snebur.VisualStudio
             }
         }
 
-
         private bool IsMetodoEquals(StringReader leitor, char caracter)
         {
             return this.IsMetodo(leitor, caracter, METODO_EQUALS);
@@ -221,8 +214,6 @@ namespace Snebur.VisualStudio
 
             return this.IsMetodo(leitor, caracter, METODO_CONTAINS);
         }
-
-
 
         private bool IsMetodo(StringReader leitor, char caracter, string metodo)
         {

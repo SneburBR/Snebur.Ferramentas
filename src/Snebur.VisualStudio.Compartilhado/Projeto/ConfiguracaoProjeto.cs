@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Snebur.VisualStudio
@@ -11,7 +10,6 @@ namespace Snebur.VisualStudio
         public List<string> ProjetoDepedencia => this.RetornarNomesProjetoDepedencia();
 
         protected abstract List<string> RetornarNomesProjetoDepedencia();
-
 
     }
 }

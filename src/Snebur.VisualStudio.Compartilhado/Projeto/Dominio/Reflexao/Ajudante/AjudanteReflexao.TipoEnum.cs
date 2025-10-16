@@ -1,5 +1,4 @@
 ﻿using System;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {

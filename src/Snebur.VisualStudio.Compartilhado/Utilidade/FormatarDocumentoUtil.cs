@@ -52,7 +52,6 @@ namespace Snebur.VisualStudio.Utilidade
                             }
                         }
 
-
                         if (proximaLinha.Trim() == "}" ||
                             proximaLinha.Trim() == "};" ||
                             proximaLinha.Trim() == "})" ||
@@ -60,7 +59,6 @@ namespace Snebur.VisualStudio.Utilidade
                         {
                             continue;
                         }
-
 
                     }
                     else if (linha.Trim() == "}" && (i < (linhas.Count - 1)))

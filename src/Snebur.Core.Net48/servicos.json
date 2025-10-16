@@ -1,0 +1,8 @@
+﻿{
+  "Servicos": [
+    {
+      "NomeInterface": "IServicoUsuario",
+      "CaminhoTypeScript": "../../../Snebur.TS/src/Snebur.TS/src/Comunicacao/Usuario/BaseServicoUsuarioCliente.ts"
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 ﻿using Snebur.Utilidade;
 using System;
-using System.Drawing.Text;
 
 namespace Snebur.VisualStudio
 {
@@ -31,7 +30,6 @@ namespace Snebur.VisualStudio
         }
     }
 
-
     public abstract class BaseGerenciadoProjetos<TGerenciadorProjeto> : BaseGerenciadoProjetos where TGerenciadorProjeto : class, IGerenciadorProjetos, new()
     {
 
@@ -52,5 +50,4 @@ namespace Snebur.VisualStudio
 
     }
 }
-
 

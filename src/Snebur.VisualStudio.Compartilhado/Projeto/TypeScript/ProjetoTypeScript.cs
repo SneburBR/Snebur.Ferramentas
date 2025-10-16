@@ -46,7 +46,6 @@ namespace Snebur.VisualStudio
 
         public string Namespace => this.NomeProjeto.Replace(".Typescript", String.Empty);
 
-
         public ProjetoTypeScript(ProjetoViewModel projetoVM,
                                  ConfiguracaoProjetoTypeScript configuracaoProjeto,
                                  FileInfo arquivoProjeto,
@@ -116,7 +115,6 @@ namespace Snebur.VisualStudio
                                                 $"  duplicado: {arquivoTSAtual.CaminhoTipo} -- {arquivoTSAtual.CaminhoArquivo}");
                     }
 
-
                     this.DicionariosArquivosTypeScript.AddOrUpdate(arquivoTypescript.CaminhoTipo, arquivoTypescript);
                 }
                 this.DicionariosArquivosTypeScript.Add(arquivoTypescript.CaminhoTipo, arquivoTypescript);
@@ -156,8 +154,6 @@ namespace Snebur.VisualStudio
             var caminhoJavasriptSaidaRelativo = this.RetornarCaminhoSaidaRelativo(caminhoJavasriptSaida,
                                                                                   configuracaoProjetoAtual,
                                                                                   arquivosTypescript);
-
-
 
             return new ConfiguracaoProjetoTypeScript(configuracaoProjetoAtual,
                                                      arquivosTypescript,
@@ -288,7 +284,6 @@ namespace Snebur.VisualStudio
                       case EnumTipoArquivoTypeScript.Desconhecido:
                       case EnumTipoArquivoTypeScript.ClasseStatica:
                       case EnumTipoArquivoTypeScript.Teste:
-
 
                           return true;
 
@@ -462,7 +457,6 @@ namespace Snebur.VisualStudio
 
             return declaracoesTipos.RetornarDeclaracao().TrimEnd();
         }
-
 
         private string RetornarHtmlReferencias(string namasceRaiz)
         {

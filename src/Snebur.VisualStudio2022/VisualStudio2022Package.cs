@@ -32,7 +32,7 @@ namespace Snebur.VisualStudio
     [ProvideToolWindowVisibility(typeof(OutputWindow.Pane), VSConstants.UICONTEXT.SolutionOpening_string)]
     [ProvideOptionPage(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true, 0, ProvidesLocalizedCategoryName = false)]
     [ProvideProfile(typeof(DialogPageProvider.Geral), "Snebur", "Geral", 0, 0, true)]
-    [ProvideToolWindow(typeof(MigrationWindow.Pane), Style = VsDockStyle.AlwaysFloat, Width = 800, Height = 400)]
+    //[ProvideToolWindow(typeof(MigrationWindow.Pane), Style = VsDockStyle.AlwaysFloat, Width = 800, Height = 400)]
     public sealed class SneburVisualStudio2022Package : ToolkitPackage
     {
         public static bool IsVsixInialized { get; private set; }

@@ -1,10 +1,8 @@
 ﻿using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Snebur.VisualStudio
@@ -71,7 +69,6 @@ namespace Snebur.VisualStudio
 
                         var adicionalVirgula = (parametros.Count > 0) ? ", " : "";
                         var parametrosAsync = String.Join(", ", metodo.GetParameters().Select(x => x.Name));
-
 
                         sb.AppendLine("\t\t//async");
                         sb.AppendLine($"\t\tpublic {metodo.Name}Async({descricaoParametros}) : Promise<{TipoUtil.RetornarCaminhoTipoTS(metodo.ReturnType)}>");

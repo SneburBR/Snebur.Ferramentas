@@ -1,6 +1,4 @@
-﻿using Microsoft.CSharp;
-using System;
-using System.CodeDom;
+﻿using System;
 using System.Linq;
 
 namespace Snebur.VisualStudio

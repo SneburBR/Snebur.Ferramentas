@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Zyoncore.Utilidade
+{
+    public class StreamUtil
+    {
+        //private const int TAMANHO_BUFFER = 5;
+        private const int TAMANHO_BUFFER = 32 * 1024;
+ 
+        /// <summary>
+        /// Ler as stream, buffer a buffer e retornar um MemoryStream, util,
+        /// Quando usar, em stream conecta remotamente.
+        /// Ex. request.GetRequestStream ou response.GetReponseStream
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static MemoryStream RetornarStreamBufferizada(Stream stream)
+        {
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            var ms = new MemoryStream();
+            while (true)
+            {
+                var buffer = new byte[TAMANHO_BUFFER];
+                var bytesRecebido = stream.Read(buffer, 0, TAMANHO_BUFFER);
+                ms.Write(buffer, 0, bytesRecebido);
+
+                if (bytesRecebido == 0)
+                {
+                    break;
+                }
+            }
+            ms.Seek(0, SeekOrigin.Begin);
+            return ms;
+        }
+    }
+}

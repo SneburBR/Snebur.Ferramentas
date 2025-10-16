@@ -63,7 +63,6 @@ namespace Snebur.VisualStudio
                     sb.AppendLine(String.Format("{0}}}", TAB));
                     sb.AppendLine();
 
-
                     sb.AppendLine(String.Format("{0}({1} as any).Rotulos = {{}};", TAB, tipoEnum.Name));
                    
 
@@ -96,7 +95,6 @@ namespace Snebur.VisualStudio
                                 sb.AppendLine();
                             }
 
-
                             foreach (var atributoRotuloVS in atriutosRotuloVS)
                             {
                                 var intValor = System.Convert.ToInt32(valorEnum);
@@ -112,7 +110,6 @@ namespace Snebur.VisualStudio
                 sb.AppendLine("");
                 sb.AppendLine("}");
                 sb.AppendLine("");
-
 
             }
             return sb.ToString();
@@ -141,7 +138,6 @@ namespace Snebur.VisualStudio
             tiposEnum = TipoUtil.IgnorarAtributo(tiposEnum, AjudanteAssembly.NomeTipoIgnorarEnumTS);
             return tiposEnum.ToHashSet();
         }
-
 
     }
 }

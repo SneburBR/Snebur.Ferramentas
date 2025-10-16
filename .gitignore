@@ -378,3 +378,4 @@ bin/
 
 /.bkp
 temp/
+.vshistory/

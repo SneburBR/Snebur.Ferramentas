@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Snebur.VisualStudio
+﻿namespace Snebur.VisualStudio
 {
     public enum EnumTipoArquivoTypeScript
     {

@@ -247,8 +247,6 @@ namespace Snebur.VisualStudio
             return false;
         }
 
-
-
         private bool InserirLinhaImportacao(List<string> linhas, FileInfo arquivoSass, FileInfo arquivoImportacao)
         {
             if (arquivoImportacao.Exists)
@@ -389,14 +387,10 @@ namespace Snebur.VisualStudio
             return new FileInfo(caminho);
         }
 
-
-
         protected override void DispensarInerno()
         {
-
 
         }
     }
 }
-
 

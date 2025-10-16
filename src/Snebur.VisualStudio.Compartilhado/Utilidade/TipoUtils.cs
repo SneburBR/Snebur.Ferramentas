@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Snebur.AcessoDados;
 using Snebur.Dominio;
 using Snebur.Reflexao;
@@ -24,7 +23,6 @@ namespace Snebur.VisualStudio
 
         public static List<Type> RetornarBaseIgualTipoBase(List<Type> tipos, Type tipo)
         {
-
 
             return tipos.Where(x => x.BaseType != null &&
                                     (x.BaseType.Equals(tipo) ||
@@ -277,7 +275,6 @@ namespace Snebur.VisualStudio
             }
         }
 
-
         public static List<Attribute> RetornarAtributos(Type tipo, Type tipoAtributo, bool atributoHerdadoTipo)
         {
             if (atributoHerdadoTipo)
@@ -417,7 +414,6 @@ namespace Snebur.VisualStudio
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
 
-
         }
 
         private static string RetornarNomeTipoPrimarioTypeScriptInterno(Type tipo)
@@ -447,7 +443,6 @@ namespace Snebur.VisualStudio
                 default:
                     throw new NotSupportedException(String.Format("Tipo primário não suportado {0} ", tipoPrimarioEnum.ToString()));
             }
-
 
         }
 

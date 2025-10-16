@@ -18,8 +18,62 @@
 		<Reference Include="System.ComponentModel.DataAnnotations" />
 
 		<Reference Include="Microsoft.CSharp" />
-		<ProjectReference Include="..\..\..\Snebur.Framework\src\Core.Net48\Snebur.csproj" />
 
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Projeto\Dominio\Reflexao\Ajudante\**" />
+	  <Compile Remove="Projeto\RegrasNegocio\**" />
+	  <Compile Remove="Projeto\Web\WebService\**" />
+	  <EmbeddedResource Remove="Projeto\Dominio\Reflexao\Ajudante\**" />
+	  <EmbeddedResource Remove="Projeto\RegrasNegocio\**" />
+	  <EmbeddedResource Remove="Projeto\Web\WebService\**" />
+	  <None Remove="Projeto\Dominio\Reflexao\Ajudante\**" />
+	  <None Remove="Projeto\RegrasNegocio\**" />
+	  <None Remove="Projeto\Web\WebService\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Projeto\ContextoDados\ConfiguracaoProjetoContextoDados.cs" />
+	  <Compile Remove="Projeto\ContextoDados\ProjetoContextoDados.cs" />
+	  <Compile Remove="Projeto\Dominio\AtribuirValorProprieadades\Gerador.cs" />
+	  <Compile Remove="Projeto\Dominio\Atributo\GeradorDominioAtributo.cs" />
+	  <Compile Remove="Projeto\Dominio\Classes\GeradorDominioClasse.cs" />
+	  <Compile Remove="Projeto\Dominio\Constante\GeradorDominioConstante.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\BaseEstrutura.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\BaseEstruturaClasse.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaClasseAtributo.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaClasseDominio.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaConstantes.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaConstrutor.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaInterface.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaPropriedade.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaPropriedadeEspecializada.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaPropriedadeEstatica.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaPropriedadeMensagemValidacao.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\EstruturaPropriedadePublica.cs" />
+	  <Compile Remove="Projeto\Dominio\Estrutura\ParametroConstrutor.cs" />
+	  <Compile Remove="Projeto\Dominio\Interface\GeradorDominioInterface.cs" />
+	  <Compile Remove="Projeto\Dominio\ProjetoDominio.AtribuirValorPropriedade.cs" />
+	  <Compile Remove="Projeto\Dominio\ProjetoDominio.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\AtributoPropriedade.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\EstruturaPropriedadeReflexao.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.AdicionarTipos.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Atributos.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.Atributos.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Propriedades.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.Tipo.Atributos.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoBaseDominio.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoComplexo.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEntidade.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TipoEnum.cs" />
+	  <Compile Remove="Projeto\Dominio\Reflexao\GeradorDominioReflexao.TiposPrimario.cs" />
+	  <Compile Remove="Projeto\Web\Apresentacao\ConfiguracaoProjetoWebApresentacao.cs" />
+	  <Compile Remove="Projeto\Web\Apresentacao\ProjetoWebApresentacao.cs" />
+	  <Compile Remove="Projeto\Web\BaseConfiguracaoProjetoWeb.cs" />
+	  <Compile Remove="Projeto\Web\ProjetoWeb.cs" />
+	  <Compile Remove="Projeto\Web\ProjetoWeb.Static.cs" />
 	</ItemGroup>
 
 
@@ -29,6 +83,7 @@
 
 
 	<ItemGroup>
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\ConstantesDeburacao.cs" Link="Depuracao\ConstantesDeburacao.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\Contrato.cs" Link="Depuracao\Contrato.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\EnumTipoLog.cs" Link="Depuracao\EnumTipoLog.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\Mensagem.cs" Link="Depuracao\Mensagem.cs" />
@@ -37,16 +92,35 @@
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemLog.cs" Link="Depuracao\MensagemLog.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemPing.cs" Link="Depuracao\MensagemPing.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemScriptAlterado.cs" Link="Depuracao\MensagemScriptAlterado.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteAssembly.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.Propriedades.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoBaseDominio.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEntidade.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoEnum.cs" />
+	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteReflexao.TipoPrimario.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Resources\Modelos\AtributoPartial.ts" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Depuracao\" />
+		<Folder Include="Projeto\ContextoDados\" />
+		<Folder Include="Projeto\Dominio\AtribuirValorProprieadades\" />
+		<Folder Include="Projeto\Dominio\Atributo\" />
+		<Folder Include="Projeto\Dominio\Classes\" />
+		<Folder Include="Projeto\Dominio\Constante\" />
+		<Folder Include="Projeto\Dominio\Estrutura\" />
+		<Folder Include="Projeto\Dominio\Interface\" />
+		<Folder Include="Projeto\Web\" />
+		<Folder Include="Projeto\Web\Apresentacao\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Snebur.Core.Net48\Snebur.csproj" />
 	</ItemGroup>
 
 </Project>

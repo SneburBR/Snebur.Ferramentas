@@ -27,7 +27,6 @@ namespace Snebur.VisualStudio
             return propriedades;
         }
 
-
         public static List<PropertyInfo> RetornarPropriedadesClassePublicas(Type tipo,
                                                                             bool ignoratTipoBase, 
                                                                             bool isIgnorarPropriedadeOverride = true)
@@ -67,14 +66,12 @@ namespace Snebur.VisualStudio
                 var p = propriedades.First();
             }
 
-
             propriedades = propriedades.Where(x => x.GetCustomAttributes().
                                                      Any(k => k.GetType().Name == nameof(PropriedadeTSEspecializadaAttribute))).
                                         ToList();
 
             return propriedades;
         }
-
 
         public static List<PropertyInfo> RetornarPropriedadesReflexao(Type tipo, bool ignorarTipoBase = true)
         {
@@ -108,8 +105,6 @@ namespace Snebur.VisualStudio
             //});
 
             query = query.Where(x => !x.GetCustomAttributes().Any(k => k.GetType().Name == AjudanteAssembly.NomeTipoIgnorarPropriedadeTSReflexao));
-
-
 
             return query.ToList();
 

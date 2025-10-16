@@ -30,7 +30,6 @@ namespace Snebur.VisualStudio
             var linhaVersao = linhas.Where(x => x.Trim().StartsWith(PROCURAR_LINHA_VERSAO)).FirstOrDefault();
             var linhaVersaoArquivo = linhas.Where(x => x.Trim().StartsWith(PROCURAR_LINHA_VERSAO_ARQUIVO)).FirstOrDefault();
 
-
             var versao = RetornarVersaoDataLinha(caminhoProjeto, linhaVersao);
             if (versao == null)
             {
@@ -178,7 +177,6 @@ namespace Snebur.VisualStudio
                 caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
             }
 
-
             var caminhoAssembly = Path.Combine(caminhoProjeto, "Properties/AssemblyInfo.cs");
             if (File.Exists(caminhoAssembly))
             {
@@ -195,8 +193,6 @@ namespace Snebur.VisualStudio
             //throw new FileNotFoundException($"Não foi encontrado o arquivo AssemblyInfo.cs\r\n {caminhoAssembly}");
         }
 
-
     }
-
 
 }

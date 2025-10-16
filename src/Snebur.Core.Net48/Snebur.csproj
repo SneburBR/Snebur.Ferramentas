@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+		<AssemblyName>Snebur</AssemblyName>
+		<RootNamespace>Snebur</RootNamespace>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<Configurations>Debug;Release</Configurations>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.Configuration" />
+
+		<Reference Include="System.ComponentModel.DataAnnotations" />
+		<Reference Include="System.Net" />
+
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Microsoft.Bcl.HashCode" version="6.0.0" />
+		<Reference Include="System.ComponentModel" />
+		<Reference Include="System.IO.Compression" />
+		<Reference Include="System.Net.Http" />
+
+		<PackageReference Include="SevenZipSharp.Net45" Version="1.0.19" />
+
+
+	</ItemGroup>
+
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+
+
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.7" />
+		<PackageReference Include="System.Diagnostics.EventLog" Version="9.0.7" />
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+		<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0">
+
+		</PackageReference>
+
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<Compile Include="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Compatibilidade\**" />
+		<Compile Remove="Configuracao\**" />
+		<Compile Remove="Net40\**" />
+		<Compile Remove="Net\**" />
+		<Compile Remove="Properties\**" />
+		<Compile Remove="WebHostingWpf\**" />
+		<Compile Remove="x64\**" />
+		<Compile Remove="x86\**" />
+		<EmbeddedResource Remove="Compatibilidade\**" />
+		<EmbeddedResource Remove="Configuracao\**" />
+		<EmbeddedResource Remove="Net40\**" />
+		<EmbeddedResource Remove="Net\**" />
+		<EmbeddedResource Remove="Properties\**" />
+		<EmbeddedResource Remove="WebHostingWpf\**" />
+		<EmbeddedResource Remove="x64\**" />
+		<EmbeddedResource Remove="x86\**" />
+		<None Remove="Compatibilidade\**" />
+		<None Remove="Configuracao\**" />
+		<None Remove="Net40\**" />
+		<None Remove="Net\**" />
+		<None Remove="Properties\**" />
+		<None Remove="WebHostingWpf\**" />
+		<None Remove="x64\**" />
+		<None Remove="x86\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="servicos.json" />
+		<None Remove="Snebur.csproj.vspscc" />
+		<None Remove="Snebur.Net50.csproj.vspscc" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Serializacao\NormalizarDeserializacao.cs" />
+		<Compile Remove="Serializacao\PrepararSerializacao.cs" />
+		<Compile Remove="Utilidade\ZipUtil.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="Properties\AssemblyInfo.cs" />
+	</ItemGroup>
+
+</Project>

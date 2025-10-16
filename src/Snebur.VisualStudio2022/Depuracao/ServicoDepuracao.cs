@@ -170,7 +170,7 @@ namespace Snebur.VisualStudio
 
                             ArquivoUtil.DeletarArquivo(caminhoArquivo, false, true);
                             File.WriteAllText(caminhoArquivo, porta.ToString(), Encoding.UTF8);
-                           
+
                             if (this._projetosPorta.TryGetValue(caminhoProjeto, out ushort portaAtua))
                             {
                                 this._projetosPorta.TryUpdate(caminhoArquivo, porta, portaAtua);
@@ -178,7 +178,7 @@ namespace Snebur.VisualStudio
                                 return;
                             }
                             this._projetosPorta.TryAdd(caminhoProjeto, porta);
-                            
+
                         }
                         catch (Exception ex)
                         {
@@ -186,7 +186,7 @@ namespace Snebur.VisualStudio
                         }
                     }
                 }
-            } );
+            });
 
         }
 
@@ -299,7 +299,10 @@ namespace Snebur.VisualStudio
                 {
                     LogVSUtil.Log($"Mensagem {mensagem.GetType().Name} para  {this.Sessao.Identificador}");
 
-                    var contrato = new Contrato(mensagem);
+                    var contrato = new Contrato
+                    {
+                        Mensagem = mensagem
+                    };
                     var constratoSerializado = JsonUtil.Serializar(contrato, EnumTipoSerializacao.Javascript);
                     this.Sessao.Send(constratoSerializado);
                 }

@@ -1,7 +1,6 @@
 ﻿using Snebur.Utilidade;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
@@ -30,7 +29,6 @@ namespace Snebur.VisualStudio
         
         #region Static
 
-
         private static BaseAplicacaoVisualStudio _instancia;
         public static BaseAplicacaoVisualStudio Instancia => LazyUtil.RetornarValorLazyComBloqueio(ref _instancia, () =>
         {
@@ -41,7 +39,6 @@ namespace Snebur.VisualStudio
             throw new Exception($"A aplicação atual não é do tipo {nameof(BaseAplicacaoVisualStudio)}");
         });
         #endregion
-
 
     }
 }

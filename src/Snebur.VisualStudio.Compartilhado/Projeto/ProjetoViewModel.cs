@@ -1,9 +1,5 @@
-﻿using Snebur.Dominio;
-using Snebur.Utilidade;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Xml;
 
 namespace Snebur.VisualStudio
 {
@@ -53,7 +49,5 @@ namespace Snebur.VisualStudio
         public object Value { get; set; }
     }
 
-
 }
-
 

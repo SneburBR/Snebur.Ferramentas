@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Snebur.Dominio.Atributos;
 using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -78,7 +77,6 @@ namespace Snebur.VisualStudio
                     var declaracaoTipoItemValorDicionario = AjudanteReflexao.RetornarDeclaracaoTipo(tipoItemValor);
                     var declaracaoTipoDicionario = string.Format(" new Snebur.Reflexao.TipoDicionario({0})", declaracaoTipoItemValorDicionario);
                     return declaracaoTipoDicionario;
-
 
                 }
                 else

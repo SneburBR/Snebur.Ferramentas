@@ -20,10 +20,8 @@ namespace Snebur.VisualStudio
 
         private static Dictionary<string, string[]> _assemblyCaminhos;
 
-
         public static readonly string NomeTipoBaseAtributoValidacao = nameof(BaseAtributoValidacao);
         public static readonly string NomeTipoBaseAtributoValidacaoAsync = nameof(BaseAtributoValidacaoAsync);
-
 
         public static readonly string NomeTipoBaseAtributoDominio = nameof(BaseAtributoDominio);
         public static readonly string NomeTipoBasePropriedadeComputada = nameof(BasePropriedadeComputadaAttribute);
@@ -35,7 +33,6 @@ namespace Snebur.VisualStudio
         public static readonly string NomeTipoInterfaceIImagem = nameof(IImagem);
         public static readonly string NomeTipoInterfaceIArquivo = nameof(IArquivo);
         public static readonly string NomeTipoInterfaceIBaseServico = nameof(IBaseServico);
-
 
         public static readonly string NomeTipoIgnorarClasseTS = nameof(IgnorarClasseTSAttribute);
         public static readonly string NomeTipoIgnorarConstrutorTS = nameof(IgnorarConstrutorTSAttribute);
@@ -98,9 +95,7 @@ namespace Snebur.VisualStudio
         public static Type TipoConstantesTS { get; private set; }
         public static Type TipoIgnorarConstanteTS { get; private set; }
 
-
         public static PropertyInfo PropriedadeChavePrimariaEntidade { get; private set; }
-
 
         //public static Type TipoListaEntidadesDefinicao { get; set; }
 
@@ -160,14 +155,11 @@ namespace Snebur.VisualStudio
                 AjudanteAssembly.TipoAtributoCriarInstanciaTS = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoAtributoCriarInstanciaTS);
                 AjudanteAssembly.TipoAtributoProprieadeInterface = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoAtributoProprieadeInterface);
 
-
                 AjudanteAssembly.TipoMensagemValidacaoAttribute = AjudanteAssembly.RetornarTipo(AjudanteAssembly.NomeTipoAtributoMensagemValidacao);
-
 
                 AjudanteAssembly.PropriedadeChavePrimariaEntidade = AjudanteAssembly.TipoEntidade.GetProperties().Where(x => x.Name == AjudanteAssembly.NomePropriedadeChavePrimariaEntidade).Single();
                 Inicializado = true;
             }
-
 
             //  AjudanteAssembly.TipoListaEntidadesDefinicao = AjudanteAssembly.TiposSneburDominio.Where(x => x.Name.StartsWith("ListaEntidade")).Single();
         }
@@ -199,8 +191,8 @@ namespace Snebur.VisualStudio
             return tipos.Single();
         }
 
-
-        public static Dictionary<string, string[]> AssemblyCaminhos => LazyUtil.RetornarValorLazyComBloqueio(ref _assemblyCaminhos, RetornarAssemblyCaminhos);
+        public static Dictionary<string, string[]> AssemblyCaminhos 
+            => LazyUtil.RetornarValorLazyComBloqueio(ref _assemblyCaminhos, RetornarAssemblyCaminhos);
 
         public static string CaminhoProjetoEntidades { get; set; }
         public static string NomeAssemblyEntidades { get; set; }
@@ -209,16 +201,16 @@ namespace Snebur.VisualStudio
         {
             return new Dictionary<string, string[]> {
                  { "Snebur",   CaminhosUtil.CaminhoAssemblySnebur },
-                 { "Zyoncore",   CaminhosUtil.CaminhoAssemblySnebur },
-                 { "Snebur.Comunicacao", CaminhosUtil.CaminhoAssemblySneburComunicao },
-                 { "Snebur.Globalizacao", CaminhosUtil.CaminhoAssemblySneburGlobalizacao },
-                 { "Snebur.AcessoDados", CaminhosUtil.CaminhoAssemblySneburAcessoDados },
-                 { "Snebur.AcessoDados.Servidor", CaminhosUtil.CaminhoAssemblySneburAcessoDadosServidor },
-                 { "Snebur.AcessoDados.Migracao", CaminhosUtil.CaminhoAssemblySneburAcessoDadosMigracao },
-                 { "Snebur.ServicoArquivo", CaminhosUtil.CaminhoAssemblySneburServicoArquivo },
-                 { "Snebur.Depuracao", CaminhosUtil.CaminhoAssemblySneburDepuracao},
-                 { "Newtonsoft.Json", CaminhosUtil.CaminhoAssemblyNewtonsoftJson },
-                 { "Newtonsoft.Json.Alterado", CaminhosUtil.CaminhoAssemblyNewtonsoftJsonAlterado }
+                 //{ "Zyoncore",   CaminhosUtil.CaminhoAssemblySnebur },
+                 //{ "Snebur.Comunicacao", CaminhosUtil.CaminhoAssemblySneburComunicao },
+                 //{ "Snebur.Globalizacao", CaminhosUtil.CaminhoAssemblySneburGlobalizacao },
+                 //{ "Snebur.AcessoDados", CaminhosUtil.CaminhoAssemblySneburAcessoDados },
+                 //{ "Snebur.AcessoDados.Servidor", CaminhosUtil.CaminhoAssemblySneburAcessoDadosServidor },
+                 //{ "Snebur.AcessoDados.Migracao", CaminhosUtil.CaminhoAssemblySneburAcessoDadosMigracao },
+                 //{ "Snebur.ServicoArquivo", CaminhosUtil.CaminhoAssemblySneburServicoArquivo },
+                 //{ "Snebur.Depuracao", CaminhosUtil.CaminhoAssemblySneburDepuracao},
+                 //{ "Newtonsoft.Json", CaminhosUtil.CaminhoAssemblyNewtonsoftJson },
+                 //{ "Newtonsoft.Json.Alterado", CaminhosUtil.CaminhoAssemblyNewtonsoftJsonAlterado }
              };
         }
 
@@ -231,25 +223,25 @@ namespace Snebur.VisualStudio
                       nome.StartsWith("PresentationUI") ||
                       nome.StartsWith("Microsoft")))
                 {
-                    if(e.RequestingAssembly!= null)
-                    {
-                        var assmeblyRequestingName = new AssemblyName(e.RequestingAssembly.FullName);
-                        if (assmeblyRequestingName.Name == NomeAssemblyEntidades)
-                        {
-                            var diretorioProjeto = Path.GetDirectoryName(CaminhoProjetoEntidades);
-                            var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_DOMINIO);
-                            if (File.Exists(caminhoConfiguracaoDominio))
-                            {
-                                var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
-                                var depedencia = configuracaoDominio.DominiosDepentendes.Where(x => x.Nome == nome).SingleOrDefault();
-                                if(depedencia!= null)
-                                {
-                                    var caminhoDll = CaminhoUtil.RetornarCaminhoAbsoluto(depedencia.Caminho, diretorioProjeto);
-                                    return RetornarAssembly(caminhoDll);
-                                }
-                            }
-                        }
-                    }
+                    //if(e.RequestingAssembly!= null)
+                    //{
+                    //    var assmeblyRequestingName = new AssemblyName(e.RequestingAssembly.FullName);
+                    //    if (assmeblyRequestingName.Name == NomeAssemblyEntidades)
+                    //    {
+                    //        var diretorioProjeto = Path.GetDirectoryName(CaminhoProjetoEntidades);
+                    //        var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_DOMINIO);
+                    //        if (File.Exists(caminhoConfiguracaoDominio))
+                    //        {
+                    //            var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
+                    //            var depedencia = configuracaoDominio.DominiosDepentendes.Where(x => x.Nome == nome).SingleOrDefault();
+                    //            if(depedencia!= null)
+                    //            {
+                    //                var caminhoDll = CaminhoUtil.RetornarCaminhoAbsoluto(depedencia.Caminho, diretorioProjeto);
+                    //                return RetornarAssembly(caminhoDll);
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     var erro = new Exception(String.Format("Não foi encontrado o caminho para {0}", nome));
                     LogVSUtil.LogErro(erro);
                 }
@@ -423,7 +415,6 @@ namespace Snebur.VisualStudio
             _assemblyCaminhos = null;
             CaminhosUtil.Clear();
         }
-
 
     }
 }

@@ -86,7 +86,6 @@ namespace Snebur.VisualStudio
 
                 var compilacoes = infoPublicacao.RetornarCompilacoes();
 
-
                 foreach (var compilacao in compilacoes)
                 {
                     var diretorioTemporarioCompilacao = Path.Combine(diretorioTemporario, compilacao);
@@ -102,8 +101,6 @@ namespace Snebur.VisualStudio
                          diretorioTemporarioCompilacao,
                          compilacao);
                 }
-
-
 
                 //if (tipoProjeto == EnumTipoProjeto.Typescript)
                 //{
@@ -150,8 +147,6 @@ namespace Snebur.VisualStudio
                                   caminhoPublicacaoSource);
 
                 }
-
-
 
                 DiretorioUtil.ExcluirDiretorio(diretorioTemporario, true, true, true);
                 return diretorioPublicacaoFinal;
@@ -217,7 +212,6 @@ namespace Snebur.VisualStudio
                 CopiarArquivo(infoPublicacao,
                               caminhoZipTemp,
                               caminhoPublicacaoZip);
-
 
             }
             else
@@ -339,7 +333,6 @@ namespace Snebur.VisualStudio
                     {
                         caminhoDestino = Path.Combine(caminhoDestino, "bin");
                     }
-
 
                     if (infoPublicacao.ArquivosBin?.Count() > 0)
                     {
@@ -550,13 +543,10 @@ namespace Snebur.VisualStudio
                     return new InfoPasta[] { new InfoPasta(caminhoBin, EnumTipoPasta.Bin) ,
                                              new InfoPasta(caminhoBuild, EnumTipoPasta.Build)};
 
-
-
                 case EnumTipoProjeto.Web:
 
                     return new InfoPasta[] { new InfoPasta(caminhoBin, EnumTipoPasta.Bin),
                                              new InfoPasta(caminhoProjeto, EnumTipoPasta.Web) };
-
 
                 default:
 

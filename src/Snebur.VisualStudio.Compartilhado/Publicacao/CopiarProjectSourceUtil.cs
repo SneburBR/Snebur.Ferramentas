@@ -44,7 +44,6 @@ namespace Snebur.Cli
 
             var diretorioBase = DiretorioUtil.RetornarDiretorioPai(diretorioProjetos);
 
-
             foreach (var caminhoProjeto in caminhosReferencias)
             {
                 var diretorioProjeto = Path.GetDirectoryName(caminhoProjeto);
@@ -79,7 +78,6 @@ namespace Snebur.Cli
             var caminhoRelatorioSolution = CaminhoUtil.RetornarCaminhoRelativo(caminhoSolution, diretorioBase);
             var caminhoSolutionDestino = Path.Combine(diretorioDestino, caminhoRelatorioSolution);
             ArquivoUtil.CopiarArquivo(caminhoSolution, caminhoSolutionDestino, true);
-
 
         }
 

@@ -1,5 +1,4 @@
 ﻿using Snebur.Depuracao;
-using Snebur.Utilidade;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

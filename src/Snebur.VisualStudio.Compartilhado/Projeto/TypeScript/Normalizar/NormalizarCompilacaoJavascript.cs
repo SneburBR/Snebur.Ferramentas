@@ -41,7 +41,6 @@ namespace Snebur.VisualStudio
                     this.CopiarArquivosSaia(this.ProjetoTS.CaminhoSaidaPadrao, caminhoSaidaAtual);
                 }
 
-
                 lock (ProjetoTypeScriptUtil.BloqueioManipuladorArquivos)
                 {
                     var t = Stopwatch.StartNew();
@@ -325,8 +324,6 @@ namespace Snebur.VisualStudio
             }
             return false;
         }
-
-
 
         #region IDisposable 
 

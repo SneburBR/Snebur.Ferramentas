@@ -1,5 +1,4 @@
-﻿using Bogus.DataSets;
-using Community.VisualStudio.Toolkit;
+﻿using Community.VisualStudio.Toolkit;
 using Snebur.BancoDados;
 using Snebur.Depuracao;
 using Snebur.Dominio;
@@ -874,7 +873,7 @@ namespace Snebur.VisualStudio
                 }
 
                 AjudanteAssembly.Inicializar();
-              
+
 
                 if (this.CmbProjetoMigracao.SelectedItem is Project projetoMigracao &&
                     this.CmbProjetosEntidades.SelectedItem is Project projetoEntidade &&
@@ -1190,7 +1189,7 @@ namespace Snebur.VisualStudio
 
         private void AtualizarAssemblyDominiosDependentes(Project projeto)
         {
-            var diretorioProjeto =Path.GetDirectoryName(projeto.FullPath);
+            var diretorioProjeto = Path.GetDirectoryName(projeto.FullPath);
 
             var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_DOMINIO);
             if (File.Exists(caminhoConfiguracaoDominio))
@@ -1248,7 +1247,7 @@ namespace Snebur.VisualStudio
             return null;
         }
 
-       
+
 
         #endregion
     }

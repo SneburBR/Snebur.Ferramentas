@@ -42,30 +42,32 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                     LogVSUtil.Log($"Total de projetos encontrados {projetos.Count}");
 
                     var projetosTypeScript = projetos.OfType<ProjetoTypeScript>().ToList();
-                    var projetosDominio = projetos.OfType<ProjetoDominio>().OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio).ToList();
+                    //var projetosDominio = projetos.OfType<ProjetoDominio>()
+                    //    .OrderBy(x => x.ConfiguracaoProjeto.PrioridadeDominio)
+                    //    .ToList();
 
-                    foreach (var projeto in projetosDominio)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
+                    //foreach (var projeto in projetosDominio)
+                    //{
+                    //    await projeto.NormalizarReferenciasAsync(isCompilar);
+                    //}
 
-                    var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
-                    foreach (var projeto in projetosContextoDados)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
+                    //var projetosContextoDados = projetos.OfType<ProjetoContextoDados>().ToList();
+                    //foreach (var projeto in projetosContextoDados)
+                    //{
+                    //    await projeto.NormalizarReferenciasAsync(isCompilar);
+                    //}
 
-                    var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
-                    foreach (var projeto in projetosRegrasNegocioTS)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
+                    //var projetosRegrasNegocioTS = projetos.OfType<ProjetoRegrasNegocioTypeScript>().ToList();
+                    //foreach (var projeto in projetosRegrasNegocioTS)
+                    //{
+                    //    await projeto.NormalizarReferenciasAsync(isCompilar);
+                    //}
 
-                    var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
-                    foreach (var projeto in projetosRegrasNegocioCSharp)
-                    {
-                        await projeto.NormalizarReferenciasAsync(isCompilar);
-                    }
+                    //var projetosRegrasNegocioCSharp = projetos.OfType<ProjetoRegrasNegocioCSharp>().ToList();
+                    //foreach (var projeto in projetosRegrasNegocioCSharp)
+                    //{
+                    //    await projeto.NormalizarReferenciasAsync(isCompilar);
+                    //}
 
                     var projetosServicosTS = projetos.OfType<ProjetoServicosTypescript>().ToList();
                     foreach (var projeto in projetosServicosTS)
@@ -177,31 +179,32 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                             throw new DirectoryNotFoundException($"O arquivo do projeto não foi encontrado {arquivoProjeto.FullName}");
                         }
 
-                        var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_DOMINIO);
                         var caminhoConfiguracaoTypeScript = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
-                        var caminhoConfiguracaoContextoDados = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_CONTEXTO_DADOS);
-                        var caminhoConfiguracaoRegrasNegocio = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_REGRIAS_NEGOCIO);
                         var caminhoConfiguracaoSass = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_SASS);
-                        var caminhoConfiguracaoServicos = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_SERVICOS);
-                        var caminhoConfiguracaoWebConfig = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_WEB_CONFIG);
-                        var caminhoConfiguracaoAppSettings = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_APP_SETTINGS);
+
+                        //var caminhoConfiguracaoAppSettings = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_APP_SETTINGS);
+                        //var caminhoConfiguracaoContextoDados = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_CONTEXTO_DADOS);
+                        //var caminhoConfiguracaoDominio = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_DOMINIO);
+                        //var caminhoConfiguracaoRegrasNegocio = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_REGRIAS_NEGOCIO);
+                        //var caminhoConfiguracaoServicos = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_SERVICOS);
+                        //var caminhoConfiguracaoWebConfig = Path.Combine(diretorioProjeto.FullName, ConstantesProjeto.CONFIGURACAO_WEB_CONFIG);
 
                         //Domínio
-                        if (File.Exists(caminhoConfiguracaoDominio) &&
-                            File.Exists(caminhoConfiguracaoTypeScript))
-                        {
-                            throw new NotSupportedException(String.Format("Não é suportado no mesmo projetos arquivos de configuração de dominio.json e tsconfig.json juntos: Projeto {0}", projetoVS.Name));
-                        }
+                        //if (File.Exists(caminhoConfiguracaoDominio) &&
+                        //    File.Exists(caminhoConfiguracaoTypeScript))
+                        //{
+                        //    throw new NotSupportedException(String.Format("Não é suportado no mesmo projetos arquivos de configuração de dominio.json e tsconfig.json juntos: Projeto {0}", projetoVS.Name));
+                        //}
 
-                        if (File.Exists(caminhoConfiguracaoDominio))
-                        {
-                            var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
-                            projetos.Add(new ProjetoDominio(projetoVM,
-                                                            configuracaoDominio,
-                                                            arquivoProjeto,
-                                                            caminhoConfiguracaoDominio));
-                            LogVSUtil.Log($"Compilando o projeto {projetoVS.Name}");
-                        }
+                        //if (File.Exists(caminhoConfiguracaoDominio))
+                        //{
+                        //    var configuracaoDominio = ProjetoDominio.RetornarConfiguracaoDominio(caminhoConfiguracaoDominio);
+                        //    projetos.Add(new ProjetoDominio(projetoVM,
+                        //                                    configuracaoDominio,
+                        //                                    arquivoProjeto,
+                        //                                    caminhoConfiguracaoDominio));
+                        //    LogVSUtil.Log($"Compilando o projeto {projetoVS.Name}");
+                        //}
 
                         if (File.Exists(caminhoConfiguracaoTypeScript))
                         {
@@ -214,56 +217,56 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                                                                                          caminhoConfiguracaoTypeScript));
                         }
 
-                        //ContextoDados
-                        if (File.Exists(caminhoConfiguracaoContextoDados))
-                        {
-                            LogVSUtil.Log(String.Format("Projeto ContextoDados encontrado : {0} ", projetoVS.Name));
-                            var configuracao = ProjetoContextoDados.RetornarConfiguracao(caminhoConfiguracaoContextoDados);
-                            projetos.Add(new ProjetoContextoDados(projetoVM, configuracao, arquivoProjeto, caminhoConfiguracaoContextoDados));
-                        }
+                        ////ContextoDados
+                        //if (File.Exists(caminhoConfiguracaoContextoDados))
+                        //{
+                        //    LogVSUtil.Log(String.Format("Projeto ContextoDados encontrado : {0} ", projetoVS.Name));
+                        //    var configuracao = ProjetoContextoDados.RetornarConfiguracao(caminhoConfiguracaoContextoDados);
+                        //    projetos.Add(new ProjetoContextoDados(projetoVM, configuracao, arquivoProjeto, caminhoConfiguracaoContextoDados));
+                        //}
 
-                        //RegrasNegocio
-                        if (File.Exists(caminhoConfiguracaoRegrasNegocio))
-                        {
-                            LogVSUtil.Log(String.Format("Projeto regra de negócios encontrado : {0} ", projetoVS.Name));
+                        ////RegrasNegocio
+                        //if (File.Exists(caminhoConfiguracaoRegrasNegocio))
+                        //{
+                        //    LogVSUtil.Log(String.Format("Projeto regra de negócios encontrado : {0} ", projetoVS.Name));
 
-                            var configuracao = ProjetoRegrasNegocioUtil.RetornarConfiguracao(caminhoConfiguracaoRegrasNegocio);
-                            var caminhoBase = Path.GetDirectoryName(caminhoConfiguracaoRegrasNegocio);
-                            var caminhoExtensaoTS = configuracao.RetornarCaminhoExtensaoTypeScriptCompleto(caminhoBase);
-                            var caminhoExtensaoCS = configuracao.RetornarCaminhoExtensaoCSharpCompleto(caminhoBase);
-                            if (File.Exists(caminhoExtensaoTS))
-                            {
-                                projetos.Add(new ProjetoRegrasNegocioTypeScript(projetoVM,
-                                                                                configuracao,
-                                                                                arquivoProjeto,
-                                                                                caminhoConfiguracaoContextoDados));
-                            }
+                        //    var configuracao = ProjetoRegrasNegocioUtil.RetornarConfiguracao(caminhoConfiguracaoRegrasNegocio);
+                        //    var caminhoBase = Path.GetDirectoryName(caminhoConfiguracaoRegrasNegocio);
+                        //    var caminhoExtensaoTS = configuracao.RetornarCaminhoExtensaoTypeScriptCompleto(caminhoBase);
+                        //    var caminhoExtensaoCS = configuracao.RetornarCaminhoExtensaoCSharpCompleto(caminhoBase);
+                        //    if (File.Exists(caminhoExtensaoTS))
+                        //    {
+                        //        projetos.Add(new ProjetoRegrasNegocioTypeScript(projetoVM,
+                        //                                                        configuracao,
+                        //                                                        arquivoProjeto,
+                        //                                                        caminhoConfiguracaoContextoDados));
+                        //    }
 
-                            if (File.Exists(caminhoExtensaoCS))
-                            {
-                                projetos.Add(new ProjetoRegrasNegocioCSharp(projetoVM,
-                                                                            configuracao,
-                                                                            arquivoProjeto,
-                                                                            caminhoConfiguracaoContextoDados));
-                            }
+                        //    if (File.Exists(caminhoExtensaoCS))
+                        //    {
+                        //        projetos.Add(new ProjetoRegrasNegocioCSharp(projetoVM,
+                        //                                                    configuracao,
+                        //                                                    arquivoProjeto,
+                        //                                                    caminhoConfiguracaoContextoDados));
+                        //    }
 
-                        }
+                        //}
 
-                        //Serviço
-                        if (File.Exists(caminhoConfiguracaoServicos))
-                        {
-                            LogVSUtil.Log(String.Format("Projeto serviços encontrado : {0} ", projetoVS.Name));
-                            var configuracaoServicoes = ProjetoServicosTypescript.RetornarConfiguracao(caminhoConfiguracaoServicos);
-                            projetos.Add(new ProjetoServicosTypescript(projetoVM,
-                                                                       configuracaoServicoes,
-                                                                       arquivoProjeto,
-                                                                       caminhoConfiguracaoServicos));
+                        ////Serviço
+                        //if (File.Exists(caminhoConfiguracaoServicos))
+                        //{
+                        //    LogVSUtil.Log(String.Format("Projeto serviços encontrado : {0} ", projetoVS.Name));
+                        //    var configuracaoServicoes = ProjetoServicosTypescript.RetornarConfiguracao(caminhoConfiguracaoServicos);
+                        //    projetos.Add(new ProjetoServicosTypescript(projetoVM,
+                        //                                               configuracaoServicoes,
+                        //                                               arquivoProjeto,
+                        //                                               caminhoConfiguracaoServicos));
 
-                            projetos.Add(new ProjetoServicosDotNet(projetoVM,
-                                                                    configuracaoServicoes,
-                                                                    arquivoProjeto,
-                                                                    caminhoConfiguracaoServicos));
-                        }
+                        //    projetos.Add(new ProjetoServicosDotNet(projetoVM,
+                        //                                            configuracaoServicoes,
+                        //                                            arquivoProjeto,
+                        //                                            caminhoConfiguracaoServicos));
+                        //}
 
                         //Sass
                         if (File.Exists(caminhoConfiguracaoSass))
@@ -279,39 +282,38 @@ namespace Snebur.VisualStudio.ToolWindows.Output
                             }
                         }
 
-                        if (File.Exists(caminhoConfiguracaoWebConfig) &&
-                            File.Exists(caminhoConfiguracaoAppSettings))
-                        {
-                            LogVSUtil.Log(String.Format("Projeto web service : {0} ", projetoVS.Name));
+                        //if (File.Exists(caminhoConfiguracaoWebConfig) &&
+                        //    File.Exists(caminhoConfiguracaoAppSettings))
+                        //{
+                        //    LogVSUtil.Log(String.Format("Projeto web service : {0} ", projetoVS.Name));
 
-                            var configuracaoWeb = ProjetoWeb.RetornarConfiguracao(caminhoConfiguracaoWebConfig,
-                                                                                  caminhoConfiguracaoTypeScript);
-                            switch (configuracaoWeb)
-                            {
-                                case ConfiguracaoProjetoWebApresentacao configuracaoProjetoWebApresentacao:
+                        //    var configuracaoWeb = ProjetoWeb.RetornarConfiguracao(caminhoConfiguracaoWebConfig,
+                        //                                                          caminhoConfiguracaoTypeScript);
+                        //    switch (configuracaoWeb)
+                        //    {
+                        //        case ConfiguracaoProjetoWebApresentacao configuracaoProjetoWebApresentacao:
 
-                                    var projetoTypescript = projetos.OfType<ProjetoTypeScript>().Where(x => x.ProjetoViewModel.CaminhoProjetoCsProj == projetoVS.FullPath).Single();
+                        //            var projetoTypescript = projetos.OfType<ProjetoTypeScript>().Where(x => x.ProjetoViewModel.CaminhoProjetoCsProj == projetoVS.FullPath).Single();
 
-                                    projetos.Add(new ProjetoWebApresentacao(projetoVM,
-                                                                            configuracaoProjetoWebApresentacao,
-                                                                            projetoTypescript,
-                                                                            arquivoProjeto,
-                                                                            caminhoConfiguracaoWebConfig));
+                        //            projetos.Add(new ProjetoWebApresentacao(projetoVM,
+                        //                                                    configuracaoProjetoWebApresentacao,
+                        //                                                    projetoTypescript,
+                        //                                                    arquivoProjeto,
+                        //                                                    caminhoConfiguracaoWebConfig));
 
-                                    break;
+                        //            break;
 
-                                case ConfiguracaoProjetoWebService configuracaoWebService:
+                        //        case ConfiguracaoProjetoWebService configuracaoWebService:
 
-                                    projetos.Add(new ProjetoWebService(projetoVM,
-                                                                       configuracaoWebService,
-                                                                       arquivoProjeto,
-                                                                       caminhoConfiguracaoWebConfig));
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                        }
+                        //            projetos.Add(new ProjetoWebService(projetoVM,
+                        //                                               configuracaoWebService,
+                        //                                               arquivoProjeto,
+                        //                                               caminhoConfiguracaoWebConfig));
+                        //            break;
+                        //        default:
+                        //            break;
+                        //    }
+                        //}
                     }
 
                 }
