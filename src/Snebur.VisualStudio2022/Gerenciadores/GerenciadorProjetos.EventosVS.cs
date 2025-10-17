@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using static Snebur.VisualStudio.ConstantesProjeto;
 
 namespace Snebur.VisualStudio
@@ -157,16 +158,29 @@ namespace Snebur.VisualStudio
             return arquivosControles;
         }
 
+        private readonly SemaphoreSlim _lockAsync = new(1, 1);
         private async Task NormalizarProjetosAsync(HashSet<ProjetoTypeScript> projetosTS)
         {
             if (projetosTS.Count > 0)
             {
                 await OutputWindow.OcuparAsync();
-                foreach (var projetoTS in projetosTS)
+                try
                 {
-                    await projetoTS.NormalizarReferenciasAsync();
+                    await this._lockAsync.WaitAsync();
+                    foreach (var projetoTS in projetosTS.ToArray())
+                    {
+                        await projetoTS.NormalizarReferenciasAsync();
+                    }
+                    await OutputWindow.DesocuparAsync();
                 }
-                await OutputWindow.DesocuparAsync();
+                catch(Exception ex)
+                {
+                    LogVSUtil.LogErro(ex);
+                }
+                finally
+                {
+                    this._lockAsync.Release();
+                }
             }
         }
 

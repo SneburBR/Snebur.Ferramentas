@@ -93,12 +93,12 @@ namespace Snebur.VisualStudio
 
 
                             //projetoTS.TodosArquivos2.Remove(caminhoArquivoEmbutido.ToLower());
-                            projetoTS.ArquivosTS.Remove(caminhoArquivoEmbutido.ToLower());
+                            projetoTS.RemoveArquivo(caminhoArquivoEmbutido.ToLower());
 
                             //projetoTS.TodosArquivos2.Add(caminhoDestino);
                             if (Path.GetExtension(caminhoDestino.ToLower()) == EXTENSAO_TYPESCRIPT)
                             {
-                                projetoTS.ArquivosTS.Add(caminhoDestino);
+                                projetoTS.RemoveArquivo(caminhoDestino);
                             }
                             return true;
                         }
@@ -245,7 +245,7 @@ namespace Snebur.VisualStudio
                     LogVSUtil.Log($"Analisando novo arquivo:  {arquivo.Name}");
 
                     //projetoTS.TodosArquivos2.Add(arquivo.FullName.ToLower());
-                    projetoTS.ArquivosTS.Add(arquivo.FullName);
+                    projetoTS.AdicionarArquivo(arquivo.FullName);
                     TemplateUtil.InserirTemplateArquivoNovo(projetoTS, arquivo);
                 }
             }

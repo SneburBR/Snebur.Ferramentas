@@ -221,7 +221,7 @@ namespace Snebur.VisualStudio
             {
 
                 await OutputWindow.OcuparAsync();
-
+                
 
                 if (this._isAtualizando)
                 {

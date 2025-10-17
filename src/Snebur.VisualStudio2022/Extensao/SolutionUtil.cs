@@ -3,25 +3,22 @@ using Snebur.Utilidade;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
     public static class SolutionUtil
     {
-        private static bool _isDefinidoProjetoInicializacao = false;
-        private static string[] IgrnorarPastas = new string[] { "wwwroot", "build", "bin", "obj", ".vs", ".git" };
+        private static readonly SemaphoreSlim _lockAsync = new SemaphoreSlim(1, 1);
+        private static string[] IgrnorarPastas = new string[] {
+            "wwwroot", "build", "bin", "obj", ".vs", ".git" };
 
         public static async Task DefinirProjetosInicializacaoAsync()
         {
-            if (_isDefinidoProjetoInicializacao)
-            {
-                return;
-            }
-
             try
             {
-                _isDefinidoProjetoInicializacao = true;
+                await _lockAsync.WaitAsync();
                 var startupProjects = await VS.Solutions.GetStartupProjectsAsync();
                 if (startupProjects?.Count() > 0)
                 {
@@ -34,12 +31,12 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                _isDefinidoProjetoInicializacao = false;
+                _lockAsync.Release();
             }
-            
         }
 
-        private static void DefinirProjetosInicializacao(IEnumerable<Project> startupProjects)
+        private static void DefinirProjetosInicializacao(
+            IEnumerable<Project> startupProjects)
         {
             foreach (var startupProject in startupProjects)
             {
@@ -49,7 +46,7 @@ namespace Snebur.VisualStudio
                 {
                     try
                     {
-                        ProjetoTypescriptInitUtil.SetDiretorioProjeto(diretorioProjeto);
+                        ProjetoTypescriptInitUtil.SetDiretorioProjetoInicializador(diretorioProjeto);
                     }
                     catch (Exception ex)
                     {
@@ -196,7 +193,7 @@ namespace Snebur.VisualStudio
                         return solutionItem;
                     }
 
-                   
+
                 }
 
                 if (item.Type != SolutionItemType.VirtualFolder &&
