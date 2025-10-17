@@ -1,4 +1,5 @@
-﻿using Snebur.Dominio;
+﻿using Snebur.BancoDados;
+using Snebur.Dominio;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -120,17 +121,43 @@ namespace Snebur.Linq
             }
         }
 
+        public static void SafeClear<T>(this ICollection<T> colecao)
+        {
+            lock (colecao.SyncLock())
+            {
+                colecao.Clear();
+            }
+        }
+        public static void SafeRemove<T>(this ICollection<T> colecao, T item)
+        {
+            lock (colecao.SyncLock())
+            {
+                colecao.Remove(item);
+            }
+        }
+
+        public static void SafeAdd<T>(this ICollection<T> colecao, T item)
+        {
+            lock (colecao.SyncLock())
+            {
+                colecao.Add(item);
+            }
+        }
+
         public static void AddRange<T>(this ICollection<T> colecao, IEnumerable<T> itens)
         {
             if (itens == null)
             {
                 return;
             }
-
-            foreach (var item in itens)
+            lock (colecao.SyncLock())
             {
-                colecao.Add(item);
+                foreach (var item in itens)
+                {
+                    colecao.Add(item);
+                }
             }
+
         }
 
         public static void AddRangeNotNull<T>(this ICollection<T> colecao, IEnumerable<T> itens)
@@ -139,10 +166,12 @@ namespace Snebur.Linq
             {
                 return;
             }
-
-            foreach (var item in itens)
+            lock (colecao.SyncLock())
             {
-                colecao.AddIsNotNull(item);
+                foreach (var item in itens)
+                {
+                    colecao.Add(item);
+                }
             }
         }
 
@@ -153,9 +182,12 @@ namespace Snebur.Linq
                 return;
             }
 
-            foreach (var item in itens.ToList())
+            lock (colecao.SyncLock())
             {
-                colecao.Remove(item);
+                foreach (var item in itens.ToList())
+                {
+                    colecao.Remove(item);
+                }
             }
         }
 
