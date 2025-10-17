@@ -8,7 +8,7 @@ namespace Snebur.VisualStudio
 {
     public static class ConstantesProjeto
     {
-        public const string PASTA_WWWROOT_BUILD = ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD;
+        public const string PASTA_BUILD = ConstantesPublicacao.NOME_PASTA_BUILD;
         public const string PASTA_SRC = "src";
 
         public const string EXTENSAO_ESTILO = ".css";

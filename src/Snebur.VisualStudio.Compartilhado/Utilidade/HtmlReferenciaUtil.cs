@@ -47,8 +47,7 @@ namespace Snebur.VisualStudio
         internal static object RetornarUrlDesenvolvimentoAbsoluta(ArquivoTypeScript arquivoTypeScript, FileInfo arquivoHtmlReferencia)
         {
             var urlDesenvolvimento = arquivoTypeScript.ConfiguracaoProjetoTypeScript.UrlDesenvolvimento;
-            var caminhoRelatio = HtmlReferenciaUti.RetornarUrlDesenvolvimentoRelativa(arquivoTypeScript, arquivoHtmlReferencia);
-
+            var caminhoRelatio = HtmlReferenciaUti.RetornarUrlDesenvolvimentoRelativaInternal(arquivoTypeScript, arquivoHtmlReferencia);
             if (!urlDesenvolvimento.EndsWith("/"))
             {
                 urlDesenvolvimento += "/";
@@ -57,7 +56,18 @@ namespace Snebur.VisualStudio
         }
 
         internal const string DIRETORIO_TYPE_SCRIPTS = "TypeScripts";
-        internal static object RetornarUrlDesenvolvimentoRelativa(ArquivoTypeScript arquivoTypeScript, FileInfo arquivoHtmlReferencia)
+        internal static string RetornarUrlDesenvolvimentoRelativa(
+            ArquivoTypeScript arquivoTypeScript,
+            FileInfo arquivoHtmlReferencia)
+        {
+            var diretorioProjetoInicializador = ProjetoTypescriptInitUtil.DiretorioProjetoInicializador;
+            return CaminhoUtil.RetornarCaminhoRelativo(
+                arquivoHtmlReferencia.FullName, 
+                diretorioProjetoInicializador);
+        }
+        private static string RetornarUrlDesenvolvimentoRelativaInternal(
+            ArquivoTypeScript arquivoTypeScript,
+            FileInfo arquivoHtmlReferencia)
         {
             var pastas = new List<string>();
             var caminhoProjeto = arquivoTypeScript.CaminhoProjeto;

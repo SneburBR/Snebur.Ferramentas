@@ -39,7 +39,7 @@ namespace Snebur.VisualStudio
         {
             return String.IsNullOrWhiteSpace(this.NomePastaBuild)
                          ? caminhoPublicacao
-                         : Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_WWWROOT_BUILD, this.NomePastaBuild, versao.ToString());
+                         : Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, this.NomePastaBuild, versao.ToString());
 
         }
 

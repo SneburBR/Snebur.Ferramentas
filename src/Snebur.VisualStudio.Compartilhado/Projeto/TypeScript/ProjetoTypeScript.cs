@@ -1,4 +1,5 @@
-﻿using Snebur.Linq;
+﻿using Snebur.Dominio;
+using Snebur.Linq;
 using Snebur.Publicacao;
 using Snebur.Utilidade;
 using System;
@@ -15,6 +16,7 @@ namespace Snebur.VisualStudio
 {
     public class ProjetoTypeScript : BaseProjeto<ConfiguracaoProjetoTypeScript>
     {
+        private readonly HashSet<string> _arquivosTS = new HashSet<string>();
         public const string NOME_ARQUIVO_HTML_REFERENCIA = "Html.Referencias.ts";
         public static string NOME_PROPRIEDADE_CAMINHO_TIPO { get; } = ReflexaoUtil.RetornarNomePropriedade<Snebur.Dominio.ICaminhoTipo>(x => x.__CaminhoTipo);
         public static string NOME_ARQUIVO_APLICACAO_CONFIG = "Aplicacao.Config.ts";
@@ -32,7 +34,9 @@ namespace Snebur.VisualStudio
 
         public FileInfo ArquivoReferenciaProjeto { get; set; }
 
-        public HashSet<string> ArquivosTS { get; private set; }
+        
+        public IReadOnlyCollection<string> ArquivosTS
+            => this._arquivosTS;
         public List<BaseArquivoTypeScript> ArquivosTypeScriptOrdenados { get; private set; } = new List<BaseArquivoTypeScript>();
         public HashSet<BaseArquivoTypeScript> ArquivosTypeScript { get; private set; } = new HashSet<BaseArquivoTypeScript>();
         private Dictionary<string, ArquivoTypeScript> DicionariosArquivosTypeScript { get; } = new Dictionary<string, ArquivoTypeScript>();
@@ -56,7 +60,7 @@ namespace Snebur.VisualStudio
         {
             this.CaminhosDiretorioTypeScripts = Path.Combine(this.CaminhoProjeto, ConstantesProjeto.PASTA_SRC);
             this.CaminhoAplicacaoConfig = Path.Combine(this.CaminhosDiretorioTypeScripts, NOME_ARQUIVO_APLICACAO_CONFIG);
-            this.CaminhoSaidaPadrao = Path.Combine(this.CaminhoProjeto, ConstantesPublicacao.NOME_PASTA_WWWROOT_BUILD, this.NomeArquivoSaida);
+            this.CaminhoSaidaPadrao = Path.Combine(this.CaminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD, this.NomeArquivoSaida);
             this.CaminhoHtmlReferencias = Path.Combine(this.CaminhosDiretorioTypeScripts, NOME_ARQUIVO_HTML_REFERENCIA);
 
             this.LogCaminhoSaida();
@@ -73,8 +77,11 @@ namespace Snebur.VisualStudio
 
             //ProjetoTypeScriptUtil.RetornarArquivosTypeScript(this.CaminhoProjeto);
             LogVSUtil.Log($"Total de arquivos typescript {arquivosTypeScript.Count}");
-            this.ArquivosTS = arquivosTypeScript;
-            var xxxx = this.ArquivosTS.Where(x => x.Contains("partial", System.Globalization.CompareOptions.IgnoreCase)).ToList();
+
+            this._arquivosTS.AddRangeNew(arquivosTypeScript);
+            //var xxxx = this.ArquivosTS
+            //    .Where(x => x.Contains("partial", CompareOptions.IgnoreCase))
+            //    .ToList();
         }
 
         protected override void AtualizarInterno()
@@ -84,6 +91,7 @@ namespace Snebur.VisualStudio
             {
                 return;
             }
+
             this.CriarArquivoReferencia();
             this.PopularArquivosTypescriptAsync().Wait();
             this.ArquivosTypeScript.Clear();
@@ -92,10 +100,11 @@ namespace Snebur.VisualStudio
             this.NomesTipoClassBase.Clear();
             this.DicionariosArquivosTypeScript.Clear();
 
-            this.ArquivosTypeScript.AddRange(TipoArquivoTypeScriptUtil.RetornarArquivosTypeScript(this.ConfiguracaoProjeto,
-                                                                                                  this.CaminhoProjeto,
-                                                                                                  this.ArquivosTS,
-                                                                                                  this.RetornarPrioridadeProjeto));
+            this.ArquivosTypeScript.AddRange(TipoArquivoTypeScriptUtil.RetornarArquivosTypeScript(
+                this.ConfiguracaoProjeto, 
+                this.CaminhoProjeto, 
+                this.ArquivosTS.ToArray(),
+                this.RetornarPrioridadeProjeto));
 
             foreach (var arquivoTypescript in this.ArquivosTypeScript.OfType<ArquivoTypeScript>().Where(x => x.IsExisteTipo).ToList())
             {
@@ -166,15 +175,15 @@ namespace Snebur.VisualStudio
                                           ConfiguracaoProjetoTypeScript configuracaoProjetoAtual,
                                           List<string> arquivosTypescript)
         {
-            if (ProjetoTypescriptInitUtil.DiretorioProjeto != null &&
-                Directory.Exists(ProjetoTypescriptInitUtil.DiretorioProjeto))
+            if (ProjetoTypescriptInitUtil.DiretorioProjetoInicializador != null &&
+                Directory.Exists(ProjetoTypescriptInitUtil.DiretorioProjetoInicializador))
             {
-                var diretorioProjeto = ProjetoTypescriptInitUtil.DiretorioProjeto;
-                var caminhoSaida = Path.Combine(diretorioProjeto, caminhoJavasriptSaida);
+                var diretorioProjetoInicializador = ProjetoTypescriptInitUtil.DiretorioProjetoInicializador;
+                var caminhoSaida = Path.Combine(diretorioProjetoInicializador, caminhoJavasriptSaida);
                 var caminhoSaidaRelativo = CaminhoUtil.RetornarCaminhoRelativo(caminhoSaida, this.CaminhoProjeto);
 
                 //var caminhoSaida = CaminhoUtil.RetornarCaminhoRelativo(diretorioProjeto, caminhoJavasriptSaida);
-                this.NormalizarCaminhosDeclarecoes(configuracaoProjetoAtual, diretorioProjeto, arquivosTypescript);
+                this.NormalizarCaminhosDeclarecoes(configuracaoProjetoAtual, diretorioProjetoInicializador, arquivosTypescript);
                 return caminhoSaidaRelativo;
             }
             return caminhoJavasriptSaida;
@@ -207,7 +216,7 @@ namespace Snebur.VisualStudio
             {
                 var nomeArquivo = Path.GetFileName(caminhoDepedencia);
 
-                var caminhoDestino = Path.Combine(diretorioProjetoInicializacao, ConstantesProjeto.PASTA_WWWROOT_BUILD, nomeArquivo);
+                var caminhoDestino = Path.Combine(diretorioProjetoInicializacao, ConstantesProjeto.PASTA_BUILD, nomeArquivo);
                 var caminhoDestinoRelativo = CaminhoUtil.RetornarCaminhoRelativo(caminhoDestino, this.CaminhoProjeto);
                 var caminhoFinal = Path.GetFullPath(Path.Combine(this.CaminhoProjeto, caminhoDestinoRelativo));
                 arquivosTypescript.Insert(0, caminhoFinal);
@@ -461,14 +470,17 @@ namespace Snebur.VisualStudio
         private string RetornarHtmlReferencias(string namasceRaiz)
         {
             var sb = new StringBuilder();
-            var arquivosTipoHtmlReferencia = this.ArquivosTypeScriptOrdenados.OfType<ArquivoTypeScript>().Where(x => x.IsTipoHtmlReferencia).ToHashSet();
+            var arquivosTipoHtmlReferencia = this.ArquivosTypeScriptOrdenados
+                .OfType<ArquivoTypeScript>().Where(x => x.IsTipoHtmlReferencia)
+                .ToHashSet();
+
             foreach (var arquivoTypeScript in arquivosTipoHtmlReferencia)
             {
                 if (!arquivoTypeScript.Arquivo.Exists)
                 {
                     continue;
                 }
-
+                
                 var urlDesenvolvimentoAbsoluta = HtmlReferenciaUti.RetornarUrlDesenvolvimentoAbsoluta(arquivoTypeScript, arquivoTypeScript.ArquivoHtmlReferencia);
                 var urlDesenvolvimentoRelativa = HtmlReferenciaUti.RetornarUrlDesenvolvimentoRelativa(arquivoTypeScript, arquivoTypeScript.ArquivoHtmlReferencia);
 
@@ -576,14 +588,12 @@ namespace Snebur.VisualStudio
 
         protected override void DispensarInerno()
         {
-
-            this.ArquivosTS?.Clear();
+            this._arquivosTS.SafeClear();
             this.NomesTipoClassBase?.Clear();
             this.ArquivosTypeScript?.Clear();
             this.ArquivosTypeScriptOrdenados?.Clear();
             //this.TodosArquivos2?.Clear();
 
-            this.ArquivosTS = null;
             this.NomesTipoClassBase = null;
             this.ArquivosTypeScript = null;
             this.ArquivosTypeScriptOrdenados = null;
@@ -649,7 +659,7 @@ namespace Snebur.VisualStudio
             var caminhoSaidaConfigurado = Path.GetFullPath(Path.Combine(this.CaminhoProjeto, comilerOptions.outFile));
             if (!this.ConfiguracaoProjeto.IsIgnorar)
             {
-                if (ProjetoTypescriptInitUtil.DiretorioProjeto != null)
+                if (ProjetoTypescriptInitUtil.DiretorioProjetoInicializador != null)
                 {
                     var caminhoProjetoAtual = this.RetornarCaminhoSaidaProjetoAtual();
                     if (!CaminhoUtil.CaminhoIgual(caminhoProjetoAtual, caminhoSaidaConfigurado))
@@ -670,14 +680,24 @@ namespace Snebur.VisualStudio
         private string RetornarCaminhoSaidaProjetoAtual()
         {
             var caminhoSaida = this.CaminhoSaidaPadrao;
-            if (ProjetoTypescriptInitUtil.DiretorioProjeto != null)
+            if (ProjetoTypescriptInitUtil.DiretorioProjetoInicializador != null)
             {
                 var nomeArquivo = Path.GetFileName(caminhoSaida);
-                return Path.Combine(ProjetoTypescriptInitUtil.DiretorioProjeto,
-                                    ConstantesProjeto.PASTA_WWWROOT_BUILD,
+                return Path.Combine(ProjetoTypescriptInitUtil.DiretorioProjetoInicializador,
+                                    ConstantesProjeto.PASTA_BUILD,
                                     nomeArquivo);
             }
             return caminhoSaida;
+        }
+
+        public void RemoveArquivo(string caminhoDestino)
+        {
+            this._arquivosTS.SafeClear();
+        }
+
+        public void AdicionarArquivo(string fullName)
+        {
+            this._arquivosTS.SafeAdd(fullName);
         }
 
         #endregion

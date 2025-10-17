@@ -5,34 +5,35 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
     public abstract class BaseProjeto : BaseViewModel
     {
-        private bool _isNormalizando;
-        private List<string> SufixosProtegidos { get; } = new List<string> { ".Completo", ".Debug", ".Temp", ".Teste" };
+        private List<string> SufixosProtegidos { get; } = new List<string> {
+            ".Completo", ".Debug", ".Temp", ".Teste" 
+        };
 
         public string NomeProjeto { get; private set; }
 
         public FileInfo ArquivooProjeto { get; }
         public DirectoryInfo DiretorioProjeto { get; }
 
-        public string CaminhoProjeto => this.DiretorioProjeto.FullName;
-
+        public string CaminhoProjeto
+            => this.DiretorioProjeto.FullName;
         public string CaminhoProjetoCaixaBaixa { get; }
-
         public string CaminhoConfiguracao { get; }
-
         public bool Globalizar { get; }
-
         public bool IsProjetoDebug { get; }
 
         //public DTE2 DTE { get; }
 
-        public Version VersaoProjeto => AssemblyInfoUtil.RetornarVersaoAssemblyInfo(this.CaminhoProjeto,
-                                                                                   this.CaminhoAssemblyInfo);
+        public Version VersaoProjeto 
+            => AssemblyInfoUtil.RetornarVersaoAssemblyInfo(
+                this.CaminhoProjeto, 
+                this.CaminhoAssemblyInfo);
 
         public string CaminhoAssemblyInfo { get; }
         public virtual string CaminhoAssembly { get; protected set; }
@@ -73,10 +74,11 @@ namespace Snebur.VisualStudio
             this.CaminhoProjetoCaixaBaixa = this.CaminhoProjeto.ToLower();
             this.CaminhoAssemblyInfo = AssemblyInfoUtil.RetornarCaminhoAssemblyInfo(this.CaminhoProjeto);
             this.NomeProjeto = this.NormalizarNomeProjeto(Path.GetFileNameWithoutExtension(this.ArquivooProjeto.Name));
-            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(this.ProjetoViewModel.TipoCsProj,
-                                                                            this.DiretorioProjeto.FullName,
-                                                                            this.NomeAssembly,
-                                                                            true);
+            this.CaminhoAssembly = AjudanteAssembly.RetornarCaminhoAssembly(
+                this.ProjetoViewModel.TipoCsProj, 
+                this.DiretorioProjeto.FullName, 
+                this.NomeAssembly, 
+                true);
 
             this.Chave = BaseProjeto.RetornarChave(this.CaminhoProjeto);
         }
@@ -121,22 +123,21 @@ namespace Snebur.VisualStudio
         }
 
         #region Abstratos
-        public async Task NormalizarReferenciasAsync(bool compilar =false)
+        private readonly SemaphoreSlim _lockAsync = new SemaphoreSlim(1, 1);
+        public async Task NormalizarReferenciasAsync(bool compilar = false)
         {
             try
             {
-                if (this._isNormalizando)
-                {
-                    return;
-                }
+                await this._lockAsync.WaitAsync();
+ 
                 if (compilar)
                 {
                     await this.CompilarAsync();
                 }
-                this._isNormalizando = true;
+              
                 await WorkThreadUtil.SwitchToWorkerThreadAsync();
                 this.AtualizarInterno();
-                 
+
                 this.IsNormalizado = true;
             }
             catch (Exception ex)
@@ -145,7 +146,7 @@ namespace Snebur.VisualStudio
             }
             finally
             {
-                this._isNormalizando = false;
+                this._lockAsync.Release();
             }
         }
 
@@ -172,7 +173,7 @@ namespace Snebur.VisualStudio
 
         public virtual void InscrementarVersao()
         {
-            AssemblyInfoUtil.InscrementarVersao(this.CaminhoProjeto,    
+            AssemblyInfoUtil.InscrementarVersao(this.CaminhoProjeto,
                                                 this.CaminhoAssemblyInfo);
 
             this.NotificarPropriedadeAlterada(nameof(this.VersaoProjeto));
@@ -200,10 +201,10 @@ namespace Snebur.VisualStudio
             //}
             //this.NotificarPropriedadeAlterada(nameof(this.VersaoProjeto));
         }
-         
+
         public static string RetornarChave(string caminhoProjeto)
         {
-            if(Path.GetExtension(caminhoProjeto).Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
+            if (Path.GetExtension(caminhoProjeto).Equals(".csproj", StringComparison.InvariantCultureIgnoreCase))
             {
                 caminhoProjeto = Path.GetDirectoryName(caminhoProjeto);
             }
@@ -236,7 +237,7 @@ namespace Snebur.VisualStudio
         }
 
         public bool IsExisteDll => File.Exists(this.CaminhoAssembly);
-        
+
         protected virtual List<Type> RetornarTodosTipo()
         {
             if (this.IsExisteDll)

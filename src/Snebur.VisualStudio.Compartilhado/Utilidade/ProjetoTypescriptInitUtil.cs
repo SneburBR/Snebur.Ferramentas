@@ -5,10 +5,12 @@ namespace Snebur.VisualStudio
 {
     public static class ProjetoTypescriptInitUtil
     {
-        public static string DiretorioProjeto { get; private set; }
+        private static string _diretorioProjetoInicializador;
+        public static string DiretorioProjetoInicializador
+            => _diretorioProjetoInicializador ?? throw new System.Exception("DiretorioProjetoInicializador não foi inicializado. Chame SetDiretorioProjetoInicializador primeiro.");
         public static ConfiguracaoProjetoTypeScript ConfiguracaoProjetoTypeScript { get; private set; }
 
-        public static void SetDiretorioProjeto(string diretorioProjeto)
+        public static void SetDiretorioProjetoInicializador(string diretorioProjeto)
         {
             if (diretorioProjeto == null)
             {
@@ -16,9 +18,9 @@ namespace Snebur.VisualStudio
                 return;
             }
 
-            if (DiretorioProjeto != diretorioProjeto)
+            if (_diretorioProjetoInicializador != diretorioProjeto)
             {
-                DiretorioProjeto = diretorioProjeto;
+                _diretorioProjetoInicializador = diretorioProjeto;
             }
 
             var caminhoTS = Path.Combine(diretorioProjeto, ConstantesProjeto.CONFIGURACAO_TYPESCRIPT);
@@ -27,7 +29,7 @@ namespace Snebur.VisualStudio
 
         public static void ClearDiretorioProjeto()
         {
-            DiretorioProjeto = null;
+            _diretorioProjetoInicializador = null;
         }
     }
 }

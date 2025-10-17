@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snebur.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,9 +10,12 @@ namespace Snebur.VisualStudio
 
         public static void AddRange<T>(this HashSet<T> source, IEnumerable<T> lista)
         {
-            foreach (var item in lista)
+            lock (source.SyncLock())
             {
-                source.Add(item);
+                foreach (var item in lista)
+                {
+                    source.Add(item);
+                }
             }
         }
     }
