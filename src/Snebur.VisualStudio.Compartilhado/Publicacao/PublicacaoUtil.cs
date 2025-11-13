@@ -2,6 +2,7 @@
 using Snebur.Utilidade;
 using System;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -253,7 +254,7 @@ namespace Snebur.VisualStudio
                                             string caminhoPublicacaoBuild,
                                             Version versao)
         {
-            var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD);
+            var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.CAMINHO_BUILD);
             var arquivosJs = infoPublicacao.Builds.Where(x => Path.GetExtension(x) == ".js");
             var sb = new StringBuilder();
             if (infoPublicacao.BuildJsOptions.IsEncapsular)
@@ -263,7 +264,7 @@ namespace Snebur.VisualStudio
             foreach (var arquivo in arquivosJs)
             {
                 sb.AppendLine($"\t\t//{arquivo}");
-                var caminhoJs = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD, arquivo);
+                var caminhoJs = Path.Combine(caminhoProjeto, ConstantesProjeto.CAMINHO_BUILD, arquivo);
                 var lines = File.ReadAllLines(caminhoJs, Encoding.UTF8);
                 foreach (var line in lines)
                 {
@@ -305,6 +306,7 @@ namespace Snebur.VisualStudio
                 IsTeste = infoPublicacao.BuildJsOptions.IsTeste,
                 IsLibZipAsync = infoPublicacao.BuildJsOptions.IsLibZipAsync
             };
+
             var json = JsonUtil.SerializarJsonCamelCase(infoVersion);
             var prefixoLastVersion = String.IsNullOrWhiteSpace(infoPublicacao.NomePastaBuild) ? String.Empty :
                                                                                                  $"{infoPublicacao.NomePastaBuild.ToLower()}-";
@@ -354,7 +356,8 @@ namespace Snebur.VisualStudio
 
                 case EnumTipoPasta.Build:
 
-                    CopriarArquivos(infoPublicacao,
+                    CopriarArquivos(
+                        infoPublicacao,
                         tipoCompilacao,
                         infoPasta.Caminho,
                         caminhoDestino,
@@ -431,57 +434,61 @@ namespace Snebur.VisualStudio
                             arquivos);
         }
 
-        private static void CopriarArquivos(PublicacaoConfig publicacaoConfig,
-                                            EnumTipoCompilacao tipoCompilacao,
-                                            string diretorioOrigem,
-                                            string diretorioDestino,
-                                            string[] arquivos)
+        private static void CopriarArquivos(
+            PublicacaoConfig publicacaoConfig,
+            EnumTipoCompilacao tipoCompilacao,
+            string diretorioOrigem,
+            string diretorioDestino,
+            string[] arquivos)
         {
-            if (arquivos?.Count() > 0)
+            if (arquivos is null || arquivos.Length == 0)
+                return;
+
+            var count = 0;
+            var progresso = 0;
+            var lastProgresso = 0;
+
+            foreach (var arquivo in arquivos.Where(x => !String.IsNullOrWhiteSpace(x)))
             {
-                var count = 0;
-                var progresso = 0;
-                var lastProgresso = 0;
-
-                foreach (var arquivo in arquivos.Where(x => !String.IsNullOrWhiteSpace(x)))
+                var caminhoOrigem = Path.GetFullPath(Path.Combine(diretorioOrigem, arquivo));
+                if (!File.Exists(caminhoOrigem))
                 {
+                    LogVSUtil.LogErro($"Falha na publicação. Arquivo não encontrado: {caminhoOrigem} ");
+                    continue;
+                }
 
-                    var caminhoOrigem = Path.GetFullPath(Path.Combine(diretorioOrigem, arquivo));
-                    if (!File.Exists(caminhoOrigem))
-                    {
-                        LogVSUtil.LogErro($"Falha na publicação. Arquivo não encontrado: {caminhoOrigem} ");
-                        continue;
-                    }
+                if (publicacaoConfig.IsIgnorarArquivo(arquivo))
+                {
+                    continue;
+                }
 
-                    if (publicacaoConfig.IsIgnorarArquivo(arquivo))
-                    {
-                        continue;
-                    }
+                if (tipoCompilacao == EnumTipoCompilacao.Release &&
+                   publicacaoConfig.IsIgnorarArquivoRelease(arquivo))
+                {
+                    continue;
+                }
 
-                    if (tipoCompilacao == EnumTipoCompilacao.Release &&
-                       publicacaoConfig.IsIgnorarArquivoRelease(arquivo))
-                    {
-                        continue;
-                    }
-                     
-                    LogVSUtil.Log($"Copiando arquivo {Path.GetFileName(caminhoOrigem)}");
+                LogVSUtil.Log($"Copiando arquivo {Path.GetFileName(caminhoOrigem)}");
 
-                    var caminhoRelatativo = CaminhoUtil.RetornarCaminhoRelativo(Path.GetDirectoryName(arquivo), diretorioOrigem);
-                    var nomeArquivoDestino = NormalizarNomeArquivoDestino(publicacaoConfig, Path.GetFileName(arquivo));
-                     
-                    var caminhoDestino = Path.Combine(diretorioDestino, caminhoRelatativo, nomeArquivoDestino);
-                    ArquivoUtil.CopiarArquivo(caminhoOrigem, caminhoDestino, true);
 
-                    count++;
-                    progresso = (count * 100) / arquivos.Count();
+                var caminhoRelatativo = CaminhoUtil.IsParentRelativePath(arquivo)
+                      ? diretorioDestino
+                      : CaminhoUtil.RetornarCaminhoRelativo(Path.GetDirectoryName(arquivo), diretorioOrigem);
+                //var caminhoRelatativo =  
+                var nomeArquivoDestino = NormalizarNomeArquivoDestino(publicacaoConfig, Path.GetFileName(arquivo));
+                var caminhoDestino = CaminhoUtil.Combine(diretorioDestino, caminhoRelatativo, nomeArquivoDestino);
+                ArquivoUtil.CopiarArquivo(caminhoOrigem, caminhoDestino, true);
 
-                    if (progresso > (lastProgresso + 10))
-                    {
-                        LogVSUtil.Log($"Publicando {Path.GetFileName(diretorioDestino)} {progresso}%");
-                        lastProgresso = progresso;
-                    }
+                count++;
+                progresso = (count * 100) / arquivos.Count();
+
+                if (progresso > (lastProgresso + 10))
+                {
+                    LogVSUtil.Log($"Publicando {Path.GetFileName(diretorioDestino)} {progresso}%");
+                    lastProgresso = progresso;
                 }
             }
+
         }
 
         private static string NormalizarNomeArquivoDestino(PublicacaoConfig publicacaoConfig,
@@ -538,7 +545,7 @@ namespace Snebur.VisualStudio
 
                 case EnumTipoProjeto.Typescript:
 
-                    var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.PASTA_BUILD);
+                    var caminhoBuild = Path.Combine(caminhoProjeto, ConstantesProjeto.CAMINHO_BUILD);
 
                     return new InfoPasta[] { new InfoPasta(caminhoBin, EnumTipoPasta.Bin) ,
                                              new InfoPasta(caminhoBuild, EnumTipoPasta.Build)};

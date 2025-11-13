@@ -60,7 +60,7 @@ namespace Snebur.VisualStudio
             {
                 "node_modules",
                 "wwwroot",
-                ConstantesPublicacao.NOME_PASTA_BUILD
+                ConstantesProjeto.CAMINHO_BUILD
             };
              
             this.CompilerOptions = new CompilerOptions(caminhoJavasriptSaida);

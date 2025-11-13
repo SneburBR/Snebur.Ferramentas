@@ -31,7 +31,7 @@ namespace Snebur.VisualStudio
                     var caminhoParcial = chaveValor.Value;
 
                     var caminhoDefinicacao = Path.GetFullPath(Path.Combine(caminhoProjeto, caminhoParcial));
-                    var caminhoDefinicacaoProjeto = Path.Combine(Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD, Path.GetFileName(caminhoParcial)));
+                    var caminhoDefinicacaoProjeto = Path.Combine(Path.Combine(caminhoProjeto, ConstantesProjeto.CAMINHO_BUILD, Path.GetFileName(caminhoParcial)));
 
                     var fi = new FileInfo(caminhoDefinicacao);
                     if (!fi.Exists)
@@ -158,7 +158,7 @@ namespace Snebur.VisualStudio
             Func<FileInfo, int> funcaoRetornarPrioridade)
         {
             //var caminhoScriptps = Path.GetDirectoryName(Path.Combine(caminhoProjeto, configuracao.compilerOptions.outFile));
-            var caminhoScripts = Path.Combine(caminhoProjeto, ConstantesPublicacao.NOME_PASTA_BUILD);
+            var caminhoScripts = Path.Combine(caminhoProjeto, ConstantesProjeto.CAMINHO_BUILD);
             var arquivosTS = new List<BaseArquivoTypeScript>();
             foreach (var caminhoArquivo in arquivos)
             {

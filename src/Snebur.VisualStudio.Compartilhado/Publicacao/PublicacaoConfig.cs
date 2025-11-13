@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Snebur.Publicacao;
+using Snebur.Utilidade;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -30,8 +32,8 @@ namespace Snebur.VisualStudio
             string compilacao)
         {
             return String.IsNullOrWhiteSpace(this.NomePastaBuild)
-                                       ? $"{nomeProjeto}_{versao}_{tipoCompilacao}_{compilacao}.zip"
-                                       : $"{nomeProjeto}_{this.NomePastaBuild}_{tipoCompilacao}_{compilacao}.zip";
+                ? $"{nomeProjeto}_{versao}_{tipoCompilacao}_{compilacao}.zip"
+                : $"{nomeProjeto}_{this.NomePastaBuild}_{tipoCompilacao}_{compilacao}.zip";
         }
 
         public string RetornarCaminhoPublicacaoBuild(Version versao,
@@ -39,7 +41,7 @@ namespace Snebur.VisualStudio
         {
             return String.IsNullOrWhiteSpace(this.NomePastaBuild)
                          ? caminhoPublicacao
-                         : Path.Combine(caminhoPublicacao, ConstantesProjeto.PASTA_BUILD, this.NomePastaBuild, versao.ToString());
+                         : CaminhoUtil.Combine(caminhoPublicacao, ConstantesPublicacao.BUILD, this.NomePastaBuild, versao.ToString());
 
         }
 
@@ -59,16 +61,16 @@ namespace Snebur.VisualStudio
 
         internal bool IsIgnorarArquivo(string arquivo)
         {
-            return IgIgnorarInterno(this.IgnorarArquivos, arquivo);
+            return IsIgnorarInterno(this.IgnorarArquivos, arquivo);
     
         }
 
         internal bool IsIgnorarArquivoRelease(string arquivo)
         {
-            return IgIgnorarInterno(this.IgnorarArquivosRelease, arquivo);
+            return IsIgnorarInterno(this.IgnorarArquivosRelease, arquivo);
         }
 
-        private bool IgIgnorarInterno(string[] ignorarArquivos, string arquivo)
+        private bool IsIgnorarInterno(string[] ignorarArquivos, string arquivo)
         {
             if (ignorarArquivos is null || ignorarArquivos.Length == 0)
             {
@@ -94,5 +96,4 @@ namespace Snebur.VisualStudio
             return false;
         }
     }
-
 }

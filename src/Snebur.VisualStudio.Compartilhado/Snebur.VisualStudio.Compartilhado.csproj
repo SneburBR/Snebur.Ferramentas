@@ -90,6 +90,7 @@
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemControleAlterado.cs" Link="Depuracao\MensagemControleAlterado.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemEstiloCssAlterado.cs" Link="Depuracao\MensagemEstiloCssAlterado.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemLog.cs" Link="Depuracao\MensagemLog.cs" />
+	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemIrParaCodigo.cs" Link="Depuracao\MensagemIrParaCodigo.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemPing.cs" Link="Depuracao\MensagemPing.cs" />
 	  <Compile Include="..\..\..\Snebur.Framework\src\Depuracao\MensagemScriptAlterado.cs" Link="Depuracao\MensagemScriptAlterado.cs" />
 	  <Compile Include="Projeto\Dominio\Reflexao\Ajudante\AjudanteAssembly.cs" />
