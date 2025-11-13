@@ -1,0 +1,45 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Apresentacao" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Debug Ap" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/apresentacao/">
+    <Project Path="src/Snebur.VisualStudio2022/Snebur.VisualStudio2022.csproj">
+      <BuildType Solution="Apresentacao|*" Project="Debug" />
+      <BuildType Solution="Debug Ap|*" Project="Debug" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/compartilhado/">
+    <Project Path="src/Snebur.Cli/Snebur.Cli.csproj">
+      <BuildType Solution="Apresentacao|*" Project="Debug" />
+      <BuildType Solution="Debug Ap|*" Project="Debug" />
+    </Project>
+    <Project Path="src/Snebur.VisualStudio.Compartilhado/Snebur.VisualStudio.Compartilhado.csproj">
+      <BuildType Solution="Apresentacao|*" Project="Debug" />
+      <BuildType Solution="Debug Ap|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/framework/">
+    <Project Path="src/Snebur.Comunicacao.WebSocket.Experimental/Snebur.Comunicacao.WebSocket.Experimental.Net48.csproj">
+      <BuildType Solution="Apresentacao|*" Project="Debug" />
+      <BuildType Solution="Debug Ap|*" Project="Debug" />
+    </Project>
+    <Project Path="src/Snebur.Core.Net48/Snebur.csproj">
+      <BuildType Solution="Apresentacao|*" Project="Debug" />
+      <BuildType Solution="Debug Ap|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/vs-as-admin.ps1" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+  </Folder>
+</Solution>

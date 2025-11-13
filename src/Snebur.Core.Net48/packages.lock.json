@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "dependencies": {
+    ".NETFramework,Version=v4.8": {
+      "Microsoft.Bcl.HashCode": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "GI4jcoi6eC9ZhNOQylIBaWOQjyGaR8T6N3tC1u8p3EXfndLCVNNWa+Zp+ocjvvS3kNBN09Zma2HXL0ezO0dRfw=="
+      },
+      "Newtonsoft.Json": {
+        "type": "Direct",
+        "requested": "[13.0.3, )",
+        "resolved": "13.0.3",
+        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
+      },
+      "SevenZipSharp.Net45": {
+        "type": "Direct",
+        "requested": "[1.0.19, )",
+        "resolved": "1.0.19",
+        "contentHash": "id1Y29NDy81uMBWNoOXuYpeC99VyU0T+xxmQVW19uz0xa28f2xcQlzQT8KL3G1VEh9VhgWXaYdcQu9Fuzzf1XA=="
+      }
+    }
+  }
+}

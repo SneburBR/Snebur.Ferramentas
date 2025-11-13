@@ -207,7 +207,10 @@ namespace Snebur.Utilidade
         {
             var serializerSettings = new JsonSerializerSettings();
             serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return JsonConvert.SerializeObject(obj, serializerSettings);
+            return JsonConvert.SerializeObject(
+                obj,
+                Formatting.Indented,
+                serializerSettings);
         }
 
         public static void SalvarSerializacao(object objecto,

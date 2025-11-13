@@ -12,6 +12,7 @@
         public const string NOME_PASTA_VERSAO = "v";
         public const string NOME_PASTA_INFOS_VERSAO = "InfosVersao";
         //public const string NOME_PASTA_BUILD = "build";
-        public const string NOME_PASTA_BUILD = "wwwroot/build";
+        public const string BUILD = "build";
+        
     }
 }

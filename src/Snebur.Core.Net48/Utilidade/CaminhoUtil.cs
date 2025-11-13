@@ -13,6 +13,30 @@ namespace Snebur.Utilidade
                     Path.IsPathRooted(path) &&
                     !Path.GetPathRoot(path).Equals(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal);
         }
+        public static bool IsRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) 
+                return false;
+            return !Path.IsPathRooted(path);
+        }
+
+        public static bool IsParentRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) 
+                return false;
+
+            if (!IsRelativePath(path)) 
+                return false;
+             
+            // Handle exact ".."
+            if (string.Equals(path, "..", StringComparison.Ordinal)) 
+                return true;
+
+            // Ensure we are checking the first segment only
+            return path.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal) 
+                || path.StartsWith(".." + Path.AltDirectorySeparatorChar, StringComparison.Ordinal);
+        }
+
 
         public static string RetornarCaminhoArquivoBackup(string caminhoArquivo)
         {
@@ -282,6 +306,7 @@ namespace Snebur.Utilidade
         {
             return Path.Combine(paths);
         }
+
     }
 
     public enum EnumTipoCaminho
