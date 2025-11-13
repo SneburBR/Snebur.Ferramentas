@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Snebur.Utilidade;
 
 namespace Snebur.VisualStudio
@@ -30,8 +32,12 @@ namespace Snebur.VisualStudio
             this.ConfiguracaoTypescript = JsonUtil.Deserializar<ConfiguracaoProjetoTypeScript>(ArquivoUtil.LerTexto(this.ProjetoTS.CaminhoConfiguracao), EnumTipoSerializacao.Javascript);
             this.IsNormalizarWhere = !this.ConfiguracaoTypescript.IsIgnorarNormnalizacaoCompilacao;
         }
+        public Task NormalizarAsync()
+        {
+            return Task.Run(this.Normalizar);
+        }
 
-        public void Normalizar()
+        private void Normalizar()
         {
             try
             {
@@ -154,6 +160,7 @@ namespace Snebur.VisualStudio
 
         private bool NormalizarInterno(string caminhoJavascriptOriginal, string caminhoJavascriptNormalizado)
         {
+            var text = File.ReadAllText(caminhoJavascriptOriginal, encoding: Encoding.UTF8);
             using (var msNormalizar = new MemoryStream())
             {
                 using (var msOriginal = new MemoryStream(File.ReadAllBytes(caminhoJavascriptOriginal)))
@@ -170,8 +177,10 @@ namespace Snebur.VisualStudio
         {
             int intCaracter;
             var sb = new StringBuilder();
+            sb.Append(NormalizarCompilacaoJavascript.NORMALIZADO);
+            sb.Append($" {ABRE_DATA_NORMALIZACAO} {DateTime.Now} {NormalizarCompilacaoJavascript.TICKS}{DateTime.Now.Ticks} {FECHA_DATA_NORMALIZACAO} ");
             var dicionarios = new List<string>();
-            var isNormalizadoPrimeiraLinhaInserido = false;
+            var isNormalizadoPrimeiraLinhaInserido =true;
             while (true)
             {
                 intCaracter = leitor.Read();
@@ -183,8 +192,7 @@ namespace Snebur.VisualStudio
                 if (caracter == '\r' && !isNormalizadoPrimeiraLinhaInserido)
                 {
                     isNormalizadoPrimeiraLinhaInserido = true;
-                    sb.Append(NormalizarCompilacaoJavascript.NORMALIZADO);
-                    sb.Append($" {ABRE_DATA_NORMALIZACAO} {DateTime.Now} {NormalizarCompilacaoJavascript.TICKS}{DateTime.Now.Ticks} {FECHA_DATA_NORMALIZACAO} ");
+
                 }
 
                 ////NAMEOF
@@ -228,8 +236,16 @@ namespace Snebur.VisualStudio
                                     {
                                         if (normalizarExpressao.IsNormalizarExpressaoWhere)
                                         {
-                                            expressao = normalizarExpressao.Normalizar();
-                                            dicionarios.Add(expressao);
+                                            if (expressao.Contains("expressao"))
+                                            {
+                                                Debugger.Break();
+                                            }
+                                            var newExpressao = normalizarExpressao.Normalizar();
+                                            if (newExpressao.Contains("expressao"))
+                                            {
+                                                Debugger.Break();
+                                            }
+                                            expressao = newExpressao;
                                         }
                                     }
                                     sb.Append(expressao);

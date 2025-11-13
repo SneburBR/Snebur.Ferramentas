@@ -28,6 +28,8 @@ namespace Snebur.VisualStudio
 
         internal abstract string Normalizar();
 
+        public bool IsNormalizado { get; protected set; }
+
         public void Dispose()
         {
             this.Expressao = null;
