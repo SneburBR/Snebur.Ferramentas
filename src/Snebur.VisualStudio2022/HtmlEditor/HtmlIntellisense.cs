@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Snebur.Dominio.Atributos;
+using Snebur.Utilidade;
+using Snebur.VisualStudio.Reflexao;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Snebur.Dominio.Atributos;
-using Snebur.Utilidade;
-using Snebur.VisualStudio.Reflexao;
 
 namespace Snebur.VisualStudio
 {
@@ -22,24 +22,9 @@ namespace Snebur.VisualStudio
         private const string PROCURAR_FLOW_CONTENT = "<xsd:group name=\"flowContent\">";
 
         private const string LINHA_REF_GRUPO_ATRIBUTOS = "<xsd:attributeGroup ref=\"GrupoSneburAtributos\" />";
-        private const string PREFIXO_SNEBUR = "sn-";
-        private const string PREFIXO_APRESENTACAO = "ap-";
-
-        private const string SUFIXO_CELULAR = "celular";
-        private const string SUFIXO_TABLET = "tablet";
-        private const string SUFIXO_NOTEBOOK = "notebook";
-        //private const string SUFIXO_DESKTOP = "desktop";
-
-        private const string SUFIXO_ALTURA_SUPER__PEQUENA = "super-pequena-v";
-        private const string SUFIXO_ALTURA_PEQUENA = "pequena-v";
-        private const string SUFIXO_ALTURA_MEDIDA = "media-v";
-        private const string SUFIXO_ALTURA_GRANDE = "grande-v";
-
         public const string PREFIXO_ZS_PROPRIEDADE = "vs:customattrprefix=\"sn-prop-\"";
         public const string PREFIXO_DATA = "vs:customattrprefix=\"data-\"";
 
-        public readonly List<string> Responsivos = new List<string> { SUFIXO_CELULAR, SUFIXO_TABLET, SUFIXO_NOTEBOOK /*, SUFIXO_DESKTOP */};
-        public readonly List<string> ResponsivosAltura = new List<string> { SUFIXO_ALTURA_PEQUENA, SUFIXO_ALTURA_PEQUENA, SUFIXO_ALTURA_MEDIDA, SUFIXO_ALTURA_GRANDE };
 
         private HtmlIntelliSense()
         {
@@ -52,17 +37,42 @@ namespace Snebur.VisualStudio
                 File.Exists(CaminhosUtil.CaminhoAtributosTypescript))
             {
                 var linhas = this.RetornarConteudo();
+
+                DeletarArquivoBinario(CaminhosUtil.CaminhoSchemaXHTML5);
+                DeletarArquivoBinario(CaminhosUtil.CaminhoSchemaHTML5);
+
                 this.AtualizarConteudo(CaminhosUtil.CaminhoSchemaXHTML5, linhas.ToList());
                 this.AtualizarConteudo(CaminhosUtil.CaminhoSchemaHTML5, linhas.ToList());
+
+            }
+        }
+
+        private void DeletarArquivoBinario(string caminhoSchemaXHTML5)
+        {
+            var caminho = Path.ChangeExtension(caminhoSchemaXHTML5, ".bin");
+            if (File.Exists(caminho))
+            {
+                LogVSUtil.Alerta($" Deletando binário do schema '{Path.GetFileName(caminho)}' foi deletado para forçar a recompilação do IntelliSense.");
+                try
+                {
+                    ArquivoUtil.DeletarArquivo(caminho);
+
+                }
+                catch(Exception ex)
+                {
+                    LogVSUtil.LogErro($" Erro ao deletar o binário do schema '{Path.GetFileName(caminho)}'. Tente fechar o Visual Studio e excluir manualmente o arquivo.", ex);
+                }
             }
         }
 
         private void AtualizarConteudo(string caminhoSchema, List<string> linhas)
         {
             this.ConferirBackupSchema(caminhoSchema);
-            var linhasSchemaHtml = File.ReadAllLines(caminhoSchema, Encoding.Default).ToList();
+            var conteudo = File.ReadAllText(caminhoSchema, Encoding.Default);
 
-            if (!linhasSchemaHtml.Any(x => x.Trim().StartsWith(INICIO)))
+            var linhasSchemaHtml = conteudo.ToLines();
+
+            if (!linhasSchemaHtml.Any(x => x.Trim().Contains(INICIO)))
             {
                 this.AdicionarNovoConteudo(caminhoSchema, linhasSchemaHtml, linhas);
             }
@@ -150,74 +160,18 @@ namespace Snebur.VisualStudio
 
         private List<string> RetornarLinhasConteudoAtributos()
         {
-            var atributosVM = this.RetornarAtributosVM();
+            var atributosVM = HtmlIntelliSenseUtils.GetSneburAttributes();
             var linhas = new List<string>();
 
             foreach (var atributoVM in atributosVM)
             {
-                var linhasAtributo = this.RetornarConteudoAtributo(atributoVM.Item1, atributoVM.Item2);
+                var linhasAtributo = this.RetornarConteudoAtributo(atributoVM.Name, atributoVM.TypeValye);
                 linhas.AddRange(linhasAtributo);
             }
             return linhas;
         }
 
-        private List<Tuple<string, string>> RetornarAtributosVM()
-        {
-            var atributos = new List<Tuple<string, string>>();
-            var procurar = "AtributoHtml(\"";
-            var linhas = File.ReadAllLines(CaminhosUtil.CaminhoAtributosTypescript, Encoding.UTF8);
-            var len = linhas.Length;
-            for (var i = 0; i < len; i++)
-            {
-                var linha = linhas[i].Trim();
-                if (!linha.StartsWith("//"))
-                {
-                    if (linha.Contains(procurar))
-                    {
-                        var inicio = linha.IndexOf(procurar) + procurar.Length;
-                        var fim = linha.IndexOf(",");
-                        var nomeAtributo = linha.Trim().Substring(inicio, fim - inicio);
-                        nomeAtributo = nomeAtributo.Replace("\"", String.Empty);
-
-                        if (nomeAtributo.StartsWith(PREFIXO_SNEBUR) ||
-                            nomeAtributo.StartsWith(PREFIXO_APRESENTACAO))
-                        {
-                            linha = linha.Substring(fim + 1).Trim();
-                            fim = linha.IndexOf(");");
-                            var tipo = linha.Substring(0, fim).Trim();
-                            tipo = tipo.Replace("\"", String.Empty);
-
-                            atributos.Add(new Tuple<string, string>(nomeAtributo.ToLower(), tipo));
-
-                            if (nomeAtributo.StartsWith(PREFIXO_APRESENTACAO))
-                            {
-                                var nomeAbrituo = nomeAtributo.ToLower();
-                                var nomeAtributoSimples = nomeAtributo.ToLower().Substring(PREFIXO_APRESENTACAO.Length);
-
-                                //atributos.Add(new Tuple<string, string>($"debug-{nomeAtributoSimples}", tipo));
-
-                                foreach (var responsivo in this.Responsivos)
-                                {
-                                    atributos.Add(new Tuple<string, string>($"{nomeAbrituo}--{responsivo}", tipo));
-
-                                    //atributos.Add(new Tuple<string, string>($"debug-{nomeAtributoSimples}-{responsivo}", tipo));
-                                }
-
-                                foreach (var responsivo in this.ResponsivosAltura)
-                                {
-                                    atributos.Add(new Tuple<string, string>($"{nomeAbrituo}--{responsivo}", tipo));
-
-                                    //atributos.Add(new Tuple<string, string>($"debug-{nomeAtributoSimples}-{responsivo}", tipo));
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-            return atributos.OrderBy(x => x.Item1).ToList();
-        }
-
+       
         private List<string> RetornarConteudoAtributo(string nomeAtributp, string tipo)
         {
             var linhas = new List<string>();
@@ -245,7 +199,6 @@ namespace Snebur.VisualStudio
 
                 linhas.Add("\t\t\t\t</xsd:restriction>");
                 linhas.Add("\t\t\t</xsd:simpleType>");
-
 
                 linhas.Add($"\t\t\t<xsd:simpleType>");
                 linhas.Add("\t\t\t\t<xsd:restriction base=\"xsd:string\">");
@@ -306,7 +259,6 @@ namespace Snebur.VisualStudio
                 {
                     retorno.Add(membroInfo.Name);
                 }
-
             }
             return retorno;
         }
@@ -352,45 +304,27 @@ namespace Snebur.VisualStudio
 
         private List<string> RetornarLinhasReferenciasControles()
         {
-            var tags = this.RetornarTagsControles();
+            var tags = HtmlIntelliSenseUtils.GetSneburTagElements();
             var linhas = new List<string>();
             foreach (var tag in tags)
             {
-                linhas.Add(String.Format("\t\t\t<xsd:element ref=\"{0}\" />", tag.ToLower()));
+                linhas.Add(String.Format("\t\t\t<xsd:element ref=\"{0}\" />", tag.TagName.ToLower()));
             }
             return linhas;
         }
 
         private List<string> RetornarLinhasConteudoControles()
         {
-            var tags = this.RetornarTagsControles();
+            var tags = HtmlIntelliSenseUtils.GetSneburTagElements();
             var linhas = new List<string>();
             foreach (var tag in tags)
             {
-                linhas.Add(String.Format("<xsd:element name=\"{0}\" type=\"simpleFlowContentElement\" />", tag.ToLower()));
+                linhas.Add(String.Format("<xsd:element name=\"{0}\" type=\"simpleFlowContentElement\" />", tag.TagName.ToLower()));
             }
             return linhas;
         }
 
-        private List<string> RetornarTagsControles()
-        {
-            var procurar = "$ElementosControle.Add(\"";
-            var tags = new List<string>();
-            var linhas = File.ReadAllLines(CaminhosUtil.CaminhoControlesTypescript, Encoding.UTF8);
-            var len = linhas.Length;
-            for (var i = 0; i < len; i++)
-            {
-                var linha = linhas[i].Trim();
-                if (linha.StartsWith(procurar))
-                {
-                    var fim = linha.IndexOf(",");
-                    var tag = linha.Trim().Substring(procurar.Length, fim - procurar.Length);
-                    tag = tag.Replace("\"", String.Empty);
-                    tags.Add(tag);
-                }
-            }
-            return tags;
-        }
+       
 
         #endregion
 

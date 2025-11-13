@@ -107,6 +107,7 @@ namespace Snebur.VisualStudio
                 await GerenciadorProjetos.Instancia.IniciarServicoDepuracaoAsync();
             }
             await Task.Delay(3000);
+            await AtualizarStatusServicoDepuracaoAsync();
         }
 
 

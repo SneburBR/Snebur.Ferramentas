@@ -33,7 +33,7 @@ namespace Snebur.VisualStudio.Commands
         private async Task ExecuteInternalAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
+            
             var dte = await DteUtil.GetDTEAsync();
             var documento = dte.ActiveDocument;
             if (documento != null)

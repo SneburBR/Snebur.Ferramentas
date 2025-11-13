@@ -75,6 +75,14 @@
     <Compile Include="Commands\GoToScssStyleCommand.cs" />
     <Compile Include="Commands\RemoveDominFormatingCommand.cs" />
     <Compile Include="Commands\RemoveFormatingCommand.cs" />
+    <Compile Include="Completations\HtmlTabCommitHandler.cs" />
+    <Compile Include="Completations\AttributeValuesHelper.cs" />
+    <Compile Include="Completations\HtmlAttributeValueCompletion.cs" />
+    <Compile Include="Completations\SneburHtmlAttributesProvider.cs" />
+    <Compile Include="Completations\SneburHtmlValuesProvider.cs" />
+    <Compile Include="Utilidade\ImageHelper.cs" />
+    <Compile Include="Utilidade\ImageMonikerUtils.cs" />
+    <Compile Include="Completations\SneburHtmlTagsProvider .cs" />
     <Compile Include="Configuracoes\BaseOptionModel.cs" />
     <Compile Include="Configuracoes\BaseOptionPage.cs">
       <SubType>Component</SubType>
@@ -103,12 +111,14 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HtmlEditor\HtmlIntellisense.cs" />
     <Compile Include="HtmlEditor\HtmlIntellisense.Static.cs" />
+    <Compile Include="Completations\TypeScriptCompletation.cs" />
+    <Compile Include="HtmlEditor\HtmlIntelliSenseUtils.cs" />
     <Compile Include="ItemTemplate\InstalarItensTemplate.cs" />
     <Compile Include="ItemTemplate\InstalarItensTemplateInterno.cs" />
     <Compile Include="Json\JsonSchemaSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\OutputWindowCommand.cs" />
-    <Compile Include="source.extension1.cs">
+    <Compile Include="source.extension.vsixmanifest.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>source.extension.vsixmanifest</DependentUpon>
@@ -124,6 +134,7 @@
     </Compile>
     <Compile Include="ToolWindows\Output\TsNewStringFormatUtil.cs" />
     <Compile Include="Utilidade\Ex\AjudanteAssemblyEx.cs" />
+    <Compile Include="Utilidade\IrParaCodigoUtil.cs" />
     <Compile Include="Utilidade\ItensControlUtil.cs" />
     <Compile Include="Utilidade\LogVS.cs" />
     <Compile Include="Utilidade\ProjetoDteUtil.cs" />
@@ -142,6 +153,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Css.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Css.Editor.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Extensions.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Html.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Html.Editor.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Html.VS.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Json.VS.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Shared.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Shared.Editor.dll" />
+    <Content Include="lib\Microsoft.WebTools.Languages.Shared.VS.dll" />
     <Content Include="Resources\Icon.ico" />
     <Content Include="Resources\Icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -232,10 +253,30 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WebTools.Languages.Extensions, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WebTools.Languages.Html, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Html.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WebTools.Languages.Html.Editor, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Html.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WebTools.Languages.Json, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Web Tools\Languages\Microsoft.WebTools.Languages.Json.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.WebTools.Languages.Shared, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WebTools.Languages.Shared.Editor, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Microsoft.WebTools.Languages.Shared.Editor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

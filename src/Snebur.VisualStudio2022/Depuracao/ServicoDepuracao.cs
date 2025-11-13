@@ -22,6 +22,7 @@ namespace Snebur.VisualStudio
         public ushort Porta { get; private set; }
 
         public event EventHandler<MensagemEventArgs<MensagemLog>> EventoLog;
+        public event EventHandler<MensagemEventArgs<MensagemIrParaCodigo>> EventoIrParaCodigo;
 
         private ConcurrentDictionary<string, SessaoConectada> SessoesConectada { get; } = new ConcurrentDictionary<string, SessaoConectada>();
 
@@ -118,23 +119,43 @@ namespace Snebur.VisualStudio
         {
             try
             {
-                var contratoSerializado = sessaoContexto.DataFrame.ToString();
-                if (contratoSerializado.StartsWith("{"))
+                var contratoSerializado = sessaoContexto.DataFrame.ToString().Trim();
+                if (!contratoSerializado.StartsWith("{"))
                 {
-                    if (this.SessoesConectada.TryGetValue(sessaoContexto.Identificador, out SessaoConectada sessaoConectada))
-                    {
-                        var contrato = JsonUtil.Deserializar<Contrato>(contratoSerializado, EnumTipoSerializacao.DotNet);
-                        var mensagem = contrato.Mensagem;
-                        this.ProcessarMensagemRecebida(sessaoConectada, mensagem);
-                        LogVSUtil.Log("Mensagem de: " + sessaoContexto.Identificador + "] - " + mensagem.GetType().Name);
-                    }
+                    LogVSUtil.LogErro("ServicoDepuração: Mensagem recebida inválida: " + contratoSerializado);
+                    return;
                 }
+                if (!this.SessoesConectada.TryGetValue(sessaoContexto.Identificador, out SessaoConectada sessaoConectada))
+                {
+                    LogVSUtil.LogErro("ServicoDepuração: Sessão conectada não encontrada: " + sessaoContexto.Identificador);
+                    return;
+                }
+                LogVSUtil.Log("Mensagem de: " + sessaoContexto.Identificador + "]");
+                this.ProcessoarMensagemInterno(sessaoConectada, contratoSerializado);
 
             }
-            catch
+            catch (Exception ex)
             {
-                //LogVSUtil.LogErro(ex);
+                LogVSUtil.LogErro($"ServicoDepuração: Erro ao processar mensagem recebida: {ex.Message}", ex);
             }
+        }
+
+        private void ProcessoarMensagemInterno(
+            SessaoConectada sessaoConectada, 
+            string contratoSerializado)
+        {
+            try
+            {
+                contratoSerializado = contratoSerializado.Replace(", Snebur.Depuracao\"", ", Snebur.VisualStudio.Compartilhado\"");
+                var contrato = JsonUtil.Deserializar<Contrato>(contratoSerializado, EnumTipoSerializacao.DotNet);
+                var mensagem = contrato.Mensagem;
+                this.ProcessarMensagemRecebida(sessaoConectada, mensagem);
+            }
+            catch(Exception ex)
+            {
+                LogUtil.ErroAsync(ex);
+            }
+    
         }
 
         #region Salvar porta para os projetos
@@ -224,8 +245,11 @@ namespace Snebur.VisualStudio
 
         }
 
-        internal void ProcessarMensagemRecebida(SessaoConectada sessaoConectada, Mensagem mensagem)
+        internal void ProcessarMensagemRecebida(
+            SessaoConectada sessaoConectada,
+            Mensagem mensagem)
         {
+            LogVSUtil.Log($"Recebendo mensagem {mensagem.GetType().Name}");
             switch (mensagem)
             {
                 case MensagemPing mensagemPing:
@@ -236,7 +260,11 @@ namespace Snebur.VisualStudio
                     var args = new MensagemEventArgs<MensagemLog>(sessaoConectada, mensagemLog);
                     this.EventoLog?.Invoke(this, args);
 
+                    break;
+                case MensagemIrParaCodigo mensagemIrParaCodigo:
 
+                    var argsIrParaCodigo = new MensagemEventArgs<MensagemIrParaCodigo>(sessaoConectada, mensagemIrParaCodigo);
+                    this.EventoIrParaCodigo?.Invoke(this, argsIrParaCodigo);
                     break;
 
                 default:

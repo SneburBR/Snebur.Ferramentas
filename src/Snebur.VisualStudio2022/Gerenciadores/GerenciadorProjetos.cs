@@ -1,7 +1,9 @@
 ﻿using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio.Text;
 using Snebur.Depuracao;
 using Snebur.Linq;
 using Snebur.Utilidade;
+using Snebur.VisualStudio.Utilidade;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -204,6 +206,12 @@ namespace Snebur.VisualStudio
             var mensagemCompleta = $"Origem: {e.SessaoConectada.Sessao.Identificador} - {e.Mensagem.Mensagem}";
             LogVSUtil.Log(mensagemCompleta, mensagemLog.TipoLog);
         }
+        private void ServicoDepuracao_EventoIrParaCodigo(
+           object sender,
+           MensagemEventArgs<MensagemIrParaCodigo> e)
+        {
+            _ = IrParaCodigoUtil.EventoIrParaCodigoAsync(e.Mensagem, this.ProjetosTS.Values.ToList());
+        }
 
         #endregion
 
@@ -221,7 +229,7 @@ namespace Snebur.VisualStudio
             {
 
                 await OutputWindow.OcuparAsync();
-                
+
 
                 if (this._isAtualizando)
                 {
@@ -237,7 +245,7 @@ namespace Snebur.VisualStudio
                 }
 
                 this._isAtualizando = true;
-                
+
                 var projetosVS = await VS.Solutions.GetAllProjectsAsync(ProjectStateFilter.Loaded);
                 //ProjetoUtil.RetornarProjetosVisualStudioAsync();
                 if (projetosVS.Count() > 0)
@@ -263,7 +271,7 @@ namespace Snebur.VisualStudio
 
                 }
 
-           
+
 
                 if (!ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
                 {
@@ -416,6 +424,7 @@ namespace Snebur.VisualStudio
            {
                this._servicoDepuracao = new ServicoDepuracao();
                this._servicoDepuracao.EventoLog += this.ServicoDepuracao_Log;
+               this._servicoDepuracao.EventoIrParaCodigo += this.ServicoDepuracao_EventoIrParaCodigo;
            });
         }
 

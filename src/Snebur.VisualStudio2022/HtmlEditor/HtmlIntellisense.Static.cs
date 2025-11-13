@@ -25,7 +25,5 @@ namespace Snebur.VisualStudio
                 }
             }
         }
-
-       
     }
 }

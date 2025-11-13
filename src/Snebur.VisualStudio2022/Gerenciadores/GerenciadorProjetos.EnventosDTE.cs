@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Snebur.VisualStudio
 {
@@ -22,7 +23,7 @@ namespace Snebur.VisualStudio
         // this.DispensarProjetos();
         //}
 
-      
+
 
         //private void BuildEvents_OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
         //{
@@ -73,7 +74,7 @@ namespace Snebur.VisualStudio
         private async Task BuildDoneAsync()
         {
             var t = Stopwatch.StartNew();
-            if (ProjetoTypescriptInitUtil.DiretorioProjetoInicializador == null)
+            if (!ProjetoTypescriptInitUtil.IsDiretorioProjetoInicializadorSet)
             {
                 await SolutionUtil.DefinirProjetosInicializacaoAsync();
             }
@@ -87,7 +88,7 @@ namespace Snebur.VisualStudio
             }
             else
             {
-                this.NormalizarScripts();
+                await this.NormalizarScriptsAsync();
             }
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             LogVSUtil.Log("Tarefas depois da compilação", t);
@@ -107,7 +108,7 @@ namespace Snebur.VisualStudio
             {
                 await this.AtualizarProjetosAsync();
             }
-            
+
             if (this.ProjetosTS.Count > 0)
             {
                 await this.IniciarServicoDepuracaoAsync();
@@ -122,7 +123,7 @@ namespace Snebur.VisualStudio
             }
 
             this.IsCompilando = true;
-             
+
             if (this.IsLimparLogCompilandoInterno)
             {
                 LogVSUtil.Clear();
@@ -130,7 +131,7 @@ namespace Snebur.VisualStudio
 
             try
             {
-           
+
                 await this._servicoDepuracao.SalvarPortaAsync();
 
                 tempoAntesBuild.Stop();
@@ -149,7 +150,7 @@ namespace Snebur.VisualStudio
 
         private async Task CompilacaoConcluidaAsync()
         {
-            this.NormalizarScripts();
+            await this.NormalizarScriptsAsync();
             //this.GerarScriptsMinificados();
             //this.GerarScriptsProtegidos();
 
@@ -164,13 +165,13 @@ namespace Snebur.VisualStudio
             //this.NotificarArquivosAlteradoPendentes();
         }
 
-        private void NormalizarScripts()
+        private async Task NormalizarScriptsAsync()
         {
             foreach (var projetoTS in this.ProjetosTS.Values)
             {
                 using (var normalizarCompilacao = new NormalizarCompilacaoJavascript(projetoTS))
                 {
-                    normalizarCompilacao.Normalizar();
+                    await normalizarCompilacao.NormalizarAsync();
                 }
             }
         }

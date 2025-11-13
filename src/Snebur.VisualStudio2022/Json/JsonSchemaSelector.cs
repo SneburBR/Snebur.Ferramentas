@@ -28,6 +28,7 @@ namespace Snebur.VisualStudio.Json
         {
             return Task.FromResult(Enumerable.Empty<string>());
         }
+
         public string GetSchemaFor(string fileLocation)
         {
             var fileName = Path.GetFileName(fileLocation);
