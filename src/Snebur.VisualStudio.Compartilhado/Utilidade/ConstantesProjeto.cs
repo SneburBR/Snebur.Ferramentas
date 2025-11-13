@@ -2,13 +2,14 @@
 //detalhes aqui https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/
 
 using Snebur.Publicacao;
+using System;
 using System.Collections.Generic;
 
 namespace Snebur.VisualStudio
 {
     public static class ConstantesProjeto
     {
-        public const string PASTA_BUILD = ConstantesPublicacao.NOME_PASTA_BUILD;
+        public const string CAMINHO_BUILD = "wwwroot/" + ConstantesPublicacao.BUILD;
         public const string PASTA_SRC = "src";
 
         public const string EXTENSAO_ESTILO = ".css";

@@ -6,7 +6,10 @@ namespace Snebur.VisualStudio
     public static class ProjetoTypescriptInitUtil
     {
         private static string _diretorioProjetoInicializador;
-        public static string DiretorioProjetoInicializador
+
+        public static bool IsDiretorioProjetoInicializadorSet
+            => _diretorioProjetoInicializador != null;
+        public static string GetRequiredDiretorioProjetoInicializador()
             => _diretorioProjetoInicializador ?? throw new System.Exception("DiretorioProjetoInicializador não foi inicializado. Chame SetDiretorioProjetoInicializador primeiro.");
         public static ConfiguracaoProjetoTypeScript ConfiguracaoProjetoTypeScript { get; private set; }
 

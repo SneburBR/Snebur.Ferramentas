@@ -17,7 +17,9 @@ namespace Snebur.VisualStudio
             }
         }
 
-        public static void AtualizarScriptsDebug(IEnumerable<ProjetoTypeScript> projetosTypescript, ProjetoTypeScript projeto)
+        public static void AtualizarScriptsDebug(
+            IEnumerable<ProjetoTypeScript> projetosTypescript, 
+            ProjetoTypeScript projeto)
         {
             lock (ProjetoTypeScriptUtil.BloqueioManipuladorArquivos)
             {
@@ -25,11 +27,14 @@ namespace Snebur.VisualStudio
                 {
                     foreach (var (nomeDepedencia, caminhoRelativo) in projeto.Dependencias.Select(x => (x.Key, x.Value)))
                     {
-                        var projetoDepedencia = projetosTypescript.Where(x => x.NomeProjeto == nomeDepedencia).SingleOrDefault();
+                        var projetoDepedencia = projetosTypescript
+                            .Where(x => x.NomeProjeto == nomeDepedencia)
+                            .SingleOrDefault();
+
                         if (projetoDepedencia != null)
                         {
                             var caminhoScriptDebug = Path.Combine(projeto.CaminhoProjeto,
-                                                                  ConstantesPublicacao.NOME_PASTA_BUILD,
+                                                                  ConstantesProjeto.CAMINHO_BUILD,
                                                                   projetoDepedencia.ArquivoScriptCompilado.Name);
                             if (projetoDepedencia != null)
                             {
@@ -40,10 +45,7 @@ namespace Snebur.VisualStudio
                     }
                 }
             }
-            
         }
-
-     
 
         public static void AtualizarScriptDebug(string caminhoScript,
                                                 string caminhoScriptDebug)

@@ -60,7 +60,7 @@ namespace Snebur.VisualStudio
             ArquivoTypeScript arquivoTypeScript,
             FileInfo arquivoHtmlReferencia)
         {
-            var diretorioProjetoInicializador = ProjetoTypescriptInitUtil.DiretorioProjetoInicializador;
+            var diretorioProjetoInicializador = ProjetoTypescriptInitUtil.GetRequiredDiretorioProjetoInicializador(); ;
             return CaminhoUtil.RetornarCaminhoRelativo(
                 arquivoHtmlReferencia.FullName, 
                 diretorioProjetoInicializador);
