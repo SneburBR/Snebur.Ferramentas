@@ -50,7 +50,6 @@ public static class HtmlIntelliSenseUtils
             if (linha.StartsWith("//") || !linha.Contains(procurar))
             {
                 continue;
-
             }
 
             var inicio = linha.IndexOf(procurar) + procurar.Length;

@@ -67,7 +67,6 @@ namespace Snebur.Comunicacao.WebSocket.Experimental.Handlers.WebSocket.rfc6455
         {
             return (
                        (Host != null) &&
-                       (Key != null) &&
                        (Int32.Parse(Version) >= 8)
                    );
         }

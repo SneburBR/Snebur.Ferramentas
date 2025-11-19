@@ -1,6 +1,7 @@
 ﻿using Snebur.Comunicacao.WebSocket.Experimental.Handlers;
 using Snebur.Comunicacao.WebSocket.Experimental.Handlers.WebSocket;
 using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -18,7 +19,6 @@ namespace Snebur.Comunicacao.WebSocket.Experimental.Classes
         public bool Connected { get; set; } = true;
 
         public TcpClient Connection;
-
 
         public Handler Handler = Handler.Instance;
 

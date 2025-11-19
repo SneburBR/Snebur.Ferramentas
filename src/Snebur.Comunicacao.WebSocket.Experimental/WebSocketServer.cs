@@ -34,7 +34,8 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
             WebSocketServer.CleanupThread.Name = "WebSocketServer Cleanup Thread";
             WebSocketServer.CleanupThread.Start();
 
-            for(int i = 0; i < ClientThreads.Length; i++){
+            for (int i = 0; i < ClientThreads.Length; i++)
+            {
                 ClientThreads[i] = new Thread(HandleClientThread);
                 ClientThreads[i].Name = "WebSocketServer Client Thread #" + (i + 1);
                 ClientThreads[i].Start();
@@ -64,7 +65,8 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
                     client.SetupContext(context);
                 }
 
-                lock(CurrentConnections){
+                lock (CurrentConnections)
+                {
                     CurrentConnections.Add(context);
                 }
             }
@@ -86,7 +88,7 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
                 foreach (var connection in currentConnections)
                 {
                     if (cancellation.IsCancellationRequested) break;
-                    
+
                     if (!connection.Connected)
                     {
                         lock (CurrentConnections)
@@ -150,7 +152,7 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
         /// </summary>
-        public WebSocketServer(IPAddress enderecoIp = null, int porta = 0) : base( enderecoIp, porta) {}
+        public WebSocketServer(IPAddress enderecoIp = null, int porta = 0) : base(enderecoIp, porta) { }
 
         /// <summary>
         /// Gets or sets the origin host.
@@ -251,7 +253,7 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
         /// <param name="result">The Async result.</param>
         private void DoReceive(IAsyncResult result)
         {
-            var context = (ConexaoContexto) result.AsyncState;
+            var context = (ConexaoContexto)result.AsyncState;
             context.Reset();
             try
             {
@@ -289,7 +291,7 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
                 {
                     try
                     {
-                        if(_context.Connection.Client!= null)
+                        if (_context.Connection.Client != null)
                         {
                             if (!_context.Connection.Client.ReceiveAsync(_context.ReceiveEventArgs))
                             {
@@ -317,9 +319,11 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
             context.Reset();
             if (e.SocketError != SocketError.Success)
             {
-            //logger.Error("Socket Error: " + e.SocketError.ToString());
+                //logger.Error("Socket Error: " + e.SocketError.ToString());
                 context.ReceivedByteCount = 0;
-            } else {
+            }
+            else
+            {
                 context.ReceivedByteCount = e.BytesTransferred;
             }
 
@@ -328,17 +332,19 @@ namespace Snebur.Comunicacao.WebSocket.Experimental
                 context.Handler.HandleRequest(context);
                 context.ReceiveReady.Release();
                 StartReceive(context);
-            } else {
-                context.Disconnect();
+            }
+            else
+            {
+                //context.Disconnect();
                 context.ReceiveReady.Release();
             }
         }
-        
+
         public override void Dispose()
         {
             cancellation.Cancel();
             base.Dispose();
             Handler.Instance.Dispose();
-        }        
+        }
     }
 }

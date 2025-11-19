@@ -83,6 +83,23 @@ namespace Snebur.VisualStudio
             {
                 await OutputWindow.DesocuparAsync();
             }
+
+            //ProcessarMensagemRecebida(null, new MensagemIrParaCodigo
+            //{
+            //    Namespace = "Zyoncore.Sigi.Online",
+            //    TagElemento = "sn-botao",
+            //    NomeControle = "ControleMenuCabecalho.shtml",
+            //    SearchElementPatterns = ["sn-click=\"BtnProdutos_Click\"", "sn-bind-class=\"sn-pagina-atual sn-texto-empresa={{ PaginaAtual === EnumSigiNavegacao.Produto }}, Origem=this\""]
+            //});
+
+            //await Task.Delay(5000);
+            //ProcessarMensagemRecebida(null, new MensagemIrParaCodigo
+            //{
+            //    Namespace = "Zyoncore.Sigi.Online",
+            //    TagElemento = "sn-botao",
+            //    NomeControle = "ControleMenuCabecalho.shtml",
+            //    SearchElementPatterns = ["sn-click=\"BtnUsoPromocao_Click\"", "sn-visibilidade=\"{{IsUsoPromocaoAtivo}}, Origem=this\""]
+            //});
         }
 
         private void ServicoWebSocketTeste_SessaoConectado(SessaoContexto sessaoContexto)
@@ -141,7 +158,7 @@ namespace Snebur.VisualStudio
         }
 
         private void ProcessoarMensagemInterno(
-            SessaoConectada sessaoConectada, 
+            SessaoConectada sessaoConectada,
             string contratoSerializado)
         {
             try
@@ -151,11 +168,11 @@ namespace Snebur.VisualStudio
                 var mensagem = contrato.Mensagem;
                 this.ProcessarMensagemRecebida(sessaoConectada, mensagem);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogUtil.ErroAsync(ex);
             }
-    
+
         }
 
         #region Salvar porta para os projetos

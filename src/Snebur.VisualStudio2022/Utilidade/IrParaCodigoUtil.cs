@@ -5,6 +5,7 @@ using Snebur.Depuracao;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Snebur.VisualStudio.Utilidade;
 public static class IrParaCodigoUtil
@@ -50,27 +51,26 @@ public static class IrParaCodigoUtil
         var file = await projeto.GetPhysicalFileAsync(caminhoArquivo);
         if (file is null)
         {
-            LogVSUtil.LogErro($"Não foi possível localizar o arquivo do controle '{caminhoArquivo}' no projeto '{nomeProjeto}'");
+            LogVSUtil.LogErro($"Não foi possível localizar o arquivo do controle '{nomeControle}' no projeto '{nomeProjeto}'");
             return;
         }
-        var searchPatters = mensagem.SearchElementPattern;
+        var searchPatters = mensagem.SearchElementPatterns;
         var windowFrame = await file.OpenAsync();
         if (windowFrame is null)
         {
             await AbrirUsandoDteAsync(caminhoArquivo, searchPatters, mensagem.TagElemento);
-            LogVSUtil.LogErro($"Não foi possível abrir o arquivo do controle '{caminhoArquivo}' no projeto '{nomeProjeto}'");
             return;
         }
 
 
-        if (string.IsNullOrEmpty(searchPatters))
+        if (searchPatters.Length == 0)
         {
             return;
         }
         var documentView = await windowFrame.GetDocumentViewAsync();
         if (documentView is null)
         {
-            LogVSUtil.LogErro($"Não foi possível obter a GetDocumentViewAsync o arquivo do controle '{caminhoArquivo}' no projeto '{nomeProjeto}'");
+            LogVSUtil.LogErro($"Não foi possível obter a GetDocumentViewAsync o arquivo do controle '{nomeControle}' no projeto '{nomeProjeto}'");
             await AbrirUsandoDteAsync(caminhoArquivo, searchPatters, mensagem.TagElemento);
 
             return;
@@ -78,35 +78,73 @@ public static class IrParaCodigoUtil
         await HighlightHtmlPatternAsync(documentView, searchPatters);
 
     }
+
     private static async Task AbrirUsandoDteAsync(
         string caminhoArquivo,
-        string searchPatters,
+        string[] searchPatters,
         string tagElemento)
     {
-        LogVSUtil.Log($"Abrndo arquivo usando Dte {caminhoArquivo} ");
+        var nomeArquivo = Path.GetFileName(caminhoArquivo);
+        LogVSUtil.Log($"Abrindo arquivo usando Dte {nomeArquivo} ");
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
         var dte = await DteUtil.GetDTEAsync();
+
         var documento = dte.AbrirArquivo(caminhoArquivo);
+
         documento.Activate();
-        if (string.IsNullOrEmpty(searchPatters))
+
+        if (searchPatters.Length == 0 || !(documento.Selection is TextSelection selecao))
         {
             return;
         }
 
-        if (documento.Selection is TextSelection selecao)
+        selecao.StartOfDocument(true);
+        selecao.SelectAll();
+        var text = selecao.Text;
+ 
+        foreach (var searchPatter in searchPatters)
         {
-            selecao.StartOfDocument(true);
-            if (selecao.FindText(searchPatters))
+            //parttern with tag end searchPattern, this is HTML document
+            var escapedSearch = Regex.Escape(searchPatter);
+            var patternWithTagEnd = $@"<{tagElemento}\s+[\W\w\s]*\s{escapedSearch}";
+            var option = (int)vsFindOptions.vsFindOptionsRegularExpression |
+                        (int)vsFindOptions.vsFindOptionsMatchCase;
+            
+            if (selecao.FindText(searchPatter, option))
             {
                 return;
             }
-            selecao.FindText(tagElemento);
+
+            var regex = new Regex(patternWithTagEnd, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var match = regex.Match(text);
+            if (match!= null)
+            {
+                //go to line
+                var lineNumber = text.Substring(0, match.Index).Count(c => c == '\n') + 1;
+                selecao.GotoLine(lineNumber);
+                selecao.StartOfLine(vsStartOfLineOptions.vsStartOfLineOptionsFirstText);
+                return;
+            }
         }
+
+        
+        LogVSUtil.Alerta($"Padrão(s) '{string.Join(", ", searchPatters)}' não encontrado(s) no documento {nomeArquivo}. Tentando localizar pela tag '{tagElemento}'.");
+        foreach (var searchPatter in searchPatters)
+        {
+            if (selecao.FindText(searchPatter))
+            {
+                return;
+            }
+        }
+
+        selecao.FindText(tagElemento);
     }
-    private static async Task HighlightHtmlPatternAsync(DocumentView documentView, string searchPattern)
+    private static async Task HighlightHtmlPatternAsync(
+        DocumentView documentView,
+        string[] searchPatterns)
     {
         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        if (documentView?.TextBuffer is null || string.IsNullOrEmpty(searchPattern))
+        if (documentView?.TextBuffer is null || searchPatterns.Length == 0)
         {
             return;
         }
@@ -115,11 +153,11 @@ public static class IrParaCodigoUtil
         ITextSnapshot snapshot = buffer.CurrentSnapshot;
         string text = snapshot.GetText();
 
-        int index = text.IndexOf(searchPattern, StringComparison.OrdinalIgnoreCase);
-        if (index < 0)
+        var index = GetIndex(text, searchPatterns);
+        if (index == -1)
         {
             // opcional log
-            LogVSUtil.Log($"Padrão '{searchPattern}' não encontrado no documento.", EnumTipoLog.Normal);
+            LogVSUtil.Log($"Padrão '{searchPatterns}' não encontrado no documento.", EnumTipoLog.Normal);
             return;
         }
 
@@ -135,12 +173,25 @@ public static class IrParaCodigoUtil
             return;
         }
 
-        var span = new SnapshotSpan(snapshot, index, searchPattern.Length);
+        var span = new SnapshotSpan(snapshot, index, searchPatterns.Length);
 
         // Seleciona o texto e move o cursor
         view.Selection.Select(span, isReversed: false);
         view.Caret.MoveTo(span.Start);
         view.ViewScroller.EnsureSpanVisible(span);
+    }
+
+    private static int GetIndex(string text, string[] searchPatterns)
+    {
+        foreach (var searchPattern in searchPatterns)
+        {
+            int index = text.IndexOf(searchPattern, StringComparison.OrdinalIgnoreCase);
+            if (index >= 0)
+            {
+                return index;
+            }
+        }
+        return -1;
     }
 
     private static List<(string, string)> RetornarPossiveisArquivosControle(
