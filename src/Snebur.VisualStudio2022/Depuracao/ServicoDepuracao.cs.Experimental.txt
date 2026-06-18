@@ -56,18 +56,15 @@ namespace Snebur.VisualStudio
 
                 ConfiguracaoVSUtil.PortaDepuracao = this.Porta;
 
-                var servicoWebSocket = new WebSocketServer($"ws://0.0.0.0:{this.Porta}");
-                servicoWebSocket.Start(socker =>
+                var servicoWebSocket = new WebSocketServer(System.Net.IPAddress.Any, this.Porta)
                 {
-                    var sessao = new SessaoContexto(socker);
-                    socker.OnOpen = () => this.ServicoWebSocketTeste_SessaoConectado(sessao);
-                    socker.OnClose = () => this.ServicoWebSocketTeste_SessaoDesconetado(sessao);
-                    socker.OnMessage = (message) => this.ServicoWebSocket_ReceberMensagem(sessao, message);
-                    socker.OnBinary = (binaryMessage) => this.ServicoWebSocket_ReceberMensagem(sessao, GetMessageFromBinary(binaryMessage));
-                    socker.OnError = (error) => this.ServicoWebSocket_Error(sessao, error);
-                });
-                
-                //servicoWebSocket.Inicializar();
+                    OnReceive = this.ServicoWebSocket_ReceberMensagem,
+                    OnSend = this.ServicoWebSocket_MensagemEnviada,
+                    OnConnected = this.ServicoWebSocketTeste_SessaoConectado,
+                    OnDisconnect = this.ServicoWebSocketTeste_SessaoDesconetado,
+                    TimeOut = new TimeSpan(0, 5, 0),
+                };
+                servicoWebSocket.Inicializar();
                 this.ServidorWebSocket = servicoWebSocket;
                 this.Status = EnumStatusServicoDepuracao.Ativo;
                 await this.SalvarPortaAsync();
@@ -108,12 +105,6 @@ namespace Snebur.VisualStudio
             //});
         }
 
-
-        private string GetMessageFromBinary(byte[] binaryMessage)
-        {
-            return Encoding.UTF8.GetString(binaryMessage);
-        }
-
         private void ServicoWebSocketTeste_SessaoConectado(SessaoContexto sessaoContexto)
         {
             if (!this.SessoesConectada.ContainsKey(sessaoContexto.Identificador))
@@ -144,11 +135,11 @@ namespace Snebur.VisualStudio
             //LogVSUtil.Log("Mensagem para: " + sessaoContexto.Identificador + "] - " + sessaoContexto.DataFrame.ToString());
         }
 
-        private void ServicoWebSocket_ReceberMensagem(SessaoContexto sessaoContexto, string message)
+        private void ServicoWebSocket_ReceberMensagem(SessaoContexto sessaoContexto)
         {
             try
             {
-                var contratoSerializado = message.Trim();
+                var contratoSerializado = sessaoContexto.DataFrame.ToString().Trim();
                 if (!contratoSerializado.StartsWith("{"))
                 {
                     LogVSUtil.Alerta("ServicoDepuração: Mensagem recebida desconhecida: " + contratoSerializado);
@@ -184,11 +175,7 @@ namespace Snebur.VisualStudio
             {
                 LogUtil.ErroAsync(ex);
             }
-        }
 
-        private void ServicoWebSocket_Error(SessaoContexto sessao, Exception error)
-        {
-            throw new NotImplementedException();
         }
 
         #region Salvar porta para os projetos
@@ -268,7 +255,7 @@ namespace Snebur.VisualStudio
                 }
                 else
                 {
-                    var conexoesDesconectadas = conexoes.Where(x => !x.Sessao.Connected);
+                    var conexoesDesconectadas = conexoes.Where(x => !x.Sessao.Contexto.Connected);
 
                     foreach (var sessaoConecta in conexoes)
                     {
@@ -312,6 +299,7 @@ namespace Snebur.VisualStudio
             LogVSUtil.Log("Parando servidor de web socket");
 
             this.DesconectarTodasSessoes();
+            this.ServidorWebSocket?.Parar();
             this.ServidorWebSocket?.Dispose();
             this.ServidorWebSocket = null;
             this.Status = EnumStatusServicoDepuracao.Parado;
@@ -319,7 +307,7 @@ namespace Snebur.VisualStudio
 
         private void DesconectarTodasSessoes()
         {
-
+            
             foreach (var sessao in this.SessoesConectada.Values)
             {
                 sessao.Dispose();
@@ -377,7 +365,7 @@ namespace Snebur.VisualStudio
                         Mensagem = mensagem
                     };
                     var constratoSerializado = JsonUtil.Serializar(contrato, EnumTipoSerializacao.Javascript);
-                     this.Sessao.Send(constratoSerializado);
+                    this.Sessao.Send(constratoSerializado);
                 }
                 catch (Exception ex)
                 {

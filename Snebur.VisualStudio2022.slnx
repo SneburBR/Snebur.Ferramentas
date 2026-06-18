@@ -8,7 +8,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/apresentacao/">
-    <Project Path="src/Snebur.VisualStudio2022/Snebur.VisualStudio2022.csproj">
+    <Project Path="src/Snebur.VisualStudio2022/Snebur.VisualStudio2022.csproj" Id="91d3e096-d5fd-48dd-8faa-4f6022d4e7f4">
       <BuildType Solution="Apresentacao|*" Project="Debug" />
       <BuildType Solution="Debug Ap|*" Project="Debug" />
       <Platform Solution="*|x86" Project="x86" />
@@ -25,7 +25,7 @@
     </Project>
   </Folder>
   <Folder Name="/framework/">
-    <Project Path="src/Snebur.Comunicacao.WebSocket.Experimental/Snebur.Comunicacao.WebSocket.Experimental.Net48.csproj">
+    <Project Path="src/Snebur.Comunicacao.WebSocket.Experimental/Snebur.Comunicacao.WebSocket.Experimental.Net48.csproj" Id="887586d8-d630-411d-96a9-3ce87707bd26">
       <BuildType Solution="Apresentacao|*" Project="Debug" />
       <BuildType Solution="Debug Ap|*" Project="Debug" />
     </Project>

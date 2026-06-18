@@ -227,10 +227,8 @@ namespace Snebur.VisualStudio
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-
                 await OutputWindow.OcuparAsync();
-
-
+                 
                 if (this._isAtualizando)
                 {
                     if (!isAtualizarAguardar)
@@ -270,8 +268,6 @@ namespace Snebur.VisualStudio
                     }
 
                 }
-
-
 
                 if (!ConfiguracaoVSUtil.IsNormalizandoTodosProjetos)
                 {
@@ -371,9 +367,6 @@ namespace Snebur.VisualStudio
             this.ProjetosSass.TryAdd(projetoSass.Chave, projetoSass);
         }
 
-
-
-
         public async Task<bool> ExecutarAsync(Func<Task> acao)
         {
             if (!this._isExecutando)
@@ -472,7 +465,6 @@ namespace Snebur.VisualStudio
         }
 
         #endregion
-
     }
 
     public enum EnumCondicaoAtualizarProjeto
@@ -481,5 +473,4 @@ namespace Snebur.VisualStudio
         AntesCompilar = 2,
         DepoisCompilar = 3,
     }
-
 }
